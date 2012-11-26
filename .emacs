@@ -3,19 +3,6 @@
 (setq inhibit-splash-screen t)
 (tool-bar-mode 0)
 
-;; Put autosave files (ie #foo#) and backup files (ie foo~) in ~/.emacs.d/.
-(custom-set-variables
-  ;; custom-set-variables was added by Custom.
-  ;; If you edit it by hand, you could mess it up, so be careful.
-  ;; Your init file should contain only one such instance.
-  ;; If there is more than one, they won't work right.
- '(auto-save-file-name-transforms (quote ((".*" "~/.emacs.d/autosaves/\\1" t))))
- '(backup-directory-alist (quote ((".*" . "~/.emacs.d/backups/"))))
- '(fill-column 80)
- '(preview-gs-options (quote ("-q" "-dNOSAFER" "-dNOPAUSE" "-DNOPLATFONTS" "-dPrinted" "-dTextAlphaBits=4" "-dGraphicsAlphaBits=4")))
- '(preview-image-type (quote dvipng))
-  '(preview-scale-function 1))
-
 ; Other global nice options
 (set-fringe-mode '(0 . 1)) ;activate only the right fringe area
 
@@ -118,6 +105,7 @@ If point was already at that position, move point to beginning of line."
   (adaptive-wrap-mode t)      ; with adaptive indenting
   (setq LaTeX-item-indent 0)  ; indent \item as other stuff inside envs (works
 			      ; better with adaptive-wrap-mode)
+  (flyspell-mode t)
 )
 (add-hook 'LaTeX-mode-hook 'jsrn-latex-mode-hook)
 
@@ -149,6 +137,17 @@ If point was already at that position, move point to beginning of line."
 ;;       ELISP
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun jsrn-emacs-lisp-mode-hook ()
+  (auto-fill-mode t)
+  (show-paren-mode t)
+  (highlight-parentheses-mode t)
+)
+(add-hook 'emacs-lisp-mode-hook 'jsrn-emacs-lisp-mode-hook)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;       FLYSPELL
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(setq flyspell-issue-message-flag nil)
+(defun jsrn-flyspell-mode-hook ()
   (auto-fill-mode t)
   (show-paren-mode t)
   (highlight-parentheses-mode t)
