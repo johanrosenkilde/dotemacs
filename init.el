@@ -1,4 +1,4 @@
-;globally set user-interface
+
 (set-face-attribute 'default nil :height 70)
 (setq inhibit-splash-screen t)
 (tool-bar-mode 0)
@@ -10,16 +10,6 @@
 (add-to-list 'auto-mode-alist '("\\svg\\'" . xml-mode))
 (add-to-list 'auto-mode-alist '("\\env\\'" . xml-mode))
 (add-to-list 'auto-mode-alist '("\\scene\\'" . xml-mode))
-
-; Load ido
-(require 'ido)
-(ido-mode t)
-(setq ido-enable-flex-matching t) ;match substr on what is written
-
-; Load uniquify
-(require 'uniquify)
-(setq uniquify-buffer-name-style 'reverse)
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;       GLOBALLY DEFINED CUSTOM FUNCTIONS AND KEYS
@@ -57,7 +47,6 @@ If point was already at that position, move point to beginning of line."
   (load-file "~/.emacs"))
 
 
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;       PACKAGE-INSTALL
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -66,10 +55,132 @@ If point was already at that position, move point to beginning of line."
 (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
 			 ("marmalade" . "http://marmalade-repo.org/packages/")
 			 ("melpa" . "http://melpa.milkbox.net/packages/")))
-(require 'highlight-parentheses)
+
 ;; Other packages
+; Fill sentence: reflows paragraph to have only linebreaks at sentence boundaries
 (load "~/.emacs.d/fill-sentence.el")
 
+; minor mode Highlight parentheses which are around cursor
+(require 'highlight-parentheses)
+
+;; Global loading
+; Load ido -- alternatives shown directly in minibuffer + more
+(require 'ido)
+(ido-mode t)
+(setq ido-enable-flex-matching t) ;match substr on what is written
+
+; Uniquify gives better names to buffers containing files with same base name
+(require 'uniquify)
+(setq uniquify-buffer-name-style 'reverse)
+
+; Winner gives undo and redo of windows arrangements
+(require 'winner)
+
+(require 'undo-tree)
+(global-undo-tree-mode)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;       EVIL
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(require 'evil)
+(setq evil-find-skip-newlines t)
+(setq evil-normal-state-tag (propertize "N" 'face '((:background "green" :foreground "black")))
+      evil-emacs-state-tag (propertize "E" 'face '((:background "orange" :foreground "black")))
+      evil-insert-state-tag (propertize "I" 'face '((:background "red")))
+      evil-motion-state-tag (propertize "M" 'face '((:background "blue")))
+      evil-visual-state-tag (propertize "V" 'face '((:background "grey80" :foreground "black")))
+      evil-operator-state-tag (propertize "O" 'face '((:background "purple"))))
+;; Escape quits anything
+(define-key evil-normal-state-map [escape] 'keyboard-quit)
+(define-key evil-visual-state-map [escape] 'keyboard-quit)
+(define-key minibuffer-local-map [escape] 'minibuffer-keyboard-quit)
+(define-key minibuffer-local-ns-map [escape] 'minibuffer-keyboard-quit)
+(define-key minibuffer-local-completion-map [escape] 'minibuffer-keyboard-quit)
+(define-key minibuffer-local-must-match-map [escape] 'minibuffer-keyboard-quit)
+(define-key minibuffer-local-isearch-map [escape] 'minibuffer-keyboard-quit)
+;; Control-e and Control-a works everywhere
+(define-key evil-normal-state-map (kbd "C-e") 'end-of-visual-line)
+(define-key evil-insert-state-map (kbd "C-e") 'end-of-visual-line)
+(define-key evil-motion-state-map (kbd "C-e") 'end-of-visual-line)
+(define-key evil-normal-state-map (kbd "C-a") 'smart-beginning-of-visual-line)
+(define-key evil-insert-state-map (kbd "C-a") 'smart-beginning-of-visual-line)
+(define-key evil-motion-state-map (kbd "C-a") 'smart-beginning-of-visual-line)
+;; Search using Emacs' isearch but using Vim keybindings
+(define-key evil-normal-state-map "/" 'isearch-forward)
+(define-key evil-normal-state-map "?" 'isearch-backward)
+;; Move using visual lines
+(define-key evil-motion-state-map "j" #'evil-next-visual-line)
+(define-key evil-motion-state-map "k" #'evil-previous-visual-line)
+(define-key evil-motion-state-map "$" #'evil-end-of-visual-line)
+(define-key evil-motion-state-map "^" #'evil-first-non-blank-of-visual-line)
+(define-key evil-motion-state-map "0" #'evil-beginning-of-visual-line)
+;; Tab in normal mode works as tab in Emacs
+(define-key evil-normal-state-map (kbd "TAB") 'indent-for-tab-command)
+;; Provide yank at 
+(define-key evil-insert-state-map (kbd "C-y") 'yank)
+(evil-mode 1)
+
+;; Make cursor look like Vim when in Vim normal mode
+;;TODO: Move the following function to some utils
+(defun def-assoc (key alist default)
+  "Return cdr of `KEY' in `ALIST' or `DEFAULT' if key is no car in alist."
+  (let ((match (assoc key alist)))
+    (if match
+        (cdr match)
+      default)))  
+(defun cofi/evil-cursor ()
+  "Change cursor color according to evil-state."
+  (let ((color-default "OliveDrab4")
+        (colors '((insert . "dark orange")
+		  (emacs . "sienna")
+		  (visual . "white")))
+	(cursor-default 'bar)
+	(cursors '((visual . hollow)
+		   (normal . box))))
+    (setq cursor-type (def-assoc evil-state cursors cursor-default))
+    (set-cursor-color (def-assoc evil-state cursors color-default))))
+(setq evil-default-cursor #'cofi/evil-cursor)
+
+;; Windowing
+;; (fill-keymap evil-window-map
+;;     "C-g" nil
+;;     ;; Splitting
+;;     "\\" 'split-window-vertically
+;;     "|" 'split-window-horizontally
+
+;;     ;; Deleting
+;;     "D" 'delete-window
+;;     "C-d" 'delete-window
+;;     "1" 'delete-other-windows
+
+;;     ;; Sizing
+;;     "RET" 'enlarge-window
+;;     "-" 'shrink-window-horizontally
+;;     "+" 'enlarge-window-horizontally
+
+;;     ;; Moving
+;;     ;"h" 'evil-window-left
+;;     ;"j" 'evil-window-down
+;;     ;"k" 'evil-window-up
+;;     ;"l" 'evil-window-right
+
+;;     ;; Swapping
+;;     "M-h" 'swap-with-left
+;;     "M-j" 'swap-with-down
+;;     "M-k" 'swap-with-up
+;;     "M-l" 'swap-with-right
+;;     "S-<left>" 'swap-with-left
+;;     "S-<down>" 'swap-with-down
+;;     "S-<up>" 'swap-with-up
+;;     "S-<right>" 'swap-with-right
+;;     "SPC" 'swap-window
+
+;;     ;; winner-mode
+;;     "u" 'winner-undo
+;;     "C-r" 'winner-redo
+;;     ;; shadow rotating in evil-window-map
+;;     "C-R" 'winner-redo)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -100,11 +211,11 @@ If point was already at that position, move point to beginning of line."
 ; Other custom settings
 (defun jsrn-latex-mode-hook ()
   (local-set-key (kbd "M-q") 'fill-sentence)  ; hard sentence wrap
-  (setq fill-column 9999) ; with hard senctence wrap, we don't want hard lines
-  (visual-line-mode t)        ; but we do want visual word wrap
-  (adaptive-wrap-mode t)      ; with adaptive indenting
-  (setq LaTeX-item-indent 0)  ; indent \item as other stuff inside envs (works
-			      ; better with adaptive-wrap-mode)
+  (setq fill-column 9999)            ; with hard senctence wrap, we don't want hard lines
+  (visual-line-mode t)               ; but we do want visual word wrap
+  (adaptive-wrap-prefix-mode t)      ; with adaptive indenting
+  (setq LaTeX-item-indent 0)         ; indent \item as other stuff inside envs (works
+			             ; better with adaptive-wrap-prefix-mode)
   (flyspell-mode t)
 )
 (add-hook 'LaTeX-mode-hook 'jsrn-latex-mode-hook)
@@ -143,13 +254,18 @@ If point was already at that position, move point to beginning of line."
 )
 (add-hook 'emacs-lisp-mode-hook 'jsrn-emacs-lisp-mode-hook)
 
+
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;       FLYSPELL
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (setq flyspell-issue-message-flag nil)
-(defun jsrn-flyspell-mode-hook ()
-  (auto-fill-mode t)
-  (show-paren-mode t)
-  (highlight-parentheses-mode t)
-)
-(add-hook 'emacs-lisp-mode-hook 'jsrn-emacs-lisp-mode-hook)
+(defun jsrn-spell-goto-next-and-suggest ()
+  (interactive)
+  (flyspell-goto-next-error)
+  (ispell-word))
+(setq flyspell-mode-map '(keymap
+ (67108908 . jsrn-spell-goto-next-and-suggest)
+ ))
+(setq ispell-silently-savep t)
+

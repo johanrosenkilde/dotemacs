@@ -9,7 +9,7 @@
  '(preview-gs-options (quote ("-q" "-dNOSAFER" "-dNOPAUSE" "-DNOPLATFONTS" "-dPrinted" "-dTextAlphaBits=4" "-dGraphicsAlphaBits=4")))
  '(preview-image-type (quote dvipng))
  '(preview-scale-function 1)
- '(flyspell-auto-correct-binding (quote (nil)))
+ '(flyspell-auto-correct-binding nil)
  '(flyspell-highlight-flag t)
  (custom-set-faces
   ;; custom-set-faces was added by Custom.
