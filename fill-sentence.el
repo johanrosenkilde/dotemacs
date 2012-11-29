@@ -21,7 +21,7 @@ convoluted. We use part of it --- skip comment par we are in."
     (while (< from (marker-position to-marker))
       (forward-sentence)
       (setq tmp-end (point))
-      (LaTeX-fill-region-as-paragraph from tmp-end)
+      (LaTeX-fill-region-as-paragraph from (- tmp-end -1))
       (setq from (point))
       (unless (bolp)
         (LaTeX-newline))))))
