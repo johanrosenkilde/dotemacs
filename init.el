@@ -4,7 +4,9 @@
 (tool-bar-mode 0)
 
 ; Other global nice options
+(toggle-scroll-bar -1) ;; Emacs gurus don't need no stinking scroll bars
 (set-fringe-mode '(0 . 1)) ;activate only the right fringe area
+(setq compilation-scroll-output t)
 
 ; File type default modes
 (add-to-list 'auto-mode-alist '("\\svg\\'" . xml-mode))
@@ -75,16 +77,15 @@ If point was already at that position, move point to beginning of line."
 
 ; Winner gives undo and redo of windows arrangements
 (require 'winner)
-
-(require 'undo-tree)
-(global-undo-tree-mode)
-
+(winner-mode 1)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;       EVIL
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'evil)
 (setq evil-find-skip-newlines t)
+(setq evil-ex-search-highlight-all nil)
+(setq evil-want-fine-undo t)
 (setq evil-normal-state-tag (propertize "N" 'face '((:background "green" :foreground "black")))
       evil-emacs-state-tag (propertize "E" 'face '((:background "orange" :foreground "black")))
       evil-insert-state-tag (propertize "I" 'face '((:background "red")))
@@ -109,6 +110,8 @@ If point was already at that position, move point to beginning of line."
 ;; Search using Emacs' isearch but using Vim keybindings
 (define-key evil-normal-state-map "/" 'isearch-forward)
 (define-key evil-normal-state-map "?" 'isearch-backward)
+(define-key evil-normal-state-map "n" 'isearch-repeat-forward)
+(define-key evil-normal-state-map "N" 'isearch-repeat-backward)
 ;; Move using visual lines
 (define-key evil-motion-state-map "j" #'evil-next-visual-line)
 (define-key evil-motion-state-map "k" #'evil-previous-visual-line)
@@ -117,11 +120,15 @@ If point was already at that position, move point to beginning of line."
 (define-key evil-motion-state-map "0" #'evil-beginning-of-visual-line)
 ;; Tab in normal mode works as tab in Emacs
 (define-key evil-normal-state-map (kbd "TAB") 'indent-for-tab-command)
-;; Provide yank at 
+;; Provide yank at insert time
 (define-key evil-insert-state-map (kbd "C-y") 'yank)
+;; Provide a visual-time shorcut to commenting
+(define-key evil-visual-state-map "z" 'comment-region)
+(define-key evil-visual-state-map "Z" 'uncomment-region)
+
 (evil-mode 1)
 
-;; Make cursor look like Vim when in Vim normal mode
+;; make cursor look like Vim when in Vim normal moe
 ;;TODO: Move the following function to some utils
 (defun def-assoc (key alist default)
   "Return cdr of `KEY' in `ALIST' or `DEFAULT' if key is no car in alist."
@@ -142,7 +149,7 @@ If point was already at that position, move point to beginning of line."
     (set-cursor-color (def-assoc evil-state cursors color-default))))
 (setq evil-default-cursor #'cofi/evil-cursor)
 
-;; Windowing
+;; windowing
 ;; (fill-keymap evil-window-map
 ;;     "C-g" nil
 ;;     ;; Splitting
