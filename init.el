@@ -101,6 +101,8 @@ If point was already at that position, move point to beginning of line."
 (define-key minibuffer-local-must-match-map [escape] 'minibuffer-keyboard-quit)
 (define-key minibuffer-local-isearch-map [escape] 'minibuffer-keyboard-quit)
 ;; Control-e and Control-a works everywhere
+(define-key evil-normal-state-map (kbd "S-a") '(lambda () (interactive)
+						(end-of-visual-line) (evil-insert-state)))
 (define-key evil-normal-state-map (kbd "C-e") 'end-of-visual-line)
 (define-key evil-insert-state-map (kbd "C-e") 'end-of-visual-line)
 (define-key evil-motion-state-map (kbd "C-e") 'end-of-visual-line)
@@ -148,6 +150,23 @@ If point was already at that position, move point to beginning of line."
     (setq cursor-type (def-assoc evil-state cursors cursor-default))
     (set-cursor-color (def-assoc evil-state cursors color-default))))
 (setq evil-default-cursor #'cofi/evil-cursor)
+
+;; To reinstate Evil in modes where Emacs has simple keys
+(defun reinstate-vim-motion mode-map
+     (evil-define-key 'normal dired-mode-map
+       "h" 'evil-backward-char
+       "j" 'evil-next-line
+       "k" 'evil-previous-line
+       "l" 'evil-forward-char))
+
+(eval-after-load 'dired
+  '(progn
+     ;; use the standard Dired bindings as a base
+     (evil-make-overriding-map dired-mode-map 'normal t)
+     (evil-define-key 'normal
+       "J" 'dired-goto-file ; was "j"
+       "K" 'dired-do-kill-lines ; was "k"
+       "r" 'dired-do-redisplay))) ; was "l"
 
 ;; windowing
 ;; (fill-keymap evil-window-map
@@ -204,6 +223,16 @@ If point was already at that position, move point to beginning of line."
 ;;       ORG-MODE
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (setq org-startup-indented t)
+(defun jsrn-org-mode-hook ()
+  (visual-line-mode t)
+  (define-key evil-normal-state-map (kbd "M-l") 'org-metaright)
+  (define-key evil-insert-state-map (kbd "M-l") 'org-metaright)
+  (define-key evil-insert-state-map (kbd "M-h") 'org-metaleft)
+  (define-key evil-normal-state-map (kbd "M-h") 'org-metaleft)
+  (define-key evil-normal-state-map (kbd "M-k") 'org-metaup)
+  (define-key evil-normal-state-map (kbd "M-j") 'org-metadown)
+)
+(add-hook 'org-mode-hook 'jsrn-org-mode-hook)
 
 
 
@@ -276,3 +305,10 @@ If point was already at that position, move point to beginning of line."
  ))
 (setq ispell-silently-savep t)
 
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;       MAGIT
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(global-set-key [(f12)] 'magit-status)
+(evil-set-initial-state 'magit-mode 'normal)
