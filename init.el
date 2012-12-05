@@ -8,11 +8,13 @@
 (set-fringe-mode '(0 . 1)) ;activate only the right fringe area
 (setq compilation-scroll-output t)
 (setq-default indent-tabs-mode nil)
+(setq mouse-drag-copy-region t) ;; mouse region copies
 
 ;; File type default modes
-(add-to-list 'auto-mode-alist '("\\svg\\'" . xml-mode))
-(add-to-list 'auto-mode-alist '("\\env\\'" . xml-mode))
-(add-to-list 'auto-mode-alist '("\\scene\\'" . xml-mode))
+(add-to-list 'auto-mode-alist '("\\.svg\\'" . xml-mode))
+(add-to-list 'auto-mode-alist '("\\.env\\'" . xml-mode))
+(add-to-list 'auto-mode-alist '("\\.scene\\'" . xml-mode))
+(add-to-list 'auto-mode-alist '("\\.sage\\'" . python-mode))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;       GLOBALLY DEFINED CUSTOM FUNCTIONS AND KEYS
@@ -32,14 +34,18 @@ only the newline character"
     (kill-line 0)))
 (global-set-key (kbd "M-C-<backspace>") 'kill-line-backwards)
 
-(defun smart-beginning-of-line ()
-  "Move point to first non-whitespace character or beginning-of-line.
+(defun smart-beginning-of-visual-line ()
+  "Move point to first non-whitespace character or beginning-of-visual-line.
 
-Move point to the first non-whitespace character on this line.
+Move point to the first non-whitespace character on this visual line.
 If point was already at that position, move point to beginning of line."
-  (interactive) ; Use (interactive "^") in Emacs 23 to make shift-select work
-  (let ((oldpos (point)))
-    (back-to-indentation)
+  (interactive "^")
+  (let ((oldpos (p
+    ;; the following is a paraphrasing of back-to-indentation, but with visual-line
+    (beginning-of-visual-line 1)
+    (skip-syntax-forward " " (line-end-position))
+    (backward-prefix-chars)
+    ;;r 
     (and (= oldpos (point))
          (beginning-of-line))))
 (global-set-key (kbd "C-a") 'smart-beginning-of-line) ;Override default C-a
@@ -234,6 +240,9 @@ If point was already at that position, move point to beginning of line."
   (define-key evil-normal-state-map (kbd "M-h") 'org-metaleft)
   (define-key evil-normal-state-map (kbd "M-k") 'org-metaup)
   (define-key evil-normal-state-map (kbd "M-j") 'org-metadown)
+  ;; Let winner keys overwrite org-mode
+  (define-key evil-normal-state-map (kbd "M-<left>") 'winner-undo) 
+  (define-key evil-normal-state-map (kbd "M-<right>") 'winner-redo)
   )
 (add-hook 'org-mode-hook 'jsrn-org-mode-hook)
 
@@ -247,7 +256,6 @@ If point was already at that position, move point to beginning of line."
 (setq TeX-parse-self t)
 (setq-default TeX-parse-self nil)
 
-;; Other custom settings
 (defun jsrn-latex-mode-hook ()
   (local-set-key (kbd "M-q") 'fill-sentence)  ; hard sentence wrap
   (setq fill-column 9999)            ; with hard senctence wrap, we don't want hard lines
@@ -255,7 +263,15 @@ If point was already at that position, move point to beginning of line."
   (adaptive-wrap-prefix-mode t)      ; with adaptive indenting
   (setq LaTeX-item-indent 0)         ; indent \item as other stuff inside envs (works
                                         ; better with adaptive-wrap-prefix-mode)
-  (flyspell-mode t)
+  (LaTeX-math-mode)                  ; always turn on math mode
+  (setq TeX-insert-braces nil)       ; dont ever insert braces at macro expansion
+  ;; Teach AucTeX about IEEEeqnarray
+  (LaTeX-add-environments
+   '("IEEEeqnarray" LaTeX-env-label)
+   '("IEEEeqnarray*" LaTeX-env-label))
+  (add-to-list 'font-latex-math-environments "IEEEeqnarray")
+  (add-to-list 'font-latex-math-environments "IEEEeqnarray*")
+  (setq texmathp-tex-commands (("IEEEeqnarray" env-on) ("IEEEeqnarray*" env-on)))
   )
 (add-hook 'LaTeX-mode-hook 'jsrn-latex-mode-hook)
 
@@ -266,18 +282,19 @@ If point was already at that position, move point to beginning of line."
 ;; Dired displays less verbose information
 (require 'ls-lisp)
 (setq ls-lisp-use-insert-directory-program nil)
-
 ;; Dired does not open a million buffers
-(toggle-diredp-find-file-reuse-dir t)
+(toggle-diredp-find-file-reuse-dir 1)
+;; When Dired does something to a file, requiring a target, it suggests other open dired buffer
+(setq dired-dwim-target 1)
+;; Dired doesn't show dot-files per default. Use C-u s <Ret> to change
+(setq dired-listing-switches "-l")
 
 (defun jsrn-dired-mode-hook ()
   ;; Change dired-up-directory to find-alternate-file ..
   (lambda () (define-key dired-mode-map (kbd "^")
                (lambda () (interactive) (find-alternate-file ".."))))
   )
-
-;; When Dired does something to a file, requiring a target, it suggests other open dired buffer
-(setq dired-dwim-target 1)
+(add-hook 'dired-mode-hook jsrn-dired-mode-hook)
 ;; Load the advanced, not-touched-so-often stuff
 (load "~/.emacs.d/dired_setup.el")
 
@@ -321,7 +338,7 @@ If point was already at that position, move point to beginning of line."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;       DESKTOP (session management)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(desktop-save-mode 1)
+(require 'desktop)
 (setq history-length 250)
 (add-to-list 'desktop-globals-to-save 'file-name-history)
 (setq desktop-base-file-name "desktop")
@@ -356,19 +373,27 @@ If point was already at that position, move point to beginning of line."
 
 (defun desktop-switch (desktop)
   (interactive (list (completing-read "Switch to desktop: "
-																			(directory-files jsrn-desktop-base-dir))))
+                                      (directory-files jsrn-desktop-base-dir))))
   (desktop-put-away-current-for-switch)
   (setq jsrn-desktop-current desktop)
   (desktop-read (concat jsrn-desktop-base-dir jsrn-desktop-current)))
 
+(defun desktop-save-on-kill-emacs ()
+  "Save the current desktop, if set, when emacs dies. Never query the user"
+  (interactive)
+  (if (not (eq jsrn-desktop-current nil))
+      (desktop-save (concat jsrn-desktop-base-dir jsrn-desktop-current) t)))
+(add-hook 'kill-emacs-hook 'desktop-save-on-kill-emacs)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;       C/C++ AND GDB
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(setq c-default-style "k&r"
-      c-basic-offset 2
-      tab-width 2)
+(add-to-list 'auto-mode-alist '("\\.h\\'" . c++-mode))
+(c-add-style "jsrn"
+             '("stroustrup"
+               (c-offsets-alist
+               )))
 (setq gdb-many-windows t)
 (setq gdb-speedbar-auto-raise t)
 (defun jsrn-gdb-mode-hook ()
