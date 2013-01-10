@@ -34,21 +34,21 @@ only the newline character"
     (kill-line 0)))
 (global-set-key (kbd "M-C-<backspace>") 'kill-line-backwards)
 
-(defun smart-beginning-of-visual-line ()
+(defun beginning-of-visual-line-smart ()
   "Move point to first non-whitespace character or beginning-of-visual-line.
 
 Move point to the first non-whitespace character on this visual line.
 If point was already at that position, move point to beginning of line."
   (interactive "^")
-  (let ((oldpos (p
+  (let ((oldpos (point)))
     ;; the following is a paraphrasing of back-to-indentation, but with visual-line
     (beginning-of-visual-line 1)
     (skip-syntax-forward " " (line-end-position))
     (backward-prefix-chars)
-    ;;r 
+    ;; if we didn't move, move instead before the indent.
     (and (= oldpos (point))
          (beginning-of-line))))
-(global-set-key (kbd "C-a") 'smart-beginning-of-line) ;Override default C-a
+(global-set-key (kbd "C-a") 'beginning-of-visual-line-smart) ;Override default C-a
 
 ;;Function for reloading the .emacs file
 (defun reload-dotemacs ()
@@ -109,15 +109,19 @@ If point was already at that position, move point to beginning of line."
 (define-key minibuffer-local-completion-map [escape] 'minibuffer-keyboard-quit)
 (define-key minibuffer-local-must-match-map [escape] 'minibuffer-keyboard-quit)
 (define-key minibuffer-local-isearch-map [escape] 'minibuffer-keyboard-quit)
+;; TAB is overtaken by Emacs (which is ok), so map jump-forward to C-Esc
+(define-key evil-normal-state-map (kbd "C-<escape>") 'evil-jump-forward)
+(define-key evil-visual-state-map (kbd "C-<escape>") 'evil-jump-forward)
+(define-key evil-insert-state-map (kbd "C-<escape>") 'evil-jump-forward)
 ;; Control-e and Control-a works everywhere
 (define-key evil-normal-state-map (kbd "S-a") '(lambda () (interactive)
                                                  (end-of-visual-line) (evil-insert-state)))
 (define-key evil-normal-state-map (kbd "C-e") 'end-of-visual-line)
 (define-key evil-insert-state-map (kbd "C-e") 'end-of-visual-line)
 (define-key evil-motion-state-map (kbd "C-e") 'end-of-visual-line)
-(define-key evil-normal-state-map (kbd "C-a") 'smart-beginning-of-visual-line)
-(define-key evil-insert-state-map (kbd "C-a") 'smart-beginning-of-visual-line)
-(define-key evil-motion-state-map (kbd "C-a") 'smart-beginning-of-visual-line)
+(define-key evil-normal-state-map (kbd "C-a") 'beginning-of-visual-line-smart)
+(define-key evil-insert-state-map (kbd "C-a") 'beginning-of-visual-line-smart)
+(define-key evil-motion-state-map (kbd "C-a") 'beginning-of-visual-line-smart)
 ;; Search using Emacs' isearch but using Vim keybindings
 (define-key evil-normal-state-map "/" 'isearch-forward)
 (define-key evil-normal-state-map "?" 'isearch-backward)
@@ -281,6 +285,7 @@ If point was already at that position, move point to beginning of line."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Dired displays less verbose information
 (require 'ls-lisp)
+(require 'dired)
 (setq ls-lisp-use-insert-directory-program nil)
 ;; Dired does not open a million buffers
 (toggle-diredp-find-file-reuse-dir 1)
@@ -294,7 +299,7 @@ If point was already at that position, move point to beginning of line."
   (lambda () (define-key dired-mode-map (kbd "^")
                (lambda () (interactive) (find-alternate-file ".."))))
   )
-(add-hook 'dired-mode-hook jsrn-dired-mode-hook)
+(add-hook 'dired-mode-hook 'jsrn-dired-mode-hook)
 ;; Load the advanced, not-touched-so-often stuff
 (load "~/.emacs.d/dired_setup.el")
 
