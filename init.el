@@ -1,4 +1,4 @@
-
+(server-start)
 (set-face-attribute 'default nil :height 70)
 (setq inhibit-splash-screen t)
 (tool-bar-mode 0)
@@ -262,6 +262,7 @@ If point was already at that position, move point to beginning of line."
 
 (defun jsrn-latex-mode-hook ()
   (local-set-key (kbd "M-q") 'fill-sentence)  ; hard sentence wrap
+  (local-set-key [(f3)] 'TeX-view)   ; possibly open xdvi and goto line
   (setq fill-column 9999)            ; with hard senctence wrap, we don't want hard lines
   (visual-line-mode t)               ; but we do want visual word wrap
   (adaptive-wrap-prefix-mode t)      ; with adaptive indenting
