@@ -67,7 +67,7 @@ If point was already at that position, move point to beginning of line."
 
 ;; Other packages
 ;; Fill sentence: reflows paragraph to have only linebreaks at sentence boundaries
-(load "~/.emacs.d/fill-sentence.el")
+(load "fill-sentence.el")
 
 ;; minor mode Highlight parentheses which are around cursor
 (require 'highlight-parentheses)
@@ -229,7 +229,7 @@ If point was already at that position, move point to beginning of line."
 ;; activate this when needed
 (defun activate-cedet ()
   (interactive)
-  (load "~/.emacs.d/cedet_setup.el")
+  (load "cedet_setup.el")
   )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -302,7 +302,7 @@ If point was already at that position, move point to beginning of line."
   )
 (add-hook 'dired-mode-hook 'jsrn-dired-mode-hook)
 ;; Load the advanced, not-touched-so-often stuff
-(load "~/.emacs.d/dired_setup.el")
+(load "dired_setup")
 
 
 
