@@ -20,7 +20,12 @@
 ;;       GLOBALLY DEFINED CUSTOM FUNCTIONS AND KEYS
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(global-set-key [(f2)] '(lambda () (interactive) (save-buffer) (recompile)))
+(global-set-key [(f2)] '(lambda ()
+                          (interactive)
+                          (save-buffer)
+                          (if (fboundp 'recompile)
+                              (recompile)
+                            (compile))))
 (global-set-key "\M-?" 'hippie-expand)
 
 (defun kill-line-backwards ()
