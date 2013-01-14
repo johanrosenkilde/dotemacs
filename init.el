@@ -88,6 +88,17 @@ If point was already at that position, move point to beginning of line."
 (global-set-key (kbd "M-<left>") 'winner-undo)
 (global-set-key (kbd "M-<right>") 'winner-redo)
 
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;       DIMINISH (Cleaning up mode line)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(require 'diminish)
+(diminish 'undo-tree-mode)
+(diminish 'auto-fill-function)
+(diminish 'visual-line-mode)
+(diminish 'highlight-parentheses-mode)
+
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;       EVIL
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
