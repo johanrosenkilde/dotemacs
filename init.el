@@ -270,6 +270,8 @@ If point was already at that position, move point to beginning of line."
                                         ; better with adaptive-wrap-prefix-mode)
   (LaTeX-math-mode)                  ; always turn on math mode
   (setq TeX-insert-braces nil)       ; dont ever insert braces at macro expansion
+  (setq TeX-source-correlate-method 'source-specials)  ;; auctex 10.86  
+   (TeX-source-correlate-mode)
   ;; Teach AucTeX about IEEEeqnarray
   (LaTeX-add-environments
    '("IEEEeqnarray" LaTeX-env-label)
