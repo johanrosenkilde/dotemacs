@@ -9,6 +9,7 @@
 (setq compilation-scroll-output t)
 (setq-default indent-tabs-mode nil)
 (setq mouse-drag-copy-region t) ;; mouse region copies
+(setq grep-find-command "grep -r --exclude=.git ") ;; grep ignores Git
 
 ;; File type default modes
 (add-to-list 'auto-mode-alist '("\\.svg\\'" . xml-mode))
@@ -20,12 +21,17 @@
 ;;       GLOBALLY DEFINED CUSTOM FUNCTIONS AND KEYS
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(global-set-key [(f1)] '(lambda ()
+                          (interactive)
+                          (manual-entry (current-word))))
 (global-set-key [(f2)] '(lambda ()
                           (interactive)
                           (save-buffer)
                           (if (fboundp 'recompile)
                               (recompile)
                             (compile))))
+(global-set-key [(f5)] 'orgtbl-mode)
+(global-set-key [(shift f5)] 'orgtbl-insert-radio-table)
 (global-set-key "\M-?" 'hippie-expand)
 
 (defun kill-line-backwards ()
@@ -95,16 +101,6 @@ If point was already at that position, move point to beginning of line."
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;       DIMINISH (Cleaning up mode line)
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(require 'diminish)
-(diminish 'undo-tree-mode)
-(diminish 'auto-fill-function)
-(diminish 'visual-line-mode)
-(diminish 'highlight-parentheses-mode)
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;       EVIL
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'evil)
@@ -156,6 +152,12 @@ If point was already at that position, move point to beginning of line."
 ;; Provide a visual-time shorcut to commenting
 (define-key evil-visual-state-map "z" 'comment-region)
 (define-key evil-visual-state-map "Z" 'uncomment-region)
+
+; Disable Evil in certain modes
+(loop for (mode . state) in '((eassist-mode . emacs)
+                              (xgtags-select-mode . emacs)
+                              (magit-branch-manager-mode . emacs))
+      do (evil-set-initial-state mode state))
 
 (evil-mode 1)
 
@@ -239,16 +241,6 @@ If point was already at that position, move point to beginning of line."
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;       CEDET
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; CEDET does a lot of stuff to the current settings, so we only wish to
-;; activate this when needed
-(defun activate-cedet ()
-  (interactive)
-  (load "cedet_setup.el")
-  )
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;       ORG-MODE
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (setq org-startup-indented t)
@@ -260,6 +252,8 @@ If point was already at that position, move point to beginning of line."
   (define-key evil-normal-state-map (kbd "M-h") 'org-metaleft)
   (define-key evil-normal-state-map (kbd "M-k") 'org-metaup)
   (define-key evil-normal-state-map (kbd "M-j") 'org-metadown)
+  (define-key evil-normal-state-map (kbd "M-K") 'org-shiftmetaup)
+  (define-key evil-normal-state-map (kbd "M-J") 'org-shiftmetadown)
   ;; Let winner keys overwrite org-mode
   (define-key evil-normal-state-map (kbd "M-<left>") 'winner-undo) 
   (define-key evil-normal-state-map (kbd "M-<right>") 'winner-redo)
@@ -339,14 +333,14 @@ If point was already at that position, move point to beginning of line."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;       FLYSPELL
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(require 'flyspell)
 (setq flyspell-issue-message-flag nil)
 (defun jsrn-spell-goto-next-and-suggest ()
   (interactive)
   (flyspell-goto-next-error)
   (ispell-word))
-(setq flyspell-mode-map '(keymap
-                          (67108908 . jsrn-spell-goto-next-and-suggest)
-                          ))
+(define-key flyspell-mode-map "C-," 'jsrn-spell-goto-next-and-suggest)
+
 (setq ispell-silently-savep t)
 
 
@@ -377,6 +371,13 @@ If point was already at that position, move point to beginning of line."
   (let ((dirname (concat jsrn-desktop-base-dir jsrn-desktop-current)))
     (mkdir dirname t)
     (desktop-save dirname t)))
+
+(defun desktop-discard ()
+  "Discard the current desktop without saving and clear everything"
+  (interactive)
+  (if (y-or-n-p "Are you sure you wish to discard the current desktop without saving?")
+    ((setq jsrn-desktop-current nil)
+     (desktop-clear))))
 
 (defun desktop-put-away-current-for-switch ()
   "Save the current desktop and clears as preparation for a desktop switch.
@@ -418,6 +419,20 @@ If point was already at that position, move point to beginning of line."
              '("stroustrup"
                (c-offsets-alist
                )))
+
+(defun jsrn-cc-mode-hook ()
+  (interactive)
+  (require 'xgtags "~/.emacs.d/xgtags.el")
+  (xgtags-mode)
+  ;;TODO: Make generic -- this sucks
+  (setq xgtags-find-multiple-db (lambda (dir)
+                                  (list "/home/jsrn/code/horrorville/trunk"
+                                        "/usr/local/include/OGRE"
+                                        "/usr/include/ois")))
+  )
+(add-hook 'c++-mode-hook 'jsrn-cc-mode-hook)
+
+;; GDB for C/C++
 (setq gdb-many-windows t)
 (setq gdb-speedbar-auto-raise t)
 (defun jsrn-gdb-mode-hook ()
@@ -426,3 +441,14 @@ If point was already at that position, move point to beginning of line."
   (define-key evil-normal-state-map (kbd "C-p") 'gud-print)
   )
 (add-hook 'gdb-frames-mode-hook 'jsrn-gdb-mode-hook)
+
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;       DIMINISH (Cleaning up mode line)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(require 'diminish)
+(diminish 'undo-tree-mode)
+(diminish 'auto-fill-function)
+(diminish 'visual-line-mode)
+(diminish 'highlight-parentheses-mode)
