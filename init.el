@@ -73,7 +73,7 @@ See `pour-mappings-to'."
 
 (global-set-key [(f1)] '(lambda ()
                           (interactive)
-                          (manual-entry (current-word))))
+                          (woman (current-word))))
 (global-set-key [(f2)] '(lambda ()
                           (interactive)
                           (save-buffer)
@@ -355,9 +355,22 @@ If point was already at that position, move point to beginning of line."
   (setq LaTeX-item-indent 0)         ; indent \item as other stuff inside envs (works
                                         ; better with adaptive-wrap-prefix-mode)
   (LaTeX-math-mode)                  ; always turn on math mode
+  (flyspell-mode)                    ; always turn on flyspell
   (setq TeX-insert-braces nil)       ; dont ever insert braces at macro expansion
   (setq TeX-source-correlate-method 'source-specials)  ;; auctex 10.86  
-   (TeX-source-correlate-mode)
+  (TeX-source-correlate-mode)
+  ;; Toggle outline mode and add Org-like key-bindings
+  (outline-minor-mode t)
+  (local-set-key (kbd "C-<tab>") 'outline-toggle-children)
+  (setq jsrn-current-sublevels 1)
+  (local-set-key (kbd "C-S-<tab>")
+                 '(lambda ()
+                    "Cycle through hiding levels 1, 2, or show all"
+                    (interactive)
+                    (setq jsrn-current-sublevels (+ (mod jsrn-current-sublevels 3) 1))
+                    (if (eq jsrn-current-sublevels 1)
+                        (show-all)
+                      (hide-sublevels jsrn-current-sublevels))))
   ;; Teach AucTeX about IEEEeqnarray
   (LaTeX-add-environments
    '("IEEEeqnarray" LaTeX-env-label)
@@ -523,7 +536,10 @@ If point was already at that position, move point to beginning of line."
 ;;       DIMINISH (Cleaning up mode line)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'diminish)
-(diminish 'undo-tree-mode)
-(diminish 'auto-fill-function)
-(diminish 'visual-line-mode)
-(diminish 'highlight-parentheses-mode)
+(loop for minor-mode in '(undo-tree-mode
+                          auto-fill-function
+                          visual-line-mode
+                          highlight-parentheses-mode
+                          flyspell-mode
+                          outline-minor-mode)
+      do (diminish minor-mode))
