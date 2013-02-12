@@ -231,7 +231,7 @@ If point was already at that position, move point to beginning of line."
 ;; In visual mode, type s <new delim> to insert delimiter (same rules w. spaces)
 ;;                 type S <new delim> to insert also newlines on inside
 (require 'surround)
-(surround-mode 1)
+(surround-mode)
 ;; Some extras for certain modes
 (add-hook 'LaTeX-mode-hook (lambda ()
                              (push '(?~ . ("\\texttt{" . "}")) surround-pairs-alist)
@@ -355,13 +355,13 @@ sometimes if more than one Emacs has this set"
   (adaptive-wrap-prefix-mode t)      ; with adaptive indenting
   (setq LaTeX-item-indent 0)         ; indent \item as other stuff inside envs (works
                                         ; better with adaptive-wrap-prefix-mode)
-  (LaTeX-math-mode)                  ; always turn on math mode
-  (flyspell-mode)                    ; always turn on flyspell
+  (LaTeX-math-mode t)                  ; always turn on math mode
+  (flyspell-mode t)                    ; always turn on flyspell
   (setq TeX-insert-braces nil)       ; dont ever insert braces at macro expansion
   (setq TeX-source-correlate-method 'source-specials)  ;; auctex 10.86  
-  (TeX-source-correlate-mode)
+  (TeX-source-correlate-mode t)
   ;; Toggle outline mode and add Org-like key-bindings
-  (outline-minor-mode t)
+  (outline-minor-mode t) ; remember that it is diminished in diminish area
   (local-set-key (kbd "C-<tab>") 'outline-toggle-children)
   (setq jsrn-current-sublevels 1)
   (local-set-key (kbd "C-S-<tab>")
@@ -378,7 +378,7 @@ sometimes if more than one Emacs has this set"
    '("IEEEeqnarray*" LaTeX-env-label))
   (add-to-list 'font-latex-math-environments "IEEEeqnarray")
   (add-to-list 'font-latex-math-environments "IEEEeqnarray*")
-  (setq texmathp-tex-commands (("IEEEeqnarray" env-on) ("IEEEeqnarray*" env-on)))
+  (setq texmathp-tex-commands '(("IEEEeqnarray" env-on) ("IEEEeqnarray*" env-on)))
   )
 (add-hook 'LaTeX-mode-hook 'jsrn-latex-mode-hook)
 
@@ -541,6 +541,6 @@ sometimes if more than one Emacs has this set"
                           auto-fill-function
                           visual-line-mode
                           highlight-parentheses-mode
-                          flyspell-mode
-                          outline-minor-mode)
+                          flyspell-mode)
       do (diminish minor-mode))
+(add-hook 'LaTeX-mode-hook '(lambda () (diminish outline-minor-mode)))
