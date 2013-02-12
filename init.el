@@ -293,19 +293,30 @@ If point was already at that position, move point to beginning of line."
 ;;       ORG-MODE
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (setq org-startup-indented t)
-;; Set files which contains agenda files to all .org files in specified dir
-(setq org-agenda-files (directory-files "~/orgs" t ".org$" t))
-;; Reminder support for Org
-(defun jsrn-org-agenda-to-appt ()
-  "Erase all reminders and rebuilt reminders for today from the agenda"
+(defun agenda-activate ()
+  "Activate the current Emacs as an agenda Emacs. Weird stuff seem to happen
+sometimes if more than one Emacs has this set"
   (interactive)
-  (org-agenda-to-appt 'refresh)
+  ;; Set files which contains agenda files to all .org files in specified dir
+  (setq org-agenda-files (directory-files "~/orgs" t ".org$" t))
+  ;; Reminder support for Org
+  (defun jsrn-org-agenda-to-appt ()
+    "Erase all reminders and rebuilt reminders for today from the agenda"
+    (interactive)
+    (org-agenda-to-appt 'refresh)
+    )
+  ;; Rebuild the reminders everytime the agenda is displayed
+  (add-hook 'org-finalize-agenda-hook 'jsrn-org-agenda-to-appt 'append)
+  ;; Rebuild agenda reminders
+  (jsrn-org-agenda-to-appt)
+  ;; Activate appointments so we get notifications
+  (appt-activate t)
+  (defun appt-disp-window (mins curtime text)
+    "Redefine Appointment reminder function to show a Memo using system call"
+    (call-process "/usr/bin/notify-send" nil nil nil (format "Appointment:\n%s \n in  %s min" text mins)))
+  ;; If we leave Emacs running overnight - reset the appointments one minute after midnight
+  (run-at-time "24:01" nil 'jsrn-org-agenda-to-appt)
   )
-;; Show system dialog for alarms
-(defun org-alarm (txt)
-  (call-process "/usr/bin/notify-send" nil nil nil txt))
-; Rebuild the reminders everytime the agenda is displayed
-(add-hook 'org-finalize-agenda-hook 'jsrn-org-agenda-to-appt 'append)
 (defun jsrn-org-mode-hook ()
   (visual-line-mode t)
   (fill-keymaps (list evil-normal-state-map evil-insert-state-map)
@@ -322,18 +333,8 @@ If point was already at that position, move point to beginning of line."
   ;; Let winner keys overwrite org-mode
   (define-key evil-normal-state-map (kbd "M-<left>") 'winner-undo) 
   (define-key evil-normal-state-map (kbd "M-<right>") 'winner-redo)
-  ;; Rebuild agenda reminders
-  (jsrn-org-agenda-to-appt)
-  ;; Activate appointments so we get notifications
-  (appt-activate t)
-  (defun appt-disp-window (mins curtime text)
-    "appointment reminder for memo"
-    (org-alarm (format "Appointment:\n%s \n in  %s min" text mins)))
-  ;; If we leave Emacs running overnight - reset the appointments one minute after midnight
-  (run-at-time "24:01" nil 'jsrn-org-agenda-to-appt)
   )
 (add-hook 'org-mode-hook 'jsrn-org-mode-hook)
-
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
