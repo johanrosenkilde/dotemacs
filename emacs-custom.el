@@ -10,6 +10,7 @@
  '(flyspell-auto-correct-binding nil)
  '(flyspell-highlight-flag t)
  '(nil nil t)
+ '(org-deadline-warning-days 7)
  '(preview-gs-options (quote ("-q" "-dNOSAFER" "-dNOPAUSE" "-DNOPLATFONTS" "-dPrinted" "-dTextAlphaBits=4" "-dGraphicsAlphaBits=4")))
  '(preview-image-type (quote dvipng))
  '(preview-scale-function 1))
