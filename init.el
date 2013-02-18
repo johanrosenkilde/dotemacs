@@ -154,6 +154,15 @@ If point was already at that position, move point to beginning of line."
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;       ADMINISTRATIVE MODE
+;; My own created meta mode for loading various stuff for the emacs
+;; window which will do email and agenda.
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(setq administrative-mode-hook ())
+(defun administrative-mode ()
+  (run-hooks 'administrative-mode-hook))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;       EVIL
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'evil)
@@ -218,9 +227,13 @@ If point was already at that position, move point to beginning of line."
 
 (evil-mode 1)
 
-; In some modes, the special Enter is most I need, so map this to C-<enter>
-(loop for (mode . fun) in '((man-mode . man-follow))
-      do (evil-declare-key normal mode "C-<enter>" 'fun))
+;; In some modes, the special Enter is most I need, so map this to <enter>.
+(evil-declare-key 'motion woman-mode-map (kbd "<return>") 'woman-follow)
+(evil-declare-key 'motion reftex-toc-mode-map (kbd "<return>") 'reftex-toc-goto-line-and-hide)
+(evil-declare-key 'motion finder-mode-map (kbd "<return>") 'finder-select)
+;; Same for quit q
+(evil-declare-key 'normal woman-mode-map (kbd "q") 'Man-quit)
+(evil-declare-key 'normal reftex-toc-mode-map (kbd "q") 'reftex-toc-quit)
 
 ;; Emulate surround.vim
 ;; Usage description really quick:
@@ -231,13 +244,12 @@ If point was already at that position, move point to beginning of line."
 ;; In visual mode, type s <new delim> to insert delimiter (same rules w. spaces)
 ;;                 type S <new delim> to insert also newlines on inside
 (require 'surround)
-(surround-mode)
+(surround-mode t)
 ;; Some extras for certain modes
 (add-hook 'LaTeX-mode-hook (lambda ()
                              (push '(?~ . ("\\texttt{" . "}")) surround-pairs-alist)
                              (push '(?/ . ("\\emph{"   . "}")) surround-pairs-alist)
                              (push '(?* . ("\\textbf{" . "}")) surround-pairs-alist)))
-
 ;; make cursor look like Vim when in Vim normal moe
 (defun cofi/evil-cursor ()
   "Change cursor color according to evil-state."
@@ -251,13 +263,6 @@ If point was already at that position, move point to beginning of line."
     (setq cursor-type (def-assoc evil-state cursors cursor-default))
     (set-cursor-color (def-assoc evil-state cursors color-default))))
 (setq evil-default-cursor #'cofi/evil-cursor)
-
-(eval-after-load 'man
-  '(progn
-     ;; use Evil but add some keys
-     (evil-make-overriding-map evil-normal-state-map 'normal t)
-     (evil-define-key 'normal
-       "C-<enter>" 'man-follow nil))) ;the nil is needed for only one define; it's a bug in Evil
 
 (eval-after-load 'dired
   '(progn
@@ -288,12 +293,13 @@ If point was already at that position, move point to beginning of line."
              (kbd "C-w k") 'evil-window-up
              (kbd "C-w l") 'evil-window-right
              (kbd "C-w C-w") 'evil-window-prev)
+(fill-keymap evil-insert-state-map (kbd "C") 'self-insert-command) ;??? This is strange
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;       ORG-MODE
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (setq org-startup-indented t)
-(defun agenda-activate ()
+(defun jsrn-agenda-activate ()
   "Activate the current Emacs as an agenda Emacs. Weird stuff seem to happen
 sometimes if more than one Emacs has this set"
   (interactive)
@@ -317,6 +323,7 @@ sometimes if more than one Emacs has this set"
   ;; If we leave Emacs running overnight - reset the appointments one minute after midnight
   (run-at-time "24:01" nil 'jsrn-org-agenda-to-appt)
   )
+(add-hook 'administrative-mode-hook 'jsrn-agenda-activate)
 (defun jsrn-org-mode-hook ()
   (visual-line-mode t)
   (fill-keymaps (list evil-normal-state-map evil-insert-state-map)
@@ -347,6 +354,9 @@ sometimes if more than one Emacs has this set"
 (setq TeX-outline-extra '(("%.* AREA" 1)
                           ("\\\\frontchapter" 1)))
 
+;; Load reftex
+(require 'bibtex)
+(require 'reftex)
 (defun jsrn-latex-mode-hook ()
   (local-set-key (kbd "M-q") 'fill-sentence)  ; hard sentence wrap
   (local-set-key [(f3)] 'TeX-view)   ; possibly open xdvi and goto line
@@ -355,8 +365,9 @@ sometimes if more than one Emacs has this set"
   (adaptive-wrap-prefix-mode t)      ; with adaptive indenting
   (setq LaTeX-item-indent 0)         ; indent \item as other stuff inside envs (works
                                         ; better with adaptive-wrap-prefix-mode)
-  (LaTeX-math-mode t)                  ; always turn on math mode
-  (flyspell-mode t)                    ; always turn on flyspell
+  (LaTeX-math-mode t)                ; always turn on math mode
+  (flyspell-mode t)                  ; always turn on flyspell
+  (turn-on-reftex)                   ; always turn on reftex
   (setq TeX-insert-braces nil)       ; dont ever insert braces at macro expansion
   (setq TeX-source-correlate-method 'source-specials)  ;; auctex 10.86  
   (TeX-source-correlate-mode t)
@@ -541,6 +552,7 @@ sometimes if more than one Emacs has this set"
                           auto-fill-function
                           visual-line-mode
                           highlight-parentheses-mode
-                          flyspell-mode)
+                          flyspell-mode
+                          reftex-mode)
       do (diminish minor-mode))
-(add-hook 'LaTeX-mode-hook '(lambda () (diminish outline-minor-mode)))
+(add-hook 'LaTeX-mode-hook '(lambda () (diminish 'outline-minor-mode)))
