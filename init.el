@@ -3,6 +3,10 @@
 (setq inhibit-splash-screen t)
 (tool-bar-mode 0)
 
+;; About me
+(setq user-full-name "Johan S. R. Nielsen"
+      jsrn-user-mail-address "atuin@atuin.dk") ;; I will overwrite user-mail-address
+
 ;; Other global nice options
 (toggle-scroll-bar -1) ;; Emacs gurus don't need no stinking scroll bars
 (set-fringe-mode '(0 . 1)) ;activate only the right fringe area
@@ -160,6 +164,7 @@ If point was already at that position, move point to beginning of line."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (setq administrative-mode-hook ())
 (defun administrative-mode ()
+  (interactive)
   (run-hooks 'administrative-mode-hook))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -545,6 +550,87 @@ sometimes if more than one Emacs has this set"
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;       SMTPMAIL AND MU4E
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defun jsrn-smtpmail-setup ()
+  ;; tell message-mode how to send mail
+  (setq send-mail-function 'smtpmail-send-it
+        message-send-mail-function 'smtpmail-send-it
+        smtpmail-smtp-server "web12.meebox.net"
+        smtpmail-smtp-service 465
+        smtpmail-local-domain "atuin.dk"
+        smtpmail-debug-info t ; only to debug problems
+        smtpmail-stream-type 'ssl
+        smtpmail-queue-dir "~/mail/queued-mail/"
+  ))
+
+(defun jsrn-mu4e-setup ()
+  (add-to-list 'load-path"/usr/local/share/emacs/site-lisp/mu4e")
+  (require 'mu4e)
+  (defun jsrn-mu4e-mailbox (msg)
+    (let ((maildir (mu4e-message-part-field msg :maildir)))
+      (if (eq nil (string-match "^/\\([^/]*\\)/" maildir))
+          (error "This maildir had invalid format: %s" maildir)
+        (match-string 1 maildir)
+        )))
+  (setq mu4e-maildir "~/mail"
+        ;;TODO: Make these functions to go into specific account archives
+        mu4e-sent-folder "/sent"
+        mu4e-drafts-folder "/drafts"
+        mu4e-trash-folder "/trash"
+        mu4e-refile-folder (lambda (msg)
+                             (let ((mailbox (jsrn-mu4e-mailbox msg)))
+                               (cond ((string-equal mailbox "atuin") "/atuin/INBOX.Archives.2013")
+                                     ((string-equal mailbox "dtu")   "/dtu/Archives.2013"))))
+        )
+  (setq mu4e-get-mail-command "offlineimap"
+        mu4e-update-interval 300
+        mail-user-agent 'mu4e-user-agent)
+  (setq mu4e-attachment-dir "~/downloads")
+  (setq mu4e-my-email-addresses '("atuin@atuin.dk"
+                                  "jsrn@atuin.dk"
+                                  "johan@atuin.dk"
+                                  "webmaster@atuin.dk"
+                                  "spammy@atuin.dk"
+                                  "j.s.r.nielsen@mat.dtu.dk"
+                                  "jsrn@dtu.dk"))
+  (setq mu4e-confirm-quit nil)
+  (add-hook 'mu4e-compose-mode-hook (defun jsrn-mu4e-compose-setup ()
+                                      (flyspell-mode t)))
+  ;; Set up that messages are replied from the recipient
+  (add-hook 'mu4e-compose-pre-hook
+            (defun my-set-from-address ()
+              "Set the From address based on the To address of the original."
+              (let ((msg mu4e-compose-parent-message))
+                (let ((toaddr (cdr (car (mu4e-message-part-field msg :to)))))
+                  (message toaddr)
+                  (setq user-mail-address
+                        (if (member toaddr mu4e-my-email-addresses)
+                            toaddr
+                          jsrn-user-mail-address))))))
+  (define-key mu4e-headers-mode-map (kbd "<backspace>")
+    ;; backspace should clear mark like in dired
+    (lambda () (interactive)
+      (mu4e-headers-prev)
+      (mu4e-headers-mark-for-unmark)
+      (mu4e-headers-prev)))
+  (define-key mu4e-headers-mode-map (kbd "m")
+    ;; A better mark-for-move funtion which properly handles multiple messages in region
+    (lambda () (interactive)
+      (let ((target (mu4e~mark-get-move-target)))
+        (mu4e-mark-set 'move target))))
+  (define-key mu4e-headers-mode-map (kbd "S-<SPC>") 'scroll-down-command)
+  ;; Disable evil
+  (evil-set-initial-state 'mu4e-main-mode 'emacs)
+  (evil-set-initial-state 'mu4e-headers-mode 'emacs)
+  (evil-set-initial-state 'mu4e-view-mode 'emacs)
+  ;; Fast opening, since mu4e close all the time
+  (global-set-key [(f12)] 'mu4e)
+)
+(add-hook 'administrative-mode-hook 'jsrn-smtpmail-setup)
+(add-hook 'administrative-mode-hook 'jsrn-mu4e-setup)
+
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;       OTHER MODES
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
