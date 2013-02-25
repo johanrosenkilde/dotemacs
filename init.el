@@ -123,6 +123,12 @@ If point was already at that position, move point to beginning of line."
   (interactive)
   (load-file "~/.emacs"))
 
+(defun delete-process-interactive ()
+  (interactive)
+  (let ((pname (ido-completing-read "Process Name: " 
+                    (mapcar 'process-name (process-list)))))
+
+    (delete-process (get-process pname))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;       PACKAGE-INSTALL
@@ -153,8 +159,8 @@ If point was already at that position, move point to beginning of line."
 ;; Winner gives undo and redo of windows arrangements
 (require 'winner)
 (winner-mode 1)
-(global-set-key (kbd "M-<left>") 'winner-undo)
-(global-set-key (kbd "M-<right>") 'winner-redo)
+(global-set-key (kbd "M-S-<left>") 'winner-undo)
+(global-set-key (kbd "M-S-<right>") 'winner-redo)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -239,6 +245,7 @@ If point was already at that position, move point to beginning of line."
 ;; Same for quit q
 (evil-declare-key 'normal woman-mode-map (kbd "q") 'Man-quit)
 (evil-declare-key 'normal reftex-toc-mode-map (kbd "q") 'reftex-toc-quit)
+(evil-declare-key 'normal reftex-select-label-mode-map (kbd "q") 'reftex-select-quit)
 
 ;; Emulate surround.vim
 ;; Usage description really quick:
@@ -249,7 +256,7 @@ If point was already at that position, move point to beginning of line."
 ;; In visual mode, type s <new delim> to insert delimiter (same rules w. spaces)
 ;;                 type S <new delim> to insert also newlines on inside
 (require 'surround)
-(surround-mode t)
+(global-surround-mode)
 ;; Some extras for certain modes
 (add-hook 'LaTeX-mode-hook (lambda ()
                              (push '(?~ . ("\\texttt{" . "}")) surround-pairs-alist)
