@@ -449,6 +449,7 @@ sometimes if more than one Emacs has this set"
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'flyspell)
 (setq flyspell-issue-message-flag nil)
+(setq ispell-dictionary "british")
 (defun jsrn-spell-goto-next-and-suggest ()
   (interactive)
   (flyspell-goto-next-error)
