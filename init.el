@@ -130,6 +130,19 @@ If point was already at that position, move point to beginning of line."
 
     (delete-process (get-process pname))))
 
+(defun jsrn-cycle-dictionary ()
+  "Cycle between dictionaries"
+  (interactive)
+  (let ((dicts '("british" "dansk")))
+    (let ((tail (cdr (member ispell-local-dictionary dicts))))
+      (let ((newdict (if (eq tail nil)
+                         (car dicts)
+                       (car tail))))
+        (message "Setting dictionary to %s" newdict)
+        (setq ispell-local-dictionary newdict)
+        (flyspell-buffer)
+      ))))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;       PACKAGE-INSTALL
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -455,6 +468,7 @@ sometimes if more than one Emacs has this set"
   (flyspell-goto-next-error)
   (ispell-word))
 (define-key flyspell-mode-map "C-," 'jsrn-spell-goto-next-and-suggest)
+(define-key flyspell-mode-map [(f6)] 'jsrn-cycle-dictionary)
 
 (setq ispell-silently-savep t)
 
