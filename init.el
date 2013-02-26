@@ -380,7 +380,23 @@ sometimes if more than one Emacs has this set"
 ;; Add "% <something> AREA" and "\frontchapter" as outline headers
 (setq TeX-outline-extra '(("%.* AREA" 1)
                           ("\\\\frontchapter" 1)))
-
+;; Add custom reference commands
+(setq font-latex-match-reference-keywords '(("reflem" "{")
+                                            ("refthm" "{")
+                                            ("refprop" "{")
+                                            ("refcor" "{")
+                                            ("refconj" "{")
+                                            ("refquest" "{")
+                                            ("refprob" "{")
+                                            ("refdef" "{")
+                                            ("refchp" "{")
+                                            ("refsec" "{")
+                                            ("refssec" "{")
+                                            ("refline" "{")
+                                            ))
+;; For spelling, add the ref<something> commands to the "don't check contents" list
+(setq flyspell-tex-command-regexp
+  "\\(\\(begin\\|end\\)[ \t]*{\\|\\(cite[a-z*]*\\|label\\|ref[a-z]*\\|eqref\\|usepackage\\|documentclass\\)[ \t]*\\(\\[[^]]*\\]\\)?{[^{}]*\\)")
 ;; Load reftex
 (require 'bibtex)
 (require 'reftex)
