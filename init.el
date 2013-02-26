@@ -619,6 +619,15 @@ sometimes if more than one Emacs has this set"
                                      ((string-equal mailbox "dtu")   "/dtu/Archives.2013"))))
         )
   (setq mu4e-attachment-dir "~/downloads")
+  ;; Set up some shortcuts access them with 'j' ('jump')
+  (setq   mu4e-maildir-shortcuts
+          '(("/atuin/INBOX"       . ?i)
+            ("/atuin/INBOX.Sent"  . ?s)
+            ("/atuin/INBOX.To Use". ?u)
+            ("/dtu/INBOX"         . ?I)
+            ("/dtu/Sent"          . ?S)
+            ("/dtu/To use"        . ?U)
+            ))
   ;; Check mail using offlineimap every 5 min
   (setq mu4e-get-mail-command "offlineimap"
         mu4e-update-interval 300
@@ -646,14 +655,14 @@ sometimes if more than one Emacs has this set"
   (setq mu4e-confirm-quit nil)
   (add-hook 'mu4e-compose-mode-hook (defun jsrn-mu4e-compose-setup ()
                                       (flyspell-mode t)))
+  ;; backspace should clear mark like in dired
   (define-key mu4e-headers-mode-map (kbd "<backspace>")
-    ;; backspace should clear mark like in dired
     (lambda () (interactive)
       (mu4e-headers-prev)
       (mu4e-headers-mark-for-unmark)
       (mu4e-headers-prev)))
+  ;; A better mark-for-move funtion which properly handles multiple messages in region
   (define-key mu4e-headers-mode-map (kbd "m")
-    ;; A better mark-for-move funtion which properly handles multiple messages in region
     (lambda () (interactive)
       (let ((target (mu4e~mark-get-move-target)))
         (mu4e-mark-set 'move target))))
