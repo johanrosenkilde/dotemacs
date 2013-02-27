@@ -483,7 +483,7 @@ sometimes if more than one Emacs has this set"
   (interactive)
   (flyspell-goto-next-error)
   (ispell-word))
-(define-key flyspell-mode-map "C-," 'jsrn-spell-goto-next-and-suggest)
+(define-key flyspell-mode-map [(control ?\,)] 'jsrn-spell-goto-next-and-suggest)
 (define-key flyspell-mode-map [(f6)] 'jsrn-cycle-dictionary)
 
 (setq ispell-silently-savep t)
