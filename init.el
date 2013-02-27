@@ -426,6 +426,18 @@ sometimes if more than one Emacs has this set"
                     (if (eq jsrn-current-sublevels 1)
                         (show-all)
                       (hide-sublevels jsrn-current-sublevels))))
+  (local-set-key (kbd "C-c 0")
+                 '(lambda ()
+                    "Choose a label and insert the appropriate ref*{...} for that label"
+                    (interactive)
+                    (let* ((label (reftex-reference " " t))
+                           (parts (split-string label ":")))
+                      (if (string-equal label (car parts))
+                          ;; no colon, insert plain ref
+                          (insert (format "\\ref{%s}" label))
+                        ;; there was a colon, so insert the respective ref
+                        (insert (format "\\ref%s{%s}" (car parts) (car (cdr parts))))
+                          ))))
   ;; Teach AucTeX about IEEEeqnarray
   (LaTeX-add-environments
    '("IEEEeqnarray" LaTeX-env-label)
