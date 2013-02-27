@@ -14,8 +14,9 @@
   "Discard the current desktop without saving and clear everything"
   (interactive)
   (if (y-or-n-p "Are you sure you wish to discard the current desktop without saving?")
-    ((setq jsrn-desktop-current nil)
-     (desktop-clear))))
+    (progn
+      (setq jsrn-desktop-current nil)
+      (desktop-clear))))
 
 (defun desktop-put-away-current-for-switch ()
   "Save the current desktop and clears as preparation for a desktop switch.
@@ -25,7 +26,8 @@
       (if (y-or-n-p "Do you wish to save your current unnamed desktop first?")
           (call-interactively 'desktop-save-new))
     (desktop-save (concat jsrn-desktop-base-dir jsrn-desktop-current) t))
-  (desktop-clear))
+  (desktop-clear)
+  (setq jsrn-desktop-current nil))
 
 (defun desktop-create-new (desktop)
   "Create a new, blank desktop. Saves the current desktop first"
@@ -37,9 +39,12 @@
 (defun desktop-switch (desktop)
   (interactive (list (completing-read "Switch to desktop: "
                                       (directory-files jsrn-desktop-base-dir))))
-  (desktop-put-away-current-for-switch)
-  (setq jsrn-desktop-current desktop)
-  (desktop-read (concat jsrn-desktop-base-dir jsrn-desktop-current)))
+  (if (file-exists-p (concat jsrn-desktop-base-dir desktop))
+      (progn
+        (desktop-put-away-current-for-switch)
+        (setq jsrn-desktop-current desktop)
+        (desktop-read (concat jsrn-desktop-base-dir jsrn-desktop-current)))
+    (error "The desktop %s does not exist" desktop)))
 
 (defun desktop-save-on-kill-emacs ()
   "Save the current desktop, if set, when emacs dies. Never query the user"
