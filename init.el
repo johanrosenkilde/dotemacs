@@ -130,18 +130,22 @@ If point was already at that position, move point to beginning of line."
 
     (delete-process (get-process pname))))
 
+;; For aspell, cycle through dictionaries. First make the language ring
+(let ((langs '("british" "dansk" )))
+  (setq lang-ring (make-ring (length langs)))
+  (dolist (elem langs) (ring-insert lang-ring elem)))
 (defun jsrn-cycle-dictionary ()
-  "Cycle between dictionaries"
   (interactive)
-  (let ((dicts '("british" "dansk")))
-    (let ((tail (cdr (member ispell-local-dictionary dicts))))
-      (let ((newdict (if (eq tail nil)
-                         (car dicts)
-                       (car tail))))
-        (message "Setting dictionary to %s" newdict)
-        (setq ispell-local-dictionary newdict)
-        (flyspell-buffer)
-      ))))
+  (let* ((cur (if (or (not (boundp 'ispell-local-dictionary)) (eq nil ispell-local-dictionary))
+                 (ring-ref lang-ring -1)
+               ispell-local-dictionary))
+         (new (ring-next lang-ring cur)))
+    (progn
+      (ispell-change-dictionary new)
+      ;; TODO: This makes weird errors in emails
+      ;; (flyspell-buffer)
+      (message "Changed dictionary to %s" new)
+      )))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;       PACKAGE-INSTALL
@@ -365,8 +369,8 @@ sometimes if more than one Emacs has this set"
                (kbd "M-L") 'org-shiftmetaright
                (kbd "C-c a") 'org-agenda)
   ;; Let winner keys overwrite org-mode
-  (define-key evil-normal-state-map (kbd "M-<left>") 'winner-undo) 
-  (define-key evil-normal-state-map (kbd "M-<right>") 'winner-redo)
+  (define-key evil-normal-state-map (kbd "M-S-<left>") 'winner-undo) 
+  (define-key evil-normal-state-map (kbd "M-S-<right>") 'winner-redo)
   )
 (add-hook 'org-mode-hook 'jsrn-org-mode-hook)
 
