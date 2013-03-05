@@ -5,7 +5,7 @@
 
 ;; About me
 (setq user-full-name "Johan S. R. Nielsen"
-      jsrn-user-mail-address "atuin@atuin.dk") ;; I will overwrite user-mail-address
+      jsrn-user-mail-address "jsrn@jsrn.dk") ;; Std email; I will overwrite user-mail-address
 
 ;; Other global nice options
 (toggle-scroll-bar -1) ;; Emacs gurus don't need no stinking scroll bars

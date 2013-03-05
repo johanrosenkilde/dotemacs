@@ -102,7 +102,9 @@
     (lambda () (interactive)
       (let ((target (mu4e~mark-get-move-target)))
         (mu4e-mark-set 'move target))))
-  (define-key mu4e-headers-mode-map (kbd "S-<SPC>") 'scroll-down-command)
+  (fill-keymaps (list mu4e-headers-mode-map
+                      mu4e-view-mode-map)
+                (kbd "S-<SPC>") 'scroll-down-command)
   ;; Disable evil
   (evil-set-initial-state 'mu4e-main-mode 'emacs)
   (evil-set-initial-state 'mu4e-headers-mode 'emacs)
