@@ -82,7 +82,17 @@ See `pour-mappings-to'."
                           (interactive)
                           (save-buffer)
                           (if (fboundp 'recompile)
-                              (recompile)
+                              (progn
+                                ;; This code is complicated by latex compilation
+                                ;; not responding to SIGINT; otherwise, we
+                                ;; could've just used kill-compilation
+                                (ignore-errors
+                                  (process-kill-without-query
+                                   (get-buffer-process
+                                    (get-buffer "*compilation*"))))
+                                (ignore-errors
+                                  (kill-buffer "*compilation*"))
+                                (recompile))
                             (compile))))
 (global-set-key [(f5)] 'orgtbl-mode)
 (global-set-key [(shift f5)] 'orgtbl-insert-radio-table)
@@ -220,8 +230,7 @@ If point was already at that position, move point to beginning of line."
               ;; TAB is overtaken by Emacs (which is ok), so map jump-forward to C-Esc
               (kbd "C-<escape>") 'evil-jump-forward
               (kbd "C-e")        'end-of-visual-line
-              (kbd "C-a")        'beginning-of-visual-line-smart
-              (kbd "C-b")        'evil-scroll-up)
+              (kbd "C-a")        'beginning-of-visual-line-smart)
 ;; Key-bindings in normal mode
 (fill-keymap evil-normal-state-map
              (kbd "S-a") '(lambda () (interactive) (end-of-visual-line) (evil-insert-state))
@@ -245,7 +254,12 @@ If point was already at that position, move point to beginning of line."
              "j" 'evil-next-visual-line
              "k" 'evil-previous-visual-line
              "$" 'evil-end-of-visual-line
-             "^" 'evil-first-non-blank-of-visual-line)
+             "^" 'evil-first-non-blank-of-visual-line
+             (kbd "C-b") '(lambda () (interactive)
+                            (evil-scroll-up 20))
+             (kbd "C-d") '(lambda () (interactive)
+                            (evil-scroll-down 20))
+             )
 
 ; Disable Evil in certain modes
 (loop for (mode . state) in '((eassist-mode . emacs)
@@ -396,7 +410,11 @@ sometimes if more than one Emacs has this set"
                                             ("refchp" "{")
                                             ("refsec" "{")
                                             ("refssec" "{")
+                                            ("refalg" "{")
+                                            ("reffig" "{")
+                                            ("reftbl" "{")
                                             ("refline" "{")
+                                            ("refeqn" "{")
                                             ))
 ;; For spelling, add the ref<something> commands to the "don't check contents" list
 (setq flyspell-tex-command-regexp
