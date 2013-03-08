@@ -100,6 +100,8 @@ See `pour-mappings-to'."
 ;; Other window control
 (global-set-key (kbd "C-M-b") 'scroll-other-window-down)
 (global-set-key (kbd "C-M-d") 'scroll-other-window)
+;; Remove the shortcut for killing emacs fast, since I sometimes press it by mistake
+(global-unset-key (kbd "C-x C-c"))
 
 (defun kill-line-backwards ()
   "Kill the current line backwards from the current column.
@@ -346,6 +348,7 @@ If point was already at that position, move point to beginning of line."
   "Activate the current Emacs as an agenda Emacs. Weird stuff seem to happen
 sometimes if more than one Emacs has this set"
   (interactive)
+  (find-file "~/orgs/home.org")
   ;; Set files which contains agenda files to all .org files in specified dir
   (setq org-agenda-files (directory-files "~/orgs" t ".org$" t))
   ;; Various agenda setup
