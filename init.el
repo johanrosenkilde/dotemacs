@@ -419,6 +419,8 @@ sometimes if more than one Emacs has this set"
                                             ("refline" "{")
                                             ("refeqn" "{")
                                             ))
+;; Add some shortcuts in math mode
+(setq LaTeX-math-list '((?o "ell" nil)))
 ;; For spelling, add the ref<something> commands to the "don't check contents" list
 (setq flyspell-tex-command-regexp
   "\\(\\(begin\\|end\\)[ \t]*{\\|\\(cite[a-z*]*\\|label\\|ref[a-z]*\\|eqref\\|usepackage\\|documentclass\\)[ \t]*\\(\\[[^]]*\\]\\)?{[^{}]*\\)")
@@ -463,6 +465,10 @@ sometimes if more than one Emacs has this set"
                         ;; there was a colon, so insert the respective ref
                         (insert (format "\\ref%s{%s}" (car parts) (car (cdr parts))))
                           ))))
+  ;; When opening the reftex toc, goto that window as well
+  (define-key evil-normal-state-map (kbd "C-c -") '(lambda () (interactive)
+                                (reftex-toc-recenter)
+                                (select-window (get-buffer-window "*toc*"))))
   ;; Teach AucTeX about IEEEeqnarray
   (LaTeX-add-environments
    '("IEEEeqnarray" LaTeX-env-label)
