@@ -78,14 +78,16 @@
                                   "spammy@atuin.dk"
                                   "j.s.r.nielsen@mat.dtu.dk"
                                   "jsrn@dtu.dk"))
+  ;; Only addresses from mail sent to me directly should go in auto-completions
+  (setq mu4e-compose-complete-only-personal nil)
   (add-hook 'mu4e-compose-pre-hook
             (defun my-set-from-address ()
               "Set the From address based on the To address of the original."
               (let ((msg mu4e-compose-parent-message))
                 (let ((toaddr (cdr (car (mu4e-message-part-field msg :to)))))
-                  (message toaddr)
+                  (message (downcase toaddr))
                   (setq user-mail-address
-                        (if (member toaddr mu4e-my-email-addresses)
+                        (if (member (downcase toaddr) mu4e-my-email-addresses)
                             toaddr
                           jsrn-user-mail-address))))))
   (setq mu4e-confirm-quit nil)
