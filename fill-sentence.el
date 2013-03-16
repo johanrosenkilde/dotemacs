@@ -1,4 +1,4 @@
-;; Stolen from the internet
+;; Copied from Ingo Lohmar
 ;; Fills according to sentences (ignoring fill-column): Whenever there is
 ;; a new sentence, it inserts a line break
 (defun fill-sentence ()
