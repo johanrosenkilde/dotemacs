@@ -266,7 +266,8 @@ If point was already at that position, move point to beginning of line."
 ; Disable Evil in certain modes
 (loop for (mode . state) in '((eassist-mode . emacs)
                               (xgtags-select-mode . emacs)
-                              (magit-branch-manager-mode . emacs))
+                              (magit-branch-manager-mode . emacs)
+                              (reftex-select-label-mode . emacs))
       do (evil-set-initial-state mode state))
 
 (evil-mode 1)
@@ -278,7 +279,6 @@ If point was already at that position, move point to beginning of line."
 ;; Same for quit q
 (evil-declare-key 'normal woman-mode-map (kbd "q") 'Man-quit)
 (evil-declare-key 'normal reftex-toc-mode-map (kbd "q") 'reftex-toc-quit)
-(evil-declare-key 'normal reftex-select-label-mode-map (kbd "q") 'reftex-select-quit)
 
 ;; Emulate surround.vim
 ;; Usage description really quick:
@@ -418,6 +418,21 @@ sometimes if more than one Emacs has this set"
                                             ("reftbl" "{")
                                             ("refline" "{")
                                             ("refeqn" "{")
+                                            ("refinv" "{")
+                                            ("refpage" "{")
+                                            ("pageref" "{")
+                                            ("vreflem" "{")
+                                            ("vrefthm" "{")
+                                            ("vrefprop" "{")
+                                            ("vrefcor" "{")
+                                            ("vrefconj" "{")
+                                            ("vrefquest" "{")
+                                            ("vrefprob" "{")
+                                            ("vrefdef" "{")
+                                            ("vrefalg" "{")
+                                            ("vreffig" "{")
+                                            ("vreftbl" "{")
+                                            ("vrefeqn" "{")
                                             ))
 ;; Add some shortcuts in math mode
 (setq LaTeX-math-list '((?o "ell" nil)))
