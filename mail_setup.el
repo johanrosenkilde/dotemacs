@@ -84,12 +84,16 @@
             (defun my-set-from-address ()
               "Set the From address based on the To address of the original."
               (let ((msg mu4e-compose-parent-message))
-                (let ((toaddr (cdr (car (mu4e-message-part-field msg :to)))))
-                  (message (downcase toaddr))
-                  (setq user-mail-address
-                        (if (member (downcase toaddr) mu4e-my-email-addresses)
-                            toaddr
-                          jsrn-user-mail-address))))))
+                (if msg
+                    (let ((toaddr (cdr (car (mu4e-message-part-field msg :to)))))
+                      (message (downcase toaddr))
+                      (setq user-mail-address
+                            (if (member (downcase toaddr) mu4e-my-email-addresses)
+                                toaddr
+                              jsrn-user-mail-address))
+                      )
+                  (setq user-mail-address jsrn-user-mail-address))
+                )))
   (setq mu4e-confirm-quit nil)
   (add-hook 'mu4e-compose-mode-hook (defun jsrn-mu4e-compose-setup ()
                                       (flyspell-mode t)))
