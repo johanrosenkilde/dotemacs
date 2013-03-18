@@ -39,9 +39,12 @@
         (match-string 1 maildir)
         )))
   (setq mu4e-maildir "~/mail"
+        jsrn-mu4e-sent-folder "/atuin/INBOX.Sent"
         mu4e-sent-folder (lambda (msg)
                            (if (eq msg nil)
-                               "/atuin/INBOX.Sent"
+                               (progn
+                                 (message "Sent mail copied to default sent folder: %s" jsrn-mu4e-sent-folder)
+                               jsrn-mu4e-sent-folder)
                              (let ((mailbox (jsrn-mu4e-mailbox msg)))
                                (cond ((string-equal mailbox "atuin") "/atuin/INBOX.Sent")
                                      ((string-equal mailbox "jsrn") "/atuin/INBOX.Sent")
@@ -78,22 +81,29 @@
                                   "spammy@atuin.dk"
                                   "j.s.r.nielsen@mat.dtu.dk"
                                   "jsrn@dtu.dk"))
+  (setq jsrn-mu4e-email-to-sent-folder '(("j.s.r.nielsen@mat.dtu.dk" . "/dtu/Sent")
+                                         ("jsrn@dtu.dk" . "/dtu/Sent"))
+        jsrn-mu4e-mailbox-default "/atuin/INBOX.Sent")
   ;; Only addresses from mail sent to me directly should go in auto-completions
   (setq mu4e-compose-complete-only-personal nil)
   (add-hook 'mu4e-compose-pre-hook
             (defun my-set-from-address ()
-              "Set the From address based on the To address of the original."
+              "Set the From address based on the To address of the original, and set the Sent folder appropriately as well"
               (let ((msg mu4e-compose-parent-message))
                 (if msg
                     (let ((toaddr (cdr (car (mu4e-message-part-field msg :to)))))
-                      (message (downcase toaddr))
                       (setq user-mail-address
                             (if (member (downcase toaddr) mu4e-my-email-addresses)
-                                toaddr
+                                (downcase toaddr)
                               jsrn-user-mail-address))
                       )
                   (setq user-mail-address jsrn-user-mail-address))
-                )))
+                )
+              (let ((folder (cdr (assoc user-mail-address jsrn-mu4e-email-to-sent-folder))))
+                (if (eq folder nil)
+                    (setq jsrn-mu4e-sent-folder jsrn-mu4e-mailbox-default)
+                  (setq jsrn-mu4e-sent-folder folder)))
+              ))
   (setq mu4e-confirm-quit nil)
   (add-hook 'mu4e-compose-mode-hook (defun jsrn-mu4e-compose-setup ()
                                       (flyspell-mode t)))
