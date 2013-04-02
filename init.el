@@ -1,4 +1,3 @@
-(server-start)
 (set-face-attribute 'default nil :height 70)
 (setq inhibit-splash-screen t)
 (tool-bar-mode 0)
