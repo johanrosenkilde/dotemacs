@@ -13,12 +13,14 @@
 (setq-default indent-tabs-mode nil)
 (setq mouse-drag-copy-region t) ;; mouse region copies
 (setq grep-find-command "grep -r --exclude=.git ") ;; grep ignores Git
+(require 'tramp) ;; sudo support and others
 
 ;; File type default modes
 (add-to-list 'auto-mode-alist '("\\.svg\\'" . xml-mode))
 (add-to-list 'auto-mode-alist '("\\.env\\'" . xml-mode))
 (add-to-list 'auto-mode-alist '("\\.scene\\'" . xml-mode))
 (add-to-list 'auto-mode-alist '("\\.sage\\'" . python-mode))
+(add-to-list 'auto-mode-alist '("\\.pyx\\'" . python-mode))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -199,6 +201,7 @@ If point was already at that position, move point to beginning of line."
 (setq administrative-mode-hook ())
 (defun administrative-mode ()
   (interactive)
+  (global-set-key [(f10)] 'org-agenda-list)
   (run-hooks 'administrative-mode-hook))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
