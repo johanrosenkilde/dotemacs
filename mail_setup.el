@@ -14,7 +14,7 @@
   (add-to-list 'load-path"/usr/local/share/emacs/site-lisp/mu4e")
   (require 'mu4e)
   ;; Handling html messages
-  (setq mu4e-html2text-command "html2text -utf8 -width 72")
+  (setq mu4e-html2text-command "vilistextum -u -w72 - -")
   (defun mu4e-view-in-browser ()
     "View the body of the message in a web browser."
     (interactive)
@@ -63,9 +63,12 @@
           '(("/atuin/INBOX"       . ?i)
             ("/atuin/INBOX.Sent"  . ?s)
             ("/atuin/INBOX.To Use". ?u)
+            ("/atuin/INBOX.Archives.2013". ?a)
             ("/dtu/INBOX"         . ?I)
             ("/dtu/Sent"          . ?S)
             ("/dtu/To use"        . ?U)
+            ("/atuin/INBOX.To Use". ?u)
+            ("/dtu/Archives.2013" . ?A)
             ))
   ;; Check mail using offlineimap every 5 min
   (setq mu4e-get-mail-command "offlineimap"
