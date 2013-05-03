@@ -81,20 +81,21 @@ See `pour-mappings-to'."
                           (woman (current-word))))
 (global-set-key [(f2)] '(lambda ()
                           (interactive)
-                          (save-buffer)
-                          (if (fboundp 'recompile)
-                              (progn
-                                ;; This code is complicated by latex compilation
-                                ;; not responding to SIGINT; otherwise, we
-                                ;; could've just used kill-compilation
-                                (ignore-errors
-                                  (process-kill-without-query
-                                   (get-buffer-process
-                                    (get-buffer "*compilation*"))))
-                                (ignore-errors
-                                  (kill-buffer "*compilation*"))
-                                (recompile))
-                            (compile))))
+                          (progn
+                            (save-buffer)
+                            (if (fboundp 'recompile)
+                                (progn
+                                  ;; This code is complicated by latex compilation
+                                  ;; not responding to SIGINT; otherwise, we
+                                  ;; could've just used kill-compilation
+                                  (ignore-errors
+                                    (process-kill-without-query
+                                     (get-buffer-process
+                                      (get-buffer "*compilation*"))))
+                                  (ignore-errors
+                                    (kill-buffer "*compilation*"))
+                                  (recompile))
+                              (compile)))))
 (global-set-key [(f5)] 'orgtbl-mode)
 (global-set-key [(shift f5)] 'orgtbl-insert-radio-table)
 (global-set-key "\M-?" 'hippie-expand)
