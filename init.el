@@ -102,8 +102,11 @@ See `pour-mappings-to'."
 ;; Other window control
 (global-set-key (kbd "C-M-b") 'scroll-other-window-down)
 (global-set-key (kbd "C-M-d") 'scroll-other-window)
-;; Remove the shortcut for killing emacs fast, since I sometimes press it by mistake
-(global-unset-key (kbd "C-x C-c"))
+;; Remove annoying shortcuts I sometimes press by mistake
+(global-unset-key (kbd "C-x C-c")) ;; for killing emacs fast
+(global-unset-key (kbd "C-h h")) ;; show the HELLO message
+(global-unset-key (kbd "C-h C-c")) ;; show the COPYING message
+
 
 (defun kill-line-backwards ()
   "Kill the current line backwards from the current column.
@@ -567,6 +570,7 @@ sometimes if more than one Emacs has this set"
 (setq desktop-save t) ; don't ask, just act
 (setq jsrn-desktop-base-dir "~/.emacs.d/desktops/")
 (load "desktop_setup")
+(global-set-key [(f8)] 'desktop-switch)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
