@@ -269,6 +269,20 @@ If point was already at that position, move point to beginning of line."
                             (evil-scroll-down 20))
              )
 
+; Remenber positions when searching so they can be found in jump-point-ring
+(defadvice isearch-forward (before marker activate)
+  "Store current position in jump list"
+  (evil-set-jump))
+(defadvice isearch-repeat-forward (before marker activate)
+  "Store current position in jump list"
+  (evil-set-jump))
+(defadvice isearch-backward (before marker activate)
+  "Store current position in jump list"
+  (evil-set-jump))
+(defadvice isearch-repeat-backward (before marker activate)
+  "Store current position in jump list"
+  (evil-set-jump))
+
 ; Disable Evil in certain modes
 (loop for (mode . state) in '((eassist-mode . emacs)
                               (xgtags-select-mode . emacs)
