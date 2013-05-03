@@ -13,10 +13,12 @@
  '(org-deadline-warning-days 7)
  '(preview-gs-options (quote ("-q" "-dNOSAFER" "-dNOPAUSE" "-DNOPLATFONTS" "-dPrinted" "-dTextAlphaBits=4" "-dGraphicsAlphaBits=4")))
  '(preview-image-type (quote dvipng))
- '(preview-scale-function 1))
+ '(preview-scale-function 1)
+ '(tool-bar-mode nil))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(default ((t (:inherit nil :stipple nil :background "white" :foreground "black" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 78 :width normal :foundry "unknown" :family "Droid Sans Mono"))))
  '(flyspell-incorrect ((t (:foreground "OrangeRed" :underline t)))))
