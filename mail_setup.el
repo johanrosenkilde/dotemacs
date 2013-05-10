@@ -48,13 +48,15 @@
                              (let ((mailbox (jsrn-mu4e-mailbox msg)))
                                (cond ((string-equal mailbox "atuin") "/atuin/INBOX.Sent")
                                      ((string-equal mailbox "jsrn") "/atuin/INBOX.Sent")
-                                     ((string-equal mailbox "dtu")   "/dtu/Sent")))))
+                                     ((string-equal mailbox "dtu")   "/dtu/Sent")
+                                     ((string-equal mailbox "gmail")   "/atuin/INBOX.Sent")))))
         mu4e-drafts-folder "/drafts"
         mu4e-trash-folder "/trash"
         mu4e-refile-folder (lambda (msg)
                              (let ((mailbox (jsrn-mu4e-mailbox msg)))
                                (cond ((string-equal mailbox "atuin") "/atuin/INBOX.Archives.2013")
                                      ((string-equal mailbox "jsrn") "/atuin/INBOX.Archives.2013")
+                                     ((string-equal mailbox "gmail") "/atuin/INBOX.Archives.2013")
                                      ((string-equal mailbox "dtu")   "/dtu/Archives.2013"))))
         )
   (setq mu4e-attachment-dir "~/downloads")
@@ -83,6 +85,7 @@
                                   "webmaster@atuin.dk"
                                   "spammy@atuin.dk"
                                   "j.s.r.nielsen@mat.dtu.dk"
+                                  "santaphile@gmail.dk"
                                   "jsrn@dtu.dk"))
   (setq jsrn-mu4e-email-to-sent-folder '(("j.s.r.nielsen@mat.dtu.dk" . "/dtu/Sent")
                                          ("jsrn@dtu.dk" . "/dtu/Sent"))
