@@ -19,7 +19,6 @@
 (add-to-list 'auto-mode-alist '("\\.svg\\'" . xml-mode))
 (add-to-list 'auto-mode-alist '("\\.env\\'" . xml-mode))
 (add-to-list 'auto-mode-alist '("\\.scene\\'" . xml-mode))
-(add-to-list 'auto-mode-alist '("\\.sage\\'" . python-mode))
 (add-to-list 'auto-mode-alist '("\\.pyx\\'" . python-mode))
 
 
@@ -588,6 +587,27 @@ sometimes if more than one Emacs has this set"
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;       SAGE
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;(add-to-list 'auto-mode-alist '("\\.sage\\'" . sage-mode))
+(setq sage-path "/home/jsrn/local/sage/sage-5.8")
+(add-to-list 'load-path (cl-concatenate 'string sage-path "/local/share/emacs"))
+(require 'sage "sage")
+(setq sage-command (cl-concatenate 'string sage-path "/sage"))
+
+;; If you want sage-view to typeset all your output and have plot()
+;; commands inline, uncomment the following line and configure sage-view:
+;; (require 'sage-view "sage-view")
+;; (add-hook 'sage-startup-after-prompt-hook 'sage-view)
+;; You can use commands like
+;; (add-hook 'sage-startup-after-prompt-hook 'sage-view-disable-inline-output)
+;; (add-hook 'sage-startup-after-prompt-hook 'sage-view-disable-inline-plots)
+;; to enable some combination of features.
+
+;; Also consider running (customize-group 'sage) to see more options.
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;       C/C++ AND GDB
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (add-to-list 'auto-mode-alist '("\\.h\\'" . c++-mode))
@@ -632,6 +652,10 @@ sometimes if more than one Emacs has this set"
 ;;       OTHER MODES
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (add-hook 'text-mode-hook '(lambda () (visual-line-mode)))
+
+(require 'pretty-lambdada) ;typeset word "lambda" as the symbol
+(add-hook 'python-mode-hook #'pretty-lambda-mode 1)
+(add-hook 'sage-mode-hook #'pretty-lambda-mode 1)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
