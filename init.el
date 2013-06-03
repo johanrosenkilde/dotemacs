@@ -7,10 +7,10 @@
       jsrn-user-mail-address "jsrn@jsrn.dk") ;; Std email; I will overwrite user-mail-address
 
 ;; Other global nice options
-(toggle-scroll-bar -1) ;; Emacs gurus don't need no stinking scroll bars
+(toggle-scroll-bar 0) ;; Emacs gurus don't need no stinking scroll bars
 (set-fringe-mode '(0 . 1)) ;activate only the right fringe area
 (setq compilation-scroll-output t)
-(setq-default indent-tabs-mode nil)
+(setq-default indent-tabs-mode nil) ; never insert tabs, do spaces
 (setq mouse-drag-copy-region t) ;; mouse region copies
 (setq grep-find-command "grep -r --exclude=.git ") ;; grep ignores Git
 (require 'tramp) ;; sudo support and others
@@ -435,6 +435,7 @@ sometimes if more than one Emacs has this set"
                                             ("refalg" "{")
                                             ("reffig" "{")
                                             ("reftbl" "{")
+                                            ("refex" "{")
                                             ("refline" "{")
                                             ("refeqn" "{")
                                             ("refinv" "{")
@@ -451,6 +452,7 @@ sometimes if more than one Emacs has this set"
                                             ("vrefalg" "{")
                                             ("vreffig" "{")
                                             ("vreftbl" "{")
+                                            ("vrefex" "{")
                                             ("vrefeqn" "{")
                                             ))
 ;; Add some shortcuts in math mode
@@ -499,10 +501,8 @@ sometimes if more than one Emacs has this set"
                         ;; there was a colon, so insert the respective ref
                         (insert (format "\\ref%s{%s}" (car parts) (car (cdr parts))))
                           ))))
-  ;; When opening the reftex toc, goto that window as well
-  (define-key evil-normal-state-map (kbd "C-c -") '(lambda () (interactive)
-                                (reftex-toc-recenter)
-                                (select-window (get-buffer-window "*toc*"))))
+  ;; Disable opening the reftex toc on C-c - as well
+  (define-key evil-normal-state-map (kbd "C-c - ") '(lambda () (interactive) t))
   ;; Teach AucTeX about IEEEeqnarray
   (LaTeX-add-environments
    '("IEEEeqnarray" LaTeX-env-label)
