@@ -38,7 +38,7 @@
   "Return atmost the first `N' items of `LST'."
   (let (acc '())
     (while (and lst (> n 0))
-      (decf n)
+      (setq n (1- n))
       (push (car lst) acc)
       (setq lst (cdr lst)))
     (nreverse acc)))
@@ -284,7 +284,7 @@ If point was already at that position, move point to beginning of line."
   (evil-set-jump))
 
 ; Disable Evil in certain modes
-(loop for (mode . state) in '((eassist-mode . emacs)
+(cl-loop for (mode . state) in '((eassist-mode . emacs)
                               (xgtags-select-mode . emacs)
                               (magit-branch-manager-mode . emacs)
                               (reftex-select-label-mode . emacs))
@@ -638,7 +638,7 @@ sometimes if more than one Emacs has this set"
 ;;       DIMINISH (Cleaning up mode line)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'diminish)
-(loop for minor-mode in '(undo-tree-mode
+(cl-loop for minor-mode in '(undo-tree-mode
                           auto-fill-function
                           visual-line-mode
                           highlight-parentheses-mode
