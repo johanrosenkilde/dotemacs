@@ -530,7 +530,7 @@ sometimes if more than one Emacs has this set"
             (progn
               (message "'%s' '%s'" reftype label)
               (evil-set-jump) ; save current point before jumping
-              (if (not (string-equal reftype ""))
+              (if (and (not (string-equal reftype "")) (not (string-equal reftype "page")))
                   (reftex-goto-named-label (cl-concatenate 'string reftype ":" label))
                 (reftex-goto-named-label label))
               ))
