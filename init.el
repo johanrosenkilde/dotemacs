@@ -20,6 +20,7 @@
 (add-to-list 'auto-mode-alist '("\\.env\\'" . xml-mode))
 (add-to-list 'auto-mode-alist '("\\.scene\\'" . xml-mode))
 (add-to-list 'auto-mode-alist '("\\.pyx\\'" . python-mode))
+(add-to-list 'auto-mode-alist '("\\.sheet\\'" . sage-mode))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -98,6 +99,9 @@ See `pour-mappings-to'."
 (global-set-key [(f5)] 'orgtbl-mode)
 (global-set-key [(shift f5)] 'orgtbl-insert-radio-table)
 (global-set-key "\M-?" 'hippie-expand)
+(global-set-key (kbd "C-x m") 'ffap) ;; Find file at point (and override compose-mail)
+(global-set-key (kbd "C-x 4") '(lambda () (interactive) (switch-to-buffer-other-window nil)))
+
 ;; Other window control
 (global-set-key (kbd "C-M-b") 'scroll-other-window-down)
 (global-set-key (kbd "C-M-d") 'scroll-other-window)
@@ -286,7 +290,11 @@ If point was already at that position, move point to beginning of line."
 (cl-loop for (mode . state) in '((eassist-mode . emacs)
                               (xgtags-select-mode . emacs)
                               (magit-branch-manager-mode . emacs)
-                              (reftex-select-label-mode . emacs))
+                              (reftex-select-label-mode . emacs)
+                              (inferior-sage-mode . emacs)
+                              (inferior-python-mode . emacs)
+                              (debugger-mode . emacs)
+                              )
       do (evil-set-initial-state mode state))
 
 (evil-mode 1)
@@ -476,6 +484,7 @@ sometimes if more than one Emacs has this set"
   (turn-on-reftex)                   ; always turn on reftex
   (setq TeX-insert-braces nil)       ; dont ever insert braces at macro expansion
   (setq TeX-source-correlate-method 'source-specials)  ;; auctex 10.86  
+  (eval-after-load "tex-mode" '(modify-syntax-entry ?$ "\"" latex-mode-syntax-table))
   (TeX-source-correlate-mode t)
   ;; Toggle outline mode and add Org-like key-bindings
   (outline-minor-mode t) ; remember that it is diminished in diminish area
@@ -610,6 +619,10 @@ sometimes if more than one Emacs has this set"
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (global-set-key [(f12)] 'magit-status)
 (evil-set-initial-state 'magit-mode 'normal)
+(evil-declare-key 'emacs magit-diff-mode-map (kbd "<return>")
+  '(lambda ()
+     (interactive)
+     (magit-visit-item t)))
 
 
 
@@ -624,6 +637,20 @@ sometimes if more than one Emacs has this set"
 (global-set-key [(f8)] 'desktop-switch)
 
 
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;       PYTHON
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(require 'pretty-lambdada) ;typeset word "lambda" as the symbol
+(defun jsrn-python-mode-hook ()
+  (interactive)
+  (define-key evil-insert-state-map (kbd "<return>") 'newline-and-indent)
+  (pretty-lambda-mode 1)
+  )
+
+(add-hook 'python-mode-hook 'jsrn-python-mode-hook)
+(add-hook 'sage-mode-hook #'pretty-lambda-mode 1)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;       SAGE
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -632,17 +659,24 @@ sometimes if more than one Emacs has this set"
 (add-to-list 'load-path (cl-concatenate 'string sage-path "/local/share/emacs"))
 (require 'sage "sage")
 (setq sage-command (cl-concatenate 'string sage-path "/sage"))
-
-;; If you want sage-view to typeset all your output and have plot()
-;; commands inline, uncomment the following line and configure sage-view:
-;; (require 'sage-view "sage-view")
-;; (add-hook 'sage-startup-after-prompt-hook 'sage-view)
-;; You can use commands like
-;; (add-hook 'sage-startup-after-prompt-hook 'sage-view-disable-inline-output)
-;; (add-hook 'sage-startup-after-prompt-hook 'sage-view-disable-inline-plots)
-;; to enable some combination of features.
-
-;; Also consider running (customize-group 'sage) to see more options.
+(defun jsrn-sage-mode-hook ()
+  (interactive)
+  (require 'sage-view "sage-view")
+  (add-hook 'sage-startup-after-prompt-hook 'sage-view)
+  (defun sage-send-current-block ()
+    "Find last blank line and next blank line, and send all in between to Sage buffer"
+    (interactive)
+    (save-excursion
+      (search-forward-regexp "^$" nil 0)
+      (let ((end-point (point)))
+        (progn
+          (previous-line)
+          (search-backward-regexp "^$" nil 0)
+          (sage-send-region (point) end-point)
+          ))))
+  (define-key evil-normal-state-map (kbd "M-RET") 'sage-send-current-block)
+  )
+(add-hook 'sage-mode-hook 'jsrn-sage-mode-hook)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -685,15 +719,10 @@ sometimes if more than one Emacs has this set"
 (add-hook 'administrative-mode-hook 'jsrn-smtpmail-setup)
 (add-hook 'administrative-mode-hook 'jsrn-mu4e-setup)
 
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;       OTHER MODES
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (add-hook 'text-mode-hook '(lambda () (visual-line-mode)))
-
-(require 'pretty-lambdada) ;typeset word "lambda" as the symbol
-(add-hook 'python-mode-hook #'pretty-lambda-mode 1)
-(add-hook 'sage-mode-hook #'pretty-lambda-mode 1)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
