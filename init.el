@@ -168,6 +168,15 @@ If point was already at that position, move point to beginning of line."
       (message "Changed dictionary to %s" new)
       )))
 
+(defun mark-current-block ()
+    "Find last blank line, set mark and then go to next blank line"
+    (interactive)
+    (search-backward-regexp "^$" nil 0)
+    (push-mark)
+    (next-line)
+    (search-forward-regexp "^$" nil 0)
+    )
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;       PACKAGE-INSTALL
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -533,18 +542,50 @@ sometimes if more than one Emacs has this set"
   (defun sage-send-current-block ()
     "Find last blank line and next blank line, and send all in between to Sage buffer"
     (interactive)
-    (save-excursion
-      (search-forward-regexp "^$" nil 0)
-      (let ((end-point (point)))
-        (progn
-          (previous-line)
-          (search-backward-regexp "^$" nil 0)
-          (sage-send-region (point) end-point)
-          ))))
+    (mark-current-block)
+    (sage-send-region (car mark-ring) (point))
+    )
   (define-key evil-normal-state-map (kbd "M-RET") 'sage-send-current-block)
   )
 (add-hook 'sage-mode-hook 'jsrn-sage-mode-hook)
 
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;       FSHARP F#
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defun jsrn-fsharp-mode-hook ()
+  (define-key evil-normal-state-map (kbd "M-RET") 'fsharp-eval-region)
+  (define-key fsharp-mode-map (kbd "C-SPC") 'completion-at-point)
+  (define-key fsharp-mode-map (kbd "C-c k") 'fsharp-goto-block-up)
+  (setq evil-shift-width 2)
+  (defun fsharp-send-current-block ()
+    "Find last blank line and next blank line, and send all in between to Sage buffer"
+    (interactive)
+    (mark-current-block)
+    (fsharp-eval-region (car mark-ring) (point))
+    )
+  (defun jsrn-fsharp-load-files (files)
+    "Reload each file of the list of files into the inferior buffer"
+    (interactive)
+    (save-excursion
+      (fsharp-run-process-if-needed)
+      (dolist (file files)
+        (fsharp-simple-send inferior-fsharp-buffer-name (concat "#load \"" file "\"")))
+      ))
+  (defun jsrn-fsharp-reload-project-entire ()
+    "Reload ALL files of the project into the inferior buffer, including the
+last main file"
+    (interactive)
+    (jsrn-fsharp-load-files fsharp-ac-project-files)
+    )
+  (defun jsrn-fsharp-reload-project-libs ()
+    "Reload all but the last file of the project into the inferior buffer"
+    (interactive)
+    (jsrn-fsharp-load-files (butlast fsharp-ac-project-files))
+  )
+  (define-key fsharp-mode-map [(f5)] 'jsrn-fsharp-reload-project-libs)
+  )
+(add-hook 'fsharp-mode-hook 'jsrn-fsharp-mode-hook)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;       C/C++ AND GDB
