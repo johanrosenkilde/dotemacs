@@ -109,6 +109,7 @@ See `pour-mappings-to'."
 (global-unset-key (kbd "C-x C-c")) ;; for killing emacs fast
 (global-unset-key (kbd "C-h h")) ;; show the HELLO message
 (global-unset-key (kbd "C-h C-c")) ;; show the COPYING message
+(global-unset-key (kbd "C-h p")) ;; show the package Finder buffer
 
 
 (defun kill-line-backwards ()

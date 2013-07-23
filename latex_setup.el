@@ -60,6 +60,8 @@
   (turn-on-reftex)                   ; always turn on reftex
   (setq TeX-insert-braces nil)       ; dont ever insert braces at macro expansion
   (setq TeX-source-correlate-method 'source-specials)  ;; auctex 10.86  
+  (electric-pair-mode)               ; insert matching braces
+  (define-key LaTeX-mode-map (kbd "$") 'self-insert-command) ; makes electric pairs work for $
   (TeX-source-correlate-mode t)
 
   ;; Toggle outline mode and add Org-like key-bindings
