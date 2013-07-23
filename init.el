@@ -591,6 +591,17 @@ sometimes if more than one Emacs has this set"
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (add-hook 'text-mode-hook '(lambda () (visual-line-mode)))
 
+(define-derived-mode mgt-list-mode nil "mtg"
+  "Major mode writing MTG lists. Open motl list in one buffer and activate this
+mode, and write in another also with this mode, then word completion works for
+complete card names"
+  (set (make-local-variable 'mtg-mode-variant) t)
+  (set (make-local-variable 'require-final-newline)
+       mode-require-final-newline)
+  (set (make-local-variable 'indent-line-function) 'indent-relative)
+  (modify-syntax-entry ?  "_" (syntax-table))
+  (modify-syntax-entry ?|  "." (syntax-table))
+  )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;       DIMINISH (Cleaning up mode line)
