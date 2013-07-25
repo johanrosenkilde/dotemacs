@@ -345,15 +345,7 @@ If point was already at that position, move point to beginning of line."
     (setq cursor-type (def-assoc evil-state cursors cursor-default))
     (set-cursor-color (def-assoc evil-state cursors color-default))))
 (setq evil-default-cursor #'cofi/evil-cursor)
-
-(eval-after-load 'dired
-  '(progn
-     ;; use the standard Dired bindings as a base
-     (evil-make-overriding-map dired-mode-map 'normal t)
-     (evil-define-key 'normal
-       "J" 'dired-goto-file ; was "j"
-       "K" 'dired-do-kill-lines ; was "k"
-       "r" 'dired-do-redisplay))) ; was "l"
+ 
 
 ;; windowing
 (fill-keymap evil-window-map
@@ -449,11 +441,17 @@ sometimes if more than one Emacs has this set"
 (setq dired-listing-switches "-l")
 
 (defun jsrn-dired-mode-hook ()
-  ;; Change dired-up-directory to find-alternate-file ..
-  (lambda () (define-key dired-mode-map (kbd "^")
-               (lambda () (interactive) (find-alternate-file ".."))))
   ;; Highlight current line
   (hl-line-mode)
+  (message "jsrn-dired-initialising")
+  (defun jsrn-dired-up-directory ()
+    "Go up dir without opening new buffer"
+    (interactive)
+    (find-alternate-file ".."))
+  (evil-define-key 'normal dired-mode-map "^" 'jsrn-dired-up-directory)
+  (evil-define-key 'normal dired-mode-map "J" 'dired-goto-file)
+  (evil-define-key 'normal dired-mode-map "K" 'dired-do-kill-lines)
+  (evil-define-key 'normal dired-mode-map "r" 'dired-do-redisplay)
   )
 (add-hook 'dired-mode-hook 'jsrn-dired-mode-hook)
 ;; Load the advanced, not-touched-so-often stuff
@@ -465,6 +463,7 @@ sometimes if more than one Emacs has this set"
 ;;       ELISP
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun jsrn-emacs-lisp-mode-hook ()
+  (setq evil-shift-width 2)
   (auto-fill-mode t)
   (show-paren-mode t)
   (highlight-parentheses-mode t)
