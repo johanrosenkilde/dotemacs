@@ -403,11 +403,17 @@ sometimes if more than one Emacs has this set"
 (add-hook 'administrative-mode-hook 'jsrn-agenda-activate)
 (defun jsrn-org-mode-hook ()
   (visual-line-mode t)
+  (defun jsrn-org-up-element ()
+    (interactive)
+    (push-mark)
+    (org-up-element))
   (fill-keymaps (list evil-normal-state-map evil-insert-state-map)
                 (kbd "M-h") 'org-metaleft
                 (kbd "M-j") 'org-metadown
                 (kbd "M-k") 'org-metaup
-                (kbd "M-l") 'org-metaright)
+                (kbd "M-l") 'org-metaright
+                (kbd "M-l") 'org-metaright
+                (kbd "C-k") 'jsrn-org-up-element)
   (fill-keymap evil-normal-state-map
                (kbd "M-H") 'org-shiftmetaleft
                (kbd "M-J") 'org-shiftmetadown
