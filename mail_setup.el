@@ -79,19 +79,35 @@
   ;; Messages should be replied from the recipient if it was one of the
   ;; registered email addresses
   (setq mu4e-my-email-addresses '("atuin@atuin.dk"
+                                  "jsrn@jsrn.dk"
+                                  "johan.nielsen@uni-ulm.de"
+                                  "jsrn@dtu.dk"
+                                  "spammy@atuin.dk"
                                   "jsrn@atuin.dk"
                                   "johan@atuin.dk"
-                                  "jsrn@jsrn.dk"
                                   "webmaster@atuin.dk"
-                                  "spammy@atuin.dk"
                                   "j.s.r.nielsen@mat.dtu.dk"
-                                  "santaphile@gmail.dk"
-                                  "jsrn@dtu.dk"))
+                                  "santaphile@gmail.dk"))
   (setq jsrn-mu4e-email-to-sent-folder '(("j.s.r.nielsen@mat.dtu.dk" . "/dtu/Sent")
                                          ("jsrn@dtu.dk" . "/dtu/Sent"))
         jsrn-mu4e-mailbox-default "/atuin/INBOX.Sent")
   ;; Only addresses from mail sent to me directly should go in auto-completions
   (setq mu4e-compose-complete-only-personal nil)
+  (defun next-from-address ()
+    (interactive)
+    (save-excursion
+      (beginning-of-buffer)
+      (re-search-forward "<\\(.*\\)>")
+      (let* ((oldmail (match-string 1))
+            (inlist (member oldmail mu4e-my-email-addresses))
+            (email  (if (and inlist (cdr inlist))
+                        (car (cdr inlist))
+                      (car mu4e-my-email-addresses))))
+        (message "%s" inlist)
+        (replace-match email nil nil nil 1))
+    )
+  )
+  (define-key mu4e-compose-mode-map [(f2)] 'next-from-address)
   (add-hook 'mu4e-compose-pre-hook
             (defun my-set-from-address ()
               "Set the From address based on the To address of the original, and set the Sent folder appropriately as well"
