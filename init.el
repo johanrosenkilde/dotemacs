@@ -79,23 +79,26 @@ See `pour-mappings-to'."
 (global-set-key [(f1)] '(lambda ()
                           (interactive)
                           (woman (current-word))))
-(global-set-key [(f2)] '(lambda ()
-                          (interactive)
-                          (progn
-                            (save-buffer)
-                            (if (fboundp 'recompile)
-                                (progn
-                                  ;; This code is complicated by latex compilation
-                                  ;; not responding to SIGINT; otherwise, we
-                                  ;; could've just used kill-compilation
-                                  (ignore-errors
-                                    (process-kill-without-query
-                                     (get-buffer-process
-                                      (get-buffer "*compilation*"))))
-                                  (ignore-errors
-                                    (kill-buffer "*compilation*"))
-                                  (recompile))
-                              (compile)))))
+(defun jsrn-recompile ()
+  (interactive)
+  (progn
+    (save-buffer)
+    (if (fboundp 'recompile)
+        (progn
+          ;; This code is complicated by latex compilation
+          ;; not responding to SIGINT; otherwise, we
+          ;; could've just used kill-compilation
+          (ignore-errors
+            (process-kill-without-query
+             (get-buffer-process
+              (get-buffer "*compilation*"))))
+          (ignore-errors
+            (kill-buffer "*compilation*"))
+          (recompile))
+      (compile)
+    )))
+(global-set-key [(f2)] 'jsrn-recompile)
+(global-set-key [(f4)] 'ffap) ;; look-up file at point
 (global-set-key [(f5)] 'orgtbl-mode)
 (global-set-key [(shift f5)] 'orgtbl-insert-radio-table)
 (global-set-key "\M-?" 'hippie-expand)
@@ -221,6 +224,24 @@ line starting with the string given as the argument."
 (global-set-key (kbd "M-S-<left>") 'winner-undo)
 (global-set-key (kbd "M-S-<right>") 'winner-redo)
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;       IDO MORE STUFF
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(setq ido-everywhere t)
+(setq ido-use-filename-at-point 'guess)
+(setq ido-file-extensions-order '(".tex" ".sage" ".py" ".bib" ".txt"))
+;; Ido on M-x
+(global-set-key
+  "\M-x"
+  (lambda ()
+    (interactive)
+    (call-interactively
+     (intern
+      (ido-completing-read
+       "M-x "
+       (all-completions "" obarray 'commandp))))))
+
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;       ADMINISTRATIVE MODE
@@ -316,6 +337,8 @@ line starting with the string given as the argument."
                               (inferior-sage-mode . emacs)
                               (inferior-python-mode . emacs)
                               (debugger-mode . emacs)
+                              (shell-mode . emacs)
+                              (diff-mode . emacs)
                               )
       do (evil-set-initial-state mode state))
 
@@ -380,6 +403,10 @@ line starting with the string given as the argument."
              (kbd "C-w l") 'evil-window-right
              (kbd "C-w C-w") 'evil-window-prev)
 (fill-keymap evil-insert-state-map (kbd "C") 'self-insert-command) ;??? This is strange
+
+;; For some reason ?!
+(define-key shell-mode-map (kbd "C-d")
+  '(lambda () (interactive) (evil-scroll-down 20)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;       ORG-MODE
@@ -663,7 +690,15 @@ last main file"
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;       OTHER MODES
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Text-mode
 (add-hook 'text-mode-hook '(lambda () (visual-line-mode)))
+
+;; Diff-mode
+(add-hook 'diff-mode-hook
+          '(lambda ()
+              (define-key diff-mode-map (kbd "j") 'diff-hunk-next)
+              (define-key diff-mode-map (kbd "k") 'diff-hunk-prev)
+              ))
 
 (define-derived-mode mgt-list-mode nil "mtg"
   "Major mode writing MTG lists. Open motl list in one buffer and activate this
