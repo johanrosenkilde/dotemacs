@@ -636,14 +636,25 @@ sometimes if more than one Emacs has this set"
     "Reload ALL files of the project into the inferior buffer, including the
 last main file"
     (interactive)
+    (save-some-buffers)
     (jsrn-fsharp-load-files fsharp-ac-project-files)
+    (fsharp-show-subshell)
     )
   (defun jsrn-fsharp-reload-project-libs ()
     "Reload all but the last file of the project into the inferior buffer"
     (interactive)
+    (save-some-buffers)
     (jsrn-fsharp-load-files (butlast fsharp-ac-project-files))
+    (fsharp-show-subshell)
   )
+  (define-key fsharp-mode-map (kbd "C-c RET") 'fsharp-send-current-block)
+  (define-key fsharp-mode-map (kbd "M-RET") 'fsharp-eval-region)
+  (define-key fsharp-mode-map (kbd "C-SPC") 'completion-at-point)
+  (define-key fsharp-mode-map (kbd "C-c k") 'fsharp-goto-block-up)
   (define-key fsharp-mode-map [(f5)] 'jsrn-fsharp-reload-project-libs)
+  (define-key fsharp-mode-map [(shift f5)] 'jsrn-fsharp-reload-project-entire)
+  (define-key inferior-fsharp-mode-map (kbd "C-d")
+    '(lambda () (interactive) (evil-scroll-down 20)))
   )
 (add-hook 'fsharp-mode-hook 'jsrn-fsharp-mode-hook)
 
@@ -711,6 +722,7 @@ complete card names"
   (modify-syntax-entry ?  "_" (syntax-table))
   (modify-syntax-entry ?|  "." (syntax-table))
   )
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;       DIMINISH (Cleaning up mode line)
