@@ -131,10 +131,14 @@
   ;;TODO: This doesn't work since the keybinding keeps getting redefined by reftex
   (define-key evil-normal-state-map (kbd "C-c - ") '(lambda () (interactive) t))
 
-  ;; Teach AucTeX about IEEEeqnarray
+  ;; Teach AucTeX about align and IEEEeqnarray
   (LaTeX-add-environments
+   '("align" LaTeX-env-label)
+   '("align*" LaTeX-env-label)
    '("IEEEeqnarray" LaTeX-env-label)
    '("IEEEeqnarray*" LaTeX-env-label))
+  (add-to-list 'font-latex-math-environments "align")
+  (add-to-list 'font-latex-math-environments "align*")
   (add-to-list 'font-latex-math-environments "IEEEeqnarray")
   (add-to-list 'font-latex-math-environments "IEEEeqnarray*")
   (setq texmathp-tex-commands '(("IEEEeqnarray" env-on) ("IEEEeqnarray*" env-on)))
