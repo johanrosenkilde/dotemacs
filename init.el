@@ -168,14 +168,26 @@ If point was already at that position, move point to beginning of line."
       (message "Changed dictionary to %s" new)
       )))
 
-(defun mark-current-block ()
-    "Find last blank line, set mark and then go to next blank line"
-    (interactive)
-    (search-backward-regexp "^$" nil 0)
-    (push-mark)
-    (next-line)
-    (search-forward-regexp "^$" nil 0)
-    )
+(defun mark-current-block (&optional delim)
+    "Find last delimiter line, set mark and then go to next delimiter
+line. Return the set mark.
+If no argument is given, a delimiter line is a blank line. Otherwise, it is a
+line starting with the string given as the argument."
+    (let ((ldelim (if delim (concat "^" delim) "^$")))
+      (message "%s" ldelim)
+      (search-backward-regexp ldelim nil 0)
+      (let ((beg (point)))
+        (push-mark)
+        (next-line)
+        (search-forward-regexp ldelim nil 0)
+        (goto-char (match-beginning 0))
+        beg
+        )))
+(defun mark-current-block-i (delim)
+  (interactive "sDelimiting lines match from start (default is empty line): ")
+  (let ((delim (if (string-equal delim "") "$" delim)))
+    (mark-current-block delim)
+  ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;       PACKAGE-INSTALL
@@ -544,13 +556,26 @@ sometimes if more than one Emacs has this set"
   (interactive)
   (require 'sage-view "sage-view")
   (add-hook 'sage-startup-after-prompt-hook 'sage-view)
+  (setq sage-block-delim "###")
+  (defun sage-backward-block ()
+    (interactive)
+    (search-backward-regexp (concat "^" sage-block-delim) nil 0))
+  (defun sage-forward-block ()
+    (interactive)
+    (next-line)
+    ; search forward: if it worked, move to begin of delim, otherwise end of file
+    (if (search-forward-regexp (concat "^" sage-block-delim) nil 0)
+        (goto-char (match-beginning 0))))
   (defun sage-send-current-block ()
     "Find last blank line and next blank line, and send all in between to Sage buffer"
     (interactive)
-    (mark-current-block)
-    (sage-send-region (car mark-ring) (point))
-    )
-  (define-key evil-normal-state-map (kbd "M-RET") 'sage-send-current-block)
+    (if (eq (current-column) 0) ;; handle border-case: standing on block-delim
+        (next-line))
+    (sage-send-region (progn (sage-backward-block) (point))
+                      (progn (sage-forward-block)  (point))))
+  (define-key evil-normal-state-map (kbd "C-<return>") 'sage-send-current-block)
+  (define-key evil-normal-state-map (kbd "M-{")   'sage-backward-block)
+  (define-key evil-normal-state-map (kbd "M-}") 'sage-forward-block)
   )
 (add-hook 'sage-mode-hook 'jsrn-sage-mode-hook)
 
@@ -559,15 +584,18 @@ sometimes if more than one Emacs has this set"
 ;;       FSHARP F#
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun jsrn-fsharp-mode-hook ()
-  (define-key evil-normal-state-map (kbd "M-RET") 'fsharp-eval-region)
-  (define-key fsharp-mode-map (kbd "C-SPC") 'completion-at-point)
-  (define-key fsharp-mode-map (kbd "C-c k") 'fsharp-goto-block-up)
   (setq evil-shift-width 2)
+  (electric-pair-mode)
+  (column-number-mode)
   (defun fsharp-send-current-block ()
     "Find last blank line and next blank line, and send all in between to Sage buffer"
     (interactive)
-    (mark-current-block)
-    (fsharp-eval-region (car mark-ring) (point))
+    (save-excursion
+      (evil-backward-paragraph)
+      (let ((beg (point)))
+        (evil-forward-paragraph)
+        (fsharp-eval-region beg (point))
+      ))
     )
   (defun jsrn-fsharp-load-files (files)
     "Reload each file of the list of files into the inferior buffer"
