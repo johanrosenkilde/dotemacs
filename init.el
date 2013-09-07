@@ -208,12 +208,6 @@ line starting with the string given as the argument."
 ;; minor mode Highlight parentheses which are around cursor
 (require 'highlight-parentheses)
 
-;; Global loading
-;; Load ido -- alternatives shown directly in minibuffer + more
-(require 'ido)
-(ido-mode t)
-(setq ido-enable-flex-matching t) ;match substr on what is written
-
 ;; Uniquify gives better names to buffers containing files with same base name
 (require 'uniquify)
 (setq uniquify-buffer-name-style 'reverse)
@@ -224,22 +218,19 @@ line starting with the string given as the argument."
 (global-set-key (kbd "M-S-<left>") 'winner-undo)
 (global-set-key (kbd "M-S-<right>") 'winner-redo)
 
+;; Build and keep list of recent files
+(recentf-mode 1)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;       IDO MORE STUFF
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(require 'ido)
+(ido-mode t)
+(setq ido-enable-flex-matching t) ;match substr on what is written
 (setq ido-everywhere t)
 (setq ido-use-filename-at-point 'guess)
 (setq ido-file-extensions-order '(".tex" ".sage" ".py" ".bib" ".txt"))
-;; Ido on M-x
-(global-set-key
-  "\M-x"
-  (lambda ()
-    (interactive)
-    (call-interactively
-     (intern
-      (ido-completing-read
-       "M-x "
-       (all-completions "" obarray 'commandp))))))
+(global-set-key "\M-x" 'smex) ;; awesome function chooser
 
 
 
