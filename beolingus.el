@@ -13,7 +13,7 @@
       (set-buffer outbuffer)
       (goto-char (point-min))
       ; Cut the beginning cruft
-      (search-forward-regexp "[:digit:]* results for")
+      (search-forward-regexp "[:digit:]* \\(similar \\)?results? for")
       (previous-line)
       (delete-region (point-min) (point))
       ; Kill link remainders and trim line beginnings

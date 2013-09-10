@@ -104,6 +104,7 @@ See `pour-mappings-to'."
 (global-set-key "\M-?" 'hippie-expand)
 (global-set-key (kbd "C-x m") 'ffap) ;; Find file at point (and override compose-mail)
 (global-set-key (kbd "C-x 4") '(lambda () (interactive) (switch-to-buffer-other-window nil)))
+(global-set-key (kbd "S-<backspace>") 'delete-horizontal-space)
 
 ;; Other window control
 (global-set-key (kbd "C-M-b") 'scroll-other-window-down)
@@ -297,6 +298,7 @@ line starting with the string given as the argument."
 ;; Key-bindings for movement
 (fill-keymap evil-motion-state-map
              "j" 'evil-next-visual-line
+             "B" 'evil-backward-word-end
              "k" 'evil-previous-visual-line
              "$" 'evil-end-of-visual-line
              "^" 'evil-first-non-blank-of-visual-line
@@ -697,7 +699,7 @@ last main file"
     (let ((buf (clone-buffer)))
       (set-buffer buf)
       (goto-char (point-min))
-      (while (re-search-forward "\t[\t ]*" nil t)
+      (while (re-search-forward " *\\(\t\\|   \\)[\t ]*" nil t)
 	(replace-match ";"))
       (write-file "~/anki_import.txt")
       ))
@@ -721,6 +723,7 @@ last main file"
 (load "mail_setup")
 (add-hook 'administrative-mode-hook 'jsrn-smtpmail-setup)
 (add-hook 'administrative-mode-hook 'jsrn-mu4e-setup)
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;       OTHER MODES
