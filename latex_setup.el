@@ -5,45 +5,14 @@
 (setq TeX-outline-extra '(("%.* AREA" 1)
                           ("\\\\frontchapter" 1)))
 ;; Add custom reference commands
-(setq font-latex-match-reference-keywords '(("reflem" "{")
-                                            ("refthm" "{")
-                                            ("refprop" "{")
-                                            ("refcor" "{")
-                                            ("refconj" "{")
-                                            ("refquest" "{")
-                                            ("refprob" "{")
-                                            ("refdef" "{")
-                                            ("refchp" "{")
-                                            ("refsec" "{")
-                                            ("refssec" "{")
-                                            ("refalg" "{")
-                                            ("reffig" "{")
-                                            ("reftbl" "{")
-                                            ("refex" "{")
-                                            ("refline" "{")
-                                            ("refeqn" "{")
-                                            ("refinv" "{")
-                                            ("refpage" "{")
-                                            ("pageref" "{")
-                                            ("vreflem" "{")
-                                            ("vrefthm" "{")
-                                            ("vrefprop" "{")
-                                            ("vrefcor" "{")
-                                            ("vrefconj" "{")
-                                            ("vrefquest" "{")
-                                            ("vrefprob" "{")
-                                            ("vrefdef" "{")
-                                            ("vrefalg" "{")
-                                            ("vreffig" "{")
-                                            ("vreftbl" "{")
-                                            ("vrefex" "{")
-                                            ("vrefeqn" "{")
+(setq font-latex-match-reference-keywords '(("cref" "{")
+                                            ("cpageref" "{")
                                             ))
 ;; Add some shortcuts in math mode
 (setq LaTeX-math-list '((?o "ell" nil)))
-;; For spelling, add the ref<something> commands to the "don't check contents" list
+;; For spelling, add the cref commands to the "don't check contents" list
 (setq flyspell-tex-command-regexp
-  "\\(\\(begin\\|end\\)[ \t]*{\\|\\(cite[a-z*]*\\|label\\|ref[a-z]*\\|eqref\\|usepackage\\|documentclass\\)[ \t]*\\(\\[[^]]*\\]\\)?{[^{}]*\\)")
+  "\\(\\(begin\\|end\\)[ \t]*{\\|\\(cite[a-z*]*\\|label\\|c?\\(page\\)?ref\\|eqref\\|usepackage\\|documentclass\\)[ \t]*\\(\\[[^]]*\\]\\)?{[^{}]*\\)")
 ;; Load reftex
 (require 'bibtex)
 (require 'reftex)
@@ -59,10 +28,14 @@
   (flyspell-mode t)                  ; always turn on flyspell
   (turn-on-reftex)                   ; always turn on reftex
   (setq TeX-insert-braces nil)       ; dont ever insert braces at macro expansion
-  (setq TeX-source-correlate-method 'source-specials)  ;; auctex 10.86  
+  (TeX-source-correlate-mode)        ; activate forward/reverse search
+  (TeX-PDF-mode)
+  (setq TeX-view-program-list nil)
+  (add-to-list 'TeX-view-program-list
+               '("okular" "okular --unique %o"))
+  (setq TeX-view-program-selection (quote ((output-pdf "okular") (output-dvi "xdvi"))))
   (electric-pair-mode)               ; insert matching braces
   (define-key LaTeX-mode-map (kbd "$") 'self-insert-command) ; makes electric pairs work for $
-  (TeX-source-correlate-mode t)
 
   ;; Toggle outline mode and add Org-like key-bindings
   (outline-minor-mode t) ; remember that it is diminished in diminish area
@@ -78,17 +51,16 @@
                       (hide-sublevels jsrn-current-sublevels))))
   (local-set-key (kbd "C-c 0")
                  '(lambda ()
-                    "Choose a label and insert the appropriate ref*{...} for that label"
+                    "Choose a label and insert the appropriate cref{...} for that label"
                     (interactive)
-                    (let* ((label (reftex-reference " " t))
-                           (parts (split-string label ":")))
-                      (if (string-equal label (car parts))
-                          ;; no colon, insert plain ref
-                          (insert (format "\\ref{%s}" label))
-                        ;; there was a colon, so insert the respective ref
-                        (insert (format "\\ref%s{%s}" (car parts) (car (cdr parts))))
-                          ))))
-
+                    (let* ((label (reftex-reference " " t)))
+                      (insert (format "\\cref{%s}" label)))
+                    ))
+  ;; Don't prompt for ref style, just insert cref always
+  (setq reftex-ref-macro-prompt nil)
+  (add-to-list 'reftex-ref-style-alist '("Default" t
+                                         (("\\cref" 13)
+                                          ("\\cpageref" 112))))
   ;; Make a function and keybinding for jumping to label under cursor
   (defun reftex-goto-named-label (label)
     "Take a latex label and goto the definition of it without prompting and in the
@@ -113,7 +85,7 @@
     (let ((refcall (thing-at-point 'filename)))
                                         ;(message "'%s'" refcall)
                                         ;(if (string-match "vreflem{wu_params}" refcall)
-      (if (string-match "\\(v\\|page\\|\\)ref\\([^{]*\\){\\([^}]*\\)}" refcall)
+      (if (string-match "c?\\(v\\|page\\|\\)ref\\([^{]*\\){\\([^}]*\\)}" refcall)
           (let ((reftype (match-string 2 refcall))
                 (label (match-string 3 refcall)))
             (progn
