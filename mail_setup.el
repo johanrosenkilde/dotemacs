@@ -115,7 +115,7 @@
                 (if msg
                     (let ((toaddr (cdr (car (mu4e-message-part-field msg :to)))))
                       (setq user-mail-address
-                            (if (member (downcase toaddr) mu4e-my-email-addresses)
+                            (if (and (not (eq toaddr nil)) (member (downcase toaddr) mu4e-my-email-addresses))
                                 (downcase toaddr)
                               jsrn-user-mail-address))
                       )
