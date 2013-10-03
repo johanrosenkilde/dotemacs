@@ -93,6 +93,7 @@
         jsrn-mu4e-mailbox-default "/atuin/INBOX.Sent")
   ;; Only addresses from mail sent to me directly should go in auto-completions
   (setq mu4e-compose-complete-only-personal nil)
+  ;; Switch my from address to the next possible from address
   (defun next-from-address ()
     (interactive)
     (save-excursion
@@ -126,9 +127,27 @@
                     (setq jsrn-mu4e-sent-folder jsrn-mu4e-mailbox-default)
                   (setq jsrn-mu4e-sent-folder folder)))
               ))
+  ;; Setup email writing
+  (defun jsrn-mu4e-compose-setup ()
+    (flyspell-mode t)
+    ;; Add footnote and bibtex/footnote support
+    (footnote-mode t)
+    (setq reftex-default-bibliography '("~/mat/tex/bibtex.bib"))
+    (defun jsrn-insert-citation ()
+      (interactive)
+      (let ((reftex-cite-format "%a: %t. %j %v:%p, %y"))
+          (reftex-citation)))
+    (define-key mu4e-compose-mode-map (kbd "C-c B") 'jsrn-insert-citation)
+    (fill-keymaps (list evil-normal-state-map evil-insert-state-map)
+                  (kbd "C-c ! c")
+                  (lambda ()
+                    (interactive)
+                    (Footnote-add-footnote)
+                    (jsrn-insert-citation)))
+    )
+  (add-hook 'mu4e-compose-mode-hook 'jsrn-mu4e-compose-setup)
+  ;; Don't ask on exiting
   (setq mu4e-confirm-quit nil)
-  (add-hook 'mu4e-compose-mode-hook (defun jsrn-mu4e-compose-setup ()
-                                      (flyspell-mode t)))
   ;; backspace should clear mark like in dired
   (define-key mu4e-headers-mode-map (kbd "<backspace>")
     (lambda () (interactive)
