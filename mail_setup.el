@@ -127,6 +127,12 @@
                     (setq jsrn-mu4e-sent-folder jsrn-mu4e-mailbox-default)
                   (setq jsrn-mu4e-sent-folder folder)))
               ))
+  ;; flyspelling the email: flyspell-buffer croaks across the "text follows ..." line
+  (defun flyspell-body ()
+    (interactive)
+    (save-excursion
+      (message-goto-body)
+      (flyspell-region (point) (progn (end-of-buffer) (point)))))
   ;; Setup email writing
   (defun jsrn-mu4e-compose-setup ()
     (flyspell-mode t)
@@ -144,6 +150,9 @@
                     (interactive)
                     (Footnote-add-footnote)
                     (jsrn-insert-citation)))
+    (fill-keymaps (list evil-normal-state-map evil-insert-state-map)
+                  [(f6)]
+                  (lambda () (interactive) (jsrn-cycle-dictionary) (flyspell-body)))
     )
   (add-hook 'mu4e-compose-mode-hook 'jsrn-mu4e-compose-setup)
   ;; Don't ask on exiting

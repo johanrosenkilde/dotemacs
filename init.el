@@ -155,23 +155,6 @@ If point was already at that position, move point to beginning of line."
 
     (delete-process (get-process pname))))
 
-;; For aspell, cycle through dictionaries. First make the language ring
-(let ((langs '("british" "dansk" )))
-  (setq lang-ring (make-ring (length langs)))
-  (dolist (elem langs) (ring-insert lang-ring elem)))
-(defun jsrn-cycle-dictionary ()
-  (interactive)
-  (let* ((cur (if (or (not (boundp 'ispell-local-dictionary)) (eq nil ispell-local-dictionary))
-                 (ring-ref lang-ring -1)
-               ispell-local-dictionary))
-         (new (ring-next lang-ring cur)))
-    (progn
-      (ispell-change-dictionary new)
-      ;; TODO: This makes weird errors in emails
-      ;; (flyspell-buffer)
-      (message "Changed dictionary to %s" new)
-      )))
-
 (defun mark-current-block (&optional delim)
     "Find last delimiter line, set mark and then go to next delimiter
 line. Return the set mark.
@@ -516,6 +499,20 @@ sometimes if more than one Emacs has this set"
 (require 'flyspell)
 (setq flyspell-issue-message-flag nil)
 (setq ispell-dictionary "british")
+;; Cycle through dictionaries. First make the language ring
+(let ((langs '("british" "dansk" )))
+  (setq lang-ring (make-ring (length langs)))
+  (dolist (elem langs) (ring-insert lang-ring elem)))
+(defun jsrn-cycle-dictionary ()
+  (interactive)
+  (let* ((cur (if (or (not (boundp 'ispell-local-dictionary)) (eq nil ispell-local-dictionary))
+                 (ring-ref lang-ring -1)
+               ispell-local-dictionary))
+         (new (ring-next lang-ring cur)))
+    (progn
+      (ispell-change-dictionary new)
+      (message "Changed dictionary to %s" new)
+      )))
 (defun jsrn-spell-goto-next-and-suggest ()
   (interactive)
   (flyspell-goto-next-error)
