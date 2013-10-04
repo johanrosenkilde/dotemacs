@@ -1,14 +1,31 @@
-(defun jsrn-smtpmail-setup ()
+(defun jsrn-smtpmail-setup (from-email)
   ;; tell message-mode how to send mail
   (setq send-mail-function 'smtpmail-send-it
         message-send-mail-function 'smtpmail-send-it
+        smtpmail-queue-dir "~/mail/queued-mail/"
+        smtpmail-debug-info t ; only to debug problems
+        )
+  (if (eq nil (string-match ".*dtu.dk" from-email))
+    (progn
+      (setq
         smtpmail-smtp-server "web12.meebox.net"
+        smtpmail-smtp-user "atuin@atuin.dk"
         smtpmail-smtp-service 465
         smtpmail-local-domain "atuin.dk"
-        smtpmail-debug-info t ; only to debug problems
         smtpmail-stream-type 'ssl
-        smtpmail-queue-dir "~/mail/queued-mail/"
-  ))
+        )
+     (message "Using Meebox SMTP"))
+    (progn
+        (setq
+        smtpmail-smtp-server "smtpauth.imm.dtu.dk"
+        smtpmail-smtp-user "jsrn"
+        smtpmail-smtp-service 465
+        smtpmail-local-domain nil
+        smtpmail-stream-type 'ssl
+        )
+       (message "Using DTU SMTP"))
+))
+(jsrn-smtpmail-setup "jsrn")
 
 (defun jsrn-mu4e-setup ()
   (add-to-list 'load-path"/usr/local/share/emacs/site-lisp/mu4e")
@@ -109,24 +126,24 @@
     )
   )
   (define-key mu4e-compose-mode-map [(f2)] 'next-from-address)
-  (add-hook 'mu4e-compose-pre-hook
-            (defun my-set-from-address ()
-              "Set the From address based on the To address of the original, and set the Sent folder appropriately as well"
-              (let ((msg mu4e-compose-parent-message))
-                (if msg
-                    (let ((toaddr (cdr (car (mu4e-message-part-field msg :to)))))
-                      (setq user-mail-address
-                            (if (and (not (eq toaddr nil)) (member (downcase toaddr) mu4e-my-email-addresses))
-                                (downcase toaddr)
-                              jsrn-user-mail-address))
-                      )
-                  (setq user-mail-address jsrn-user-mail-address))
-                )
-              (let ((folder (cdr (assoc user-mail-address jsrn-mu4e-email-to-sent-folder))))
-                (if (eq folder nil)
-                    (setq jsrn-mu4e-sent-folder jsrn-mu4e-mailbox-default)
-                  (setq jsrn-mu4e-sent-folder folder)))
-              ))
+  (defun jsrn-set-from-address ()
+    "Set the From address, and Sent Folder based on the To address of the original"
+    (setq user-mail-address
+          (let ((msg mu4e-compose-parent-message))
+            (if msg
+                (let ((toaddr (cdr (car (mu4e-message-part-field msg :to)))))
+                  (if (and (not (eq toaddr nil)) (member (downcase toaddr) mu4e-my-email-addresses))
+                      (downcase toaddr)
+                    jsrn-user-mail-address))
+              jsrn-user-mail-address)))
+    (let ((folder (cdr (assoc user-mail-address jsrn-mu4e-email-to-sent-folder))))
+      (if (eq folder nil)
+          (setq jsrn-mu4e-sent-folder jsrn-mu4e-mailbox-default)
+        (setq jsrn-mu4e-sent-folder folder)))
+    )
+  (defun jsrn-send-mail-set-smtp ()
+    (jsrn-smtpmail-setup (mail-fetch-field "from")))
+  (add-hook 'message-send-hook  'jsrn-send-mail-set-smtp)
   ;; flyspelling the email: flyspell-buffer croaks across the "text follows ..." line
   (defun flyspell-body ()
     (interactive)

@@ -718,7 +718,6 @@ last main file"
 ;;       SMTPMAIL AND MU4E
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (load "mail_setup")
-(add-hook 'administrative-mode-hook 'jsrn-smtpmail-setup)
 (add-hook 'administrative-mode-hook 'jsrn-mu4e-setup)
 
 
