@@ -1,14 +1,16 @@
-(set-face-attribute 'default nil :height 70)
-(setq inhibit-splash-screen t)
-(tool-bar-mode 0)
+;; Keyboard layout to expect
+(setq workman nil)
 
 ;; About me
 (setq user-full-name "Johan S. R. Nielsen"
       jsrn-user-mail-address "jsrn@jsrn.dk") ;; Std email; I will overwrite user-mail-address
 
 ;; Other global nice options
-(toggle-scroll-bar 0) ;; Emacs gurus don't need no stinking scroll bars
-(set-fringe-mode '(0 . 1)) ;activate only the right fringe area
+(setq inhibit-splash-screen t)
+(scroll-bar-mode -1) ;; Emacs gurus don't need no stinking scroll bars
+(add-to-list 'default-frame-alist '(font . "Droid Sans Mono-8"))
+(add-to-list 'default-frame-alist '(left-fringe . 0))
+(add-to-list 'default-frame-alist '(right-fringe . 0))
 (setq compilation-scroll-output t)
 (setq-default indent-tabs-mode nil) ; never insert tabs, do spaces
 (setq mouse-drag-copy-region t) ;; mouse region copies
