@@ -78,6 +78,8 @@ See `pour-mappings-to'."
 ;;       GLOBALLY DEFINED CUSTOM FUNCTIONS AND KEYS
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(keyboard-translate ?\C-i ?\C-x)
+(define-key key-translation-map (kbd "M-i") (kbd "M-x"))
 (global-set-key [(f1)] '(lambda ()
                           (interactive)
                           (woman (current-word))))
@@ -231,10 +233,52 @@ line starting with the string given as the argument."
   (global-set-key [(f10)] 'org-agenda-list)
   (run-hooks 'administrative-mode-hook))
 
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;       WORKMAN
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;       EVIL
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'evil)
+(if (eq workman t)
+    ; Workman homerow movement
+    (progn
+      (setq evil-left-key "y"
+            evil-right-key "n"
+            evil-up-key "e"
+            evil-down-key "o"
+            )
+      (defmacro evil-add-hjkl-bindings (keymap &optional state &rest bindings)
+        "Add \"h\", \"j\", \"k\", \"l\" bindings to KEYMAP in STATE.
+Add additional BINDINGS if specified."
+        (declare (indent defun))
+        `(evil-define-key ,state ,keymap
+           "y" (lookup-key evil-motion-state-map "y")
+           "n" (lookup-key evil-motion-state-map "n")
+           "e" (lookup-key evil-motion-state-map "e")
+           "o" (lookup-key evil-motion-state-map "o")
+           ":" (lookup-key evil-motion-state-map ":")
+           ,@bindings))
+      (fill-keymaps (list evil-motion-state-map evil-normal-state-map)
+                   "y" 'evil-backward-char
+                   "l" 'evil-forward-char
+                   "e" 'evil-previous-line
+                   "o" 'evil-next-line
+                   (kbd "SPC") 'evil-scroll-page-down
+                   (kbd "S-SPC") 'evil-scroll-page-up)
+      ; TODO: Fix following keys
+      ;  o/O -- evil-open-below / evil-open-above
+      ;  y -- evil-yank
+      ; C-y in insert -- yank
+      )
+  ; Qwerty homerow movement
+  (setq evil-left-key "h"
+          evil-right-key "l"
+          evil-up-key "k"
+          evil-down-key "j"
+          ))
 (setq evil-find-skip-newlines t
       evil-move-cursor-back nil
       evil-ex-search-highlight-all nil
@@ -282,9 +326,9 @@ line starting with the string given as the argument."
              "Z" 'uncomment-region)
 ;; Key-bindings for movement
 (fill-keymap evil-motion-state-map
-             "j" 'evil-next-visual-line
+             evil-down-key 'evil-next-visual-line
              "B" 'evil-backward-word-end
-             "k" 'evil-previous-visual-line
+             evil-up-key 'evil-previous-visual-line
              "$" 'evil-end-of-visual-line
              "^" 'evil-first-non-blank-of-visual-line
              (kbd "C-b") '(lambda () (interactive)
@@ -385,6 +429,7 @@ line starting with the string given as the argument."
 ;; For some reason ?!
 (define-key shell-mode-map (kbd "C-d")
   '(lambda () (interactive) (evil-scroll-down 20)))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;       ORG-MODE
