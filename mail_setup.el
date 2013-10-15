@@ -141,6 +141,7 @@
           (setq jsrn-mu4e-sent-folder jsrn-mu4e-mailbox-default)
         (setq jsrn-mu4e-sent-folder folder)))
     )
+  (add-hook 'mu4e-compose-pre-hook 'jsrn-set-from-address)
   (defun jsrn-send-mail-set-smtp ()
     (jsrn-smtpmail-setup (mail-fetch-field "from")))
   (add-hook 'message-send-hook  'jsrn-send-mail-set-smtp)
