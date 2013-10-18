@@ -640,8 +640,21 @@ sometimes if more than one Emacs has this set"
   (define-key evil-normal-state-map (kbd "C-<return>") 'sage-send-current-block)
   (define-key evil-normal-state-map (kbd "M-{")   'sage-backward-block)
   (define-key evil-normal-state-map (kbd "M-}") 'sage-forward-block)
+  (message "Running jsrn-sage-mode-hook")
   )
 (add-hook 'sage-mode-hook 'jsrn-sage-mode-hook)
+
+(defun jsrn-inferior-sage-mode-hook ()
+  (interactive)
+  (message "Running jsrn-inferior-sage-mode-hook")
+  (defun sage-eval-next-block ()
+    "If in the Sage buffer, evaluate the next block of the last visited .sage file"
+    (interactive)
+    (other-window 1)
+    (sage-send-current-block))
+  (define-key inferior-sage-mode-map (kbd "C-<return>") 'sage-eval-next-block)
+  )
+(add-hook 'inferior-sage-mode-hook 'jsrn-inferior-sage-mode-hook)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
