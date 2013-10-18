@@ -30,9 +30,17 @@
   (setq TeX-insert-braces nil)       ; dont ever insert braces at macro expansion
   (TeX-source-correlate-mode)        ; activate forward/reverse search
   (TeX-PDF-mode)
-  (setq TeX-view-program-list nil)
-  (add-to-list 'TeX-view-program-list
-               '("okular" "okular --unique %o"))
+  ;; Make forward search work properly for Okular
+  (defun okular-make-url ()
+    (concat "file://"
+            (expand-file-name (funcall file (TeX-output-extension) t)
+                              (file-name-directory (TeX-master-file)))
+            "#src:"
+            (TeX-current-line)
+            default-directory
+            (TeX-current-file-name-master-relative)))
+  (add-to-list 'TeX-expand-list '("%u" okular-make-url)) ;; Expand %u to the result of above fun
+  (setq TeX-view-program-list '(("okular" "okular --unique %u")))
   (setq TeX-view-program-selection (quote ((output-pdf "okular") (output-dvi "xdvi"))))
   (electric-pair-mode)               ; insert matching braces
   (define-key LaTeX-mode-map (kbd "$") 'self-insert-command) ; makes electric pairs work for $
