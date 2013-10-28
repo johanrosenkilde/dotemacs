@@ -1,5 +1,5 @@
 ;; Keyboard layout to expect
-(setq workman nil)
+(setq workman t)
 
 ;; About me
 (setq user-full-name "Johan S. R. Nielsen"
@@ -237,41 +237,14 @@ line starting with the string given as the argument."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;       WORKMAN
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;       EVIL
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(require 'evil)
 (if (eq workman t)
     ; Workman homerow movement
     (progn
       (setq evil-left-key "y"
-            evil-right-key "n"
+            evil-right-key "o"
             evil-up-key "e"
-            evil-down-key "o"
+            evil-down-key "n"
             )
-      (defmacro evil-add-hjkl-bindings (keymap &optional state &rest bindings)
-        "Add \"h\", \"j\", \"k\", \"l\" bindings to KEYMAP in STATE.
-Add additional BINDINGS if specified."
-        (declare (indent defun))
-        `(evil-define-key ,state ,keymap
-           "y" (lookup-key evil-motion-state-map "y")
-           "n" (lookup-key evil-motion-state-map "n")
-           "e" (lookup-key evil-motion-state-map "e")
-           "o" (lookup-key evil-motion-state-map "o")
-           ":" (lookup-key evil-motion-state-map ":")
-           ,@bindings))
-      (fill-keymaps (list evil-motion-state-map evil-normal-state-map)
-                   "y" 'evil-backward-char
-                   "l" 'evil-forward-char
-                   "e" 'evil-previous-line
-                   "o" 'evil-next-line
-                   (kbd "SPC") 'evil-scroll-page-down
-                   (kbd "S-SPC") 'evil-scroll-page-up)
-      ; TODO: Fix following keys
-      ;  o/O -- evil-open-below / evil-open-above
-      ;  y -- evil-yank
-      ; C-y in insert -- yank
       )
   ; Qwerty homerow movement
   (setq evil-left-key "h"
@@ -279,6 +252,11 @@ Add additional BINDINGS if specified."
           evil-up-key "k"
           evil-down-key "j"
           ))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;       EVIL
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(require 'evil)
 (setq evil-find-skip-newlines t
       evil-move-cursor-back nil
       evil-ex-search-highlight-all nil
@@ -430,6 +408,39 @@ Add additional BINDINGS if specified."
 (define-key shell-mode-map (kbd "C-d")
   '(lambda () (interactive) (evil-scroll-down 20)))
 
+(defmacro evil-add-hjkl-bindings (keymap &optional state &rest bindings)
+  "Add \"h\", \"j\", \"k\", \"l\" bindings to KEYMAP in STATE.
+Add additional BINDINGS if specified."
+  (declare (indent defun))
+  `(evil-define-key ,state ,keymap
+     "y" (lookup-key evil-motion-state-map "y")
+     "n" (lookup-key evil-motion-state-map "n")
+     "e" (lookup-key evil-motion-state-map "e")
+     "o" (lookup-key evil-motion-state-map "o")
+     ":" (lookup-key evil-motion-state-map ":")
+     ,@bindings))
+(fill-keymaps (list evil-motion-state-map evil-normal-state-map)
+              evil-left-key  'evil-backward-char
+              evil-right-key 'evil-forward-char
+              evil-up-key    'evil-previous-line
+              evil-down-key  'evil-next-line
+              (kbd "SPC") 'evil-scroll-page-down
+              (kbd "S-SPC") 'evil-scroll-page-up)
+
+; Workman fixes 
+(if workman
+    (fill-keymap evil-normal-state-map
+                 "h"   'evil-open-below
+                 "H"   'evil-open-above
+                 "Y"   'evil-window-top
+                 "k"   'isearch-repeat-forward
+                 )
+    (fill-keymaps (list evil-normal-state-map evil-visual-state-map)
+                 "j"   'evil-yank)
+    (fill-keymap evil-visual-state-map
+                 "o"   'evil-forward-char
+                 "l"   'exchange-point-and-mark)
+)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;       ORG-MODE
