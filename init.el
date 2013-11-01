@@ -352,22 +352,7 @@ line starting with the string given as the argument."
 (evil-declare-key 'normal woman-mode-map (kbd "q") 'Man-quit)
 (evil-declare-key 'normal reftex-toc-mode-map (kbd "q") 'reftex-toc-quit)
 
-;; Emulate surround.vim
-;; Usage description really quick:
-;; type c s <delimiter> <replacement> for replacing the nearest <delimiter> pair
-;; with appropriately chosen <replacement> pair. Use left delimiter to get space
-;; on insider, and right delimiter otherwise
-;; type d s <delimiter> to remove delimiter pair
-;; In visual mode, type s <new delim> to insert delimiter (same rules w. spaces)
-;;                 type S <new delim> to insert also newlines on inside
-(require 'surround)
-(global-surround-mode)
-;; Some extras for certain modes
-(add-hook 'LaTeX-mode-hook (lambda ()
-                             (push '(?~ . ("\\texttt{" . "}")) surround-pairs-alist)
-                             (push '(?/ . ("\\emph{"   . "}")) surround-pairs-alist)
-                             (push '(?* . ("\\textbf{" . "}")) surround-pairs-alist)))
-;; make cursor look like Vim when in Vim normal moe
+;; make cursor look like Vim when in Vim normal mode
 (defun cofi/evil-cursor ()
   "Change cursor color according to evil-state."
   (let ((color-default "OliveDrab4")
@@ -444,6 +429,25 @@ Add additional BINDINGS if specified."
                    "l"   'exchange-point-and-mark)
     )
 )
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;       SURROUND-MODE
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Emulate surround.vim
+;; Usage description really quick:
+;; type c s <delimiter> <replacement> for replacing the nearest <delimiter> pair
+;; with appropriately chosen <replacement> pair. Use left delimiter to get space
+;; on insider, and right delimiter otherwise
+;; type d s <delimiter> to remove delimiter pair
+;; In visual mode, type s <new delim> to insert delimiter (same rules w. spaces)
+;;                 type S <new delim> to insert also newlines on inside
+(require 'surround)
+(global-surround-mode)
+;; Some extras for certain modes
+(add-hook 'LaTeX-mode-hook (lambda ()
+                             (push '(?~ . ("\\texttt{" . "}")) surround-pairs-alist)
+                             (push '(?/ . ("\\emph{"   . "}")) surround-pairs-alist)
+                             (push '(?* . ("\\textbf{" . "}")) surround-pairs-alist)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;       ORG-MODE
