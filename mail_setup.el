@@ -31,7 +31,8 @@
   (add-to-list 'load-path"/usr/local/share/emacs/site-lisp/mu4e")
   (require 'mu4e)
   ;; Handling html messages
-  (setq mu4e-html2text-command "vilistextum -u -w72 - -")
+  (setq mu4e-html2text-command "vilistextum -k -y\"iso-8859-1\" - -")
+  (setq mu4e-view-prefer-html t)
   (defun mu4e-view-in-browser ()
     "View the body of the message in a web browser."
     (interactive)
