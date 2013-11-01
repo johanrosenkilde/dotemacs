@@ -397,10 +397,10 @@ line starting with the string given as the argument."
 
 ;; Put selected Evil Keys in Emacs mode
 (fill-keymap evil-emacs-state-map
-             (kbd "C-w h") 'evil-window-left
-             (kbd "C-w j") 'evil-window-down
-             (kbd "C-w k") 'evil-window-up
-             (kbd "C-w l") 'evil-window-right
+             (kbd (concat "C-w " evil-left-key))  'evil-window-left
+             (kbd (concat "C-w " evil-down-key))  'evil-window-down
+             (kbd (concat "C-w " evil-up-key))    'evil-window-up
+             (kbd (concat "C-w " evil-right-key)) 'evil-window-right
              (kbd "C-w C-w") 'evil-window-prev)
 (fill-keymap evil-insert-state-map (kbd "C") 'self-insert-command) ;??? This is strange
 
@@ -422,24 +422,27 @@ Add additional BINDINGS if specified."
 (fill-keymaps (list evil-motion-state-map evil-normal-state-map)
               evil-left-key  'evil-backward-char
               evil-right-key 'evil-forward-char
-              evil-up-key    'evil-previous-line
-              evil-down-key  'evil-next-line
+              evil-up-key    'evil-previous-visual-line
+              evil-down-key  'evil-next-visual-line
               (kbd "SPC") 'evil-scroll-page-down
               (kbd "S-SPC") 'evil-scroll-page-up)
 
 ; Workman fixes 
 (if workman
-    (fill-keymap evil-normal-state-map
-                 "h"   'evil-open-below
-                 "H"   'evil-open-above
-                 "Y"   'evil-window-top
-                 "k"   'isearch-repeat-forward
-                 )
-    (fill-keymaps (list evil-normal-state-map evil-visual-state-map)
-                 "j"   'evil-yank)
-    (fill-keymap evil-visual-state-map
-                 "o"   'evil-forward-char
-                 "l"   'exchange-point-and-mark)
+    (progn
+      (fill-keymap evil-normal-state-map
+                   "h"   'evil-open-below
+                   "H"   'evil-open-above
+                   "Y"   'evil-window-top
+                   "k"   'isearch-repeat-forward
+                   )
+      (fill-keymaps (list evil-normal-state-map evil-visual-state-map)
+                    "j"   'evil-yank)
+                                        ;TODO: the above seems to be reverted by Evil once in a while
+      (fill-keymap evil-visual-state-map
+                   "o"   'evil-forward-char
+                   "l"   'exchange-point-and-mark)
+    )
 )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
