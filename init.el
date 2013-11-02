@@ -7,6 +7,8 @@
 
 ;; Other global nice options
 (setq inhibit-splash-screen t)
+(setq initial-scratch-message "")
+(setq major-mode 'text-mode)
 (scroll-bar-mode -1) ;; Emacs gurus don't need no stinking scroll bars
 (add-to-list 'default-frame-alist '(font . "Droid Sans Mono-8"))
 (add-to-list 'default-frame-alist '(left-fringe . 0))
@@ -15,7 +17,6 @@
 (setq-default indent-tabs-mode nil) ; never insert tabs, do spaces
 (setq mouse-drag-copy-region t) ;; mouse region copies
 (setq grep-find-command "grep -r --exclude=.git ") ;; grep ignores Git
-(require 'tramp) ;; sudo support and others
 
 ;; File type default modes
 (add-to-list 'auto-mode-alist '("\\.svg\\'" . xml-mode))
@@ -23,7 +24,6 @@
 (add-to-list 'auto-mode-alist '("\\.scene\\'" . xml-mode))
 (add-to-list 'auto-mode-alist '("\\.pyx\\'" . python-mode))
 (add-to-list 'auto-mode-alist '("\\.sheet\\'" . sage-mode))
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;       ELISP UTILS
@@ -208,6 +208,14 @@ line starting with the string given as the argument."
 
 ;; Build and keep list of recent files
 (recentf-mode 1)
+
+;; sudo support and others
+(require 'tramp)
+
+;; auto-complete in lisp and c and others by suggesting while writing
+(require 'auto-complete)
+(require 'auto-complete-config)
+(ac-config-default)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;       IDO MORE STUFF
@@ -419,6 +427,7 @@ Add additional BINDINGS if specified."
                    "h"   'evil-open-below
                    "H"   'evil-open-above
                    "Y"   'evil-window-top
+                   "U"   'evil-yank-line
                    "k"   'isearch-repeat-forward
                    )
       (fill-keymaps (list evil-normal-state-map evil-visual-state-map)
