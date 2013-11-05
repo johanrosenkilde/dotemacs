@@ -330,18 +330,6 @@ line starting with the string given as the argument."
              ;; Provide a visual-time shorcut to commenting
              "z" 'comment-region
              "Z" 'uncomment-region)
-;; Key-bindings for movement
-(fill-keymap evil-motion-state-map
-             evil-down-key 'evil-next-visual-line
-             "B" 'evil-backward-word-end
-             evil-up-key 'evil-previous-visual-line
-             "$" 'evil-end-of-visual-line
-             "^" 'evil-first-non-blank-of-visual-line
-             (kbd "C-b") '(lambda () (interactive)
-                            (evil-scroll-up 20))
-             (kbd "C-d") '(lambda () (interactive)
-                            (evil-scroll-down 20))
-             )
 
 ; Remenber positions when searching so they can be found in jump-point-ring
 (defadvice isearch-forward (before marker activate)
@@ -421,6 +409,7 @@ line starting with the string given as the argument."
 (define-key shell-mode-map (kbd "C-d")
   '(lambda () (interactive) (evil-scroll-down 20)))
 
+;; Evil key-bindings for movement
 (defmacro evil-add-hjkl-bindings (keymap &optional state &rest bindings)
   "Add \"h\", \"j\", \"k\", \"l\" bindings to KEYMAP in STATE.
 Add additional BINDINGS if specified."
@@ -432,13 +421,32 @@ Add additional BINDINGS if specified."
      "o" (lookup-key evil-motion-state-map "o")
      ":" (lookup-key evil-motion-state-map ":")
      ,@bindings))
+
+(defun jsrn-scroll-down ()
+  (interactive)
+  (evil-scroll-down 20)
+  (recenter)
+  )
+(defun jsrn-scroll-up ()
+  (interactive)
+  (evil-scroll-up 20)
+  (recenter)
+  )
 (fill-keymaps (list evil-motion-state-map evil-normal-state-map)
-              evil-left-key  'evil-backward-char
-              evil-right-key 'evil-forward-char
-              evil-up-key    'evil-previous-visual-line
+	      evil-left-key  'evil-backward-char
+	      evil-right-key 'evil-forward-char
+	      evil-up-key    'evil-previous-visual-line
+	      evil-down-key  'evil-next-visual-line
               evil-down-key  'evil-next-visual-line
-              (kbd "SPC") 'evil-scroll-page-down
-              (kbd "S-SPC") 'evil-scroll-page-up)
+              "B"            'evil-backward-word-end
+              evil-up-key    'evil-previous-visual-line
+              "$"            'evil-end-of-visual-line
+              "^"            'evil-first-non-blank-of-visual-line
+              (kbd "C-b")    'jsrn-scroll-up
+              (kbd "S-SPC")  'jsrn-scroll-up
+              (kbd "C-d")    'jsrn-scroll-down
+              (kbd "SPC")    'jsrn-scroll-down
+	      )
 
 ; Workman fixes 
 (if workman
