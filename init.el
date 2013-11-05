@@ -28,7 +28,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;       ELISP UTILS
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 (defun def-assoc (key alist default)
   "Return cdr of `KEY' in `ALIST' or `DEFAULT' if key is no car in alist."
   (let ((match (assoc key alist)))
@@ -212,10 +211,31 @@ line starting with the string given as the argument."
 ;; sudo support and others
 (require 'tramp)
 
-;; auto-complete in lisp and c and others by suggesting while writing
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;       AUTO-COMPLETE
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'auto-complete)
 (require 'auto-complete-config)
 (ac-config-default)
+(require 'pos-tip)
+(defun jsj-ac-show-help () ; stolen on the net
+  "show docs for symbol at point or at beginning of list if not on a symbol"
+  (interactive)
+  (let ((s (save-excursion
+             (or (symbol-at-point)
+                 (progn (backward-up-list)
+                        (forward-char)
+                        (symbol-at-point))))))
+    (pos-tip-show (if (equal major-mode 'emacs-lisp-mode)
+                      (ac-symbol-documentation s)
+                    (ac-slime-documentation (symbol-name s)))
+                  'popup-tip-face
+                  ;; 'alt-tooltip
+                  (point)
+                  nil
+                  -1)))
+(define-key lisp-mode-shared-map (kbd "C-c C-h") 'jsj-ac-show-help)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;       IDO MORE STUFF
