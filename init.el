@@ -629,14 +629,13 @@ sometimes if more than one Emacs has this set"
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;       MAGIT
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(require 'magit)
 (global-set-key [(f12)] 'magit-status)
 (evil-set-initial-state 'magit-mode 'normal)
-(evil-declare-key 'emacs magit-diff-mode-map (kbd "<return>")
-  '(lambda ()
-     (interactive)
-     (magit-visit-item t)))
-
-
+(fill-keymap magit-mode-map
+	     (kbd "<return>") '(lambda () (interactive) (magit-visit-item t))
+	     (kbd "S-SPC")    'magit-show-item-or-scroll-down
+	     )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;       DESKTOP (session management)
