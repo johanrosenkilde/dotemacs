@@ -536,6 +536,28 @@ sometimes if more than one Emacs has this set"
   (run-at-time "24:01" nil 'jsrn-org-agenda-to-appt)
   )
 (add-hook 'administrative-mode-hook 'jsrn-agenda-activate)
+
+(defun jsrn-administrative-org-mode-hook ()
+  (defun is-org (buf)
+    "Return whether the given buffer has an open org file or not"
+    (let ((filename (buffer-file-name buf)))
+      (and filename (string-match "\\.org$" filename))))
+  (defun jsrn-show-last-org-buffer ()
+    "Goto the last visited org buffer"
+    (interactive)
+    (let ((bufs (buffer-list)))
+      (while (not (is-org (car bufs)))
+        (setq bufs (cdr bufs)))
+      (set-window-buffer nil (car bufs))))
+  (defun cycle-agenda-files-or-goto-org ()
+    (interactive)
+    (if (is-org (current-buffer))
+        (org-cycle-agenda-files)
+      (jsrn-show-last-org-buffer)))
+  (global-set-key (kbd "C-,") 'cycle-agenda-files-or-goto-org)
+)
+(add-hook 'administrative-mode-hook 'jsrn-administrative-org-mode-hook)
+
 (defun jsrn-org-mode-hook ()
   (visual-line-mode t)
   (defun jsrn-org-up-element ()
