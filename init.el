@@ -18,6 +18,14 @@
 (setq mouse-drag-copy-region t) ;; mouse region copies
 (setq grep-find-command "grep -r --exclude=.git ") ;; grep ignores Git
 
+(defadvice isearch-exit (after jsrn-goto-match-beginning activate)
+  "After a search ends by RET, go to beginning of match."
+  (when (and isearch-forward isearch-other-end)
+    (goto-char isearch-other-end)))
+(defadvice isearch-repeat-forward (after jsrn-goto-match-beginning activate)
+  "After a forwards search is repeated, go to beginning of match."
+  (goto-char isearch-other-end))
+
 ;; File type default modes
 (add-to-list 'auto-mode-alist '("\\.svg\\'" . xml-mode))
 (add-to-list 'auto-mode-alist '("\\.env\\'" . xml-mode))
@@ -313,6 +321,13 @@ line starting with the string given as the argument."
               (kbd "C-e")        'end-of-visual-line
               (kbd "C-a")        'beginning-of-visual-line-smart)
 ;; Key-bindings in normal mode
+(defun jsrn-goto-first-symbol-use ()
+  (interactive)
+  (let ((sym (evil-find-symbol nil)))
+    (evil-goto-first-line)
+    (search-forward-regexp (format "\\_<%s\\_>" (regexp-quote sym)))
+    (evil-backward-word-begin)
+    ))
 (fill-keymap evil-normal-state-map
              (kbd "S-a") '(lambda () (interactive) (end-of-visual-line) (evil-insert-state))
              ;; Search using Emacs' isearch but using Vim keybindings
@@ -320,6 +335,7 @@ line starting with the string given as the argument."
              "?" 'isearch-backward
              "n" 'isearch-repeat-forward
              "N" 'isearch-repeat-backward
+             (kbd "C-#") 'jsrn-goto-first-symbol-use
              ;; Tab in normal mode works as tab in Emacs
              (kbd "TAB") 'indent-for-tab-command)
 ;; Key-bindings in insert mode
@@ -619,7 +635,8 @@ sometimes if more than one Emacs has this set"
   (interactive)
   (flyspell-goto-next-error)
   (ispell-word))
-(define-key flyspell-mode-map [(control ?\,)] 'jsrn-spell-goto-next-and-suggest)
+(define-key flyspell-mode-map [(control ?\.)] 'jsrn-spell-goto-next-and-suggest)
+(define-key flyspell-mode-map [(control ?\,)] nil)
 (define-key flyspell-mode-map [(f6)] 'jsrn-cycle-dictionary)
 
 (setq ispell-silently-savep t)
