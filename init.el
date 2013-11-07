@@ -172,7 +172,6 @@ line. Return the set mark.
 If no argument is given, a delimiter line is a blank line. Otherwise, it is a
 line starting with the string given as the argument."
     (let ((ldelim (if delim (concat "^" delim) "^$")))
-      (message "%s" ldelim)
       (search-backward-regexp ldelim nil 0)
       (let ((beg (point)))
         (push-mark)
@@ -734,13 +733,11 @@ sometimes if more than one Emacs has this set"
   (define-key evil-normal-state-map (kbd "C-<return>") 'sage-send-current-block)
   (define-key evil-normal-state-map (kbd "M-{")   'sage-backward-block)
   (define-key evil-normal-state-map (kbd "M-}") 'sage-forward-block)
-  (message "Running jsrn-sage-mode-hook")
   )
 (add-hook 'sage-mode-hook 'jsrn-sage-mode-hook)
 
 (defun jsrn-inferior-sage-mode-hook ()
   (interactive)
-  (message "Running jsrn-inferior-sage-mode-hook")
   (defun sage-eval-next-block ()
     "If in the Sage buffer, evaluate the next block of the last visited .sage file"
     (interactive)
