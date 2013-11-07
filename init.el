@@ -288,6 +288,10 @@ line starting with the string given as the argument."
           evil-up-key "k"
           evil-down-key "j"
           ))
+(setq evil-left-key-uc  (upcase evil-left-key)
+      evil-right-key-uc (upcase evil-right-key)
+      evil-up-key-uc    (upcase evil-up-key)
+      evil-down-key-uc  (upcase evil-down-key))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;       EVIL
@@ -453,9 +457,7 @@ Add additional BINDINGS if specified."
 	      evil-right-key 'evil-forward-char
 	      evil-up-key    'evil-previous-visual-line
 	      evil-down-key  'evil-next-visual-line
-              evil-down-key  'evil-next-visual-line
               "B"            'evil-backward-word-end
-              evil-up-key    'evil-previous-visual-line
               "$"            'evil-end-of-visual-line
               "^"            'evil-first-non-blank-of-visual-line
               (kbd "C-b")    'jsrn-scroll-up
@@ -541,17 +543,16 @@ sometimes if more than one Emacs has this set"
     (push-mark)
     (org-up-element))
   (fill-keymaps (list evil-normal-state-map evil-insert-state-map)
-                (kbd "M-h") 'org-metaleft
-                (kbd "M-j") 'org-metadown
-                (kbd "M-k") 'org-metaup
-                (kbd "M-l") 'org-metaright
-                (kbd "M-l") 'org-metaright
-                (kbd "C-k") 'jsrn-org-up-element)
+                (kbd (concat "M-" evil-left-key))  'org-metaleft
+                (kbd (concat "M-" evil-down-key))  'org-metadown
+                (kbd (concat "M-" evil-up-key))    'org-metaup
+                (kbd (concat "M-" evil-right-key)) 'org-metaright
+                (kbd "~")  'jsrn-org-up-element)
   (fill-keymap evil-normal-state-map
-               (kbd "M-H") 'org-shiftmetaleft
-               (kbd "M-J") 'org-shiftmetadown
-               (kbd "M-K") 'org-shiftmetaup
-               (kbd "M-L") 'org-shiftmetaright
+               (kbd (concat "M-" evil-left-key-uc))  'org-shiftmetaleft
+               (kbd (concat "M-" evil-down-key-uc))  'org-shiftmetadown
+               (kbd (concat "M-" evil-up-key-uc))    'org-shiftmetaup
+               (kbd (concat "M-" evil-right-key-uc)) 'org-shiftmetaright
                (kbd "C-c a") 'org-agenda)
   ;; Let winner keys overwrite org-mode
   (define-key evil-normal-state-map (kbd "M-S-<left>") 'winner-undo) 
