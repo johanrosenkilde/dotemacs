@@ -386,6 +386,10 @@ line starting with the string given as the argument."
       do (evil-set-initial-state mode state))
 
 (evil-mode 1)
+;; Remove certain keybindings
+(fill-keymaps (list evil-normal-state-map evil-visual-state-map evil-insert-state-map)
+              (kbd "C-.") nil
+              )
 
 ;; In some modes, the special Enter is most I need, so map this to <enter>.
 (evil-declare-key 'motion woman-mode-map (kbd "<return>") 'woman-follow)
@@ -412,6 +416,11 @@ line starting with the string given as the argument."
 
 ;; windowing
 (fill-keymap evil-window-map
+             ;; Moving (these exist for Qwerty)
+             evil-left-key  'evil-window-left
+             evil-down-key  'evil-window-down
+             evil-up-key    'evil-window-up
+             evil-right-key 'evil-window-right
              (kbd "C-g") nil
              ;; Splitting
              "\\" 'split-window-vertically
@@ -753,6 +762,8 @@ sometimes if more than one Emacs has this set"
     (sage-send-current-block))
   (define-key inferior-sage-mode-map (kbd "C-<return>") 'sage-eval-next-block)
   )
+(define-key inferior-sage-mode-map (kbd "S-SPC") 'jsrn-scroll-up)
+(define-key inferior-sage-mode-map (kbd "C-SPC") 'jsrn-scroll-down)
 (add-hook 'inferior-sage-mode-hook 'jsrn-inferior-sage-mode-hook)
 
 
