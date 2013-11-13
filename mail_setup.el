@@ -30,6 +30,7 @@
 (defun jsrn-mu4e-setup ()
   (add-to-list 'load-path"/usr/local/share/emacs/site-lisp/mu4e")
   (require 'mu4e)
+  
   ;; Handling html messages
   (setq mu4e-html2text-command "vilistextum -k -y\"iso-8859-1\" - -")
   (setq mu4e-view-prefer-html t)
@@ -46,9 +47,11 @@
         (when (> (length txt) 0)
           (insert txt))
         (browse-url-of-buffer)))) 
+
   ;; Call view-in-browser when pressing "ab" (the leading b in str below is key)
   (add-to-list 'mu4e-view-actions
                '("bView in browser" . mu4e-action-view-in-browser) t)
+
   ;; Set up the mailboxes for refiling, sent etc.
   (defun jsrn-mu4e-mailbox (msg)
     (let ((maildir (mu4e-message-part-field msg :maildir)))
@@ -78,6 +81,7 @@
                                      ((string-equal mailbox "dtu")   "/dtu/Archives.2013"))))
         )
   (setq mu4e-attachment-dir "~/downloads")
+
   ;; Set up some shortcuts access them with 'j' ('jump')
   (setq   mu4e-maildir-shortcuts
           '(("/atuin/INBOX"       . ?i)
@@ -90,10 +94,12 @@
             ("/atuin/INBOX.To Use". ?u)
             ("/dtu/Archives.2013" . ?A)
             ))
+
   ;; Check mail using offlineimap every 5 min
   (setq mu4e-get-mail-command "offlineimap"
         mu4e-update-interval 300
         mail-user-agent 'mu4e-user-agent)
+
   ;; Messages should be replied from the recipient if it was one of the
   ;; registered email addresses
   (setq mu4e-my-email-addresses '("atuin@atuin.dk"
@@ -109,8 +115,10 @@
   (setq jsrn-mu4e-email-to-sent-folder '(("j.s.r.nielsen@mat.dtu.dk" . "/dtu/Sent")
                                          ("jsrn@dtu.dk" . "/dtu/Sent"))
         jsrn-mu4e-mailbox-default "/atuin/INBOX.Sent")
+  
   ;; Only addresses from mail sent to me directly should go in auto-completions
   (setq mu4e-compose-complete-only-personal nil)
+
   ;; Switch my from address to the next possible from address
   (defun next-from-address ()
     (interactive)
@@ -127,6 +135,7 @@
     )
   )
   (define-key mu4e-compose-mode-map [(f2)] 'next-from-address)
+
   (defun jsrn-set-from-address ()
     "Set the From address, and Sent Folder based on the To address of the original"
     (setq user-mail-address
@@ -143,15 +152,18 @@
         (setq jsrn-mu4e-sent-folder folder)))
     )
   (add-hook 'mu4e-compose-pre-hook 'jsrn-set-from-address)
+
   (defun jsrn-send-mail-set-smtp ()
     (jsrn-smtpmail-setup (mail-fetch-field "from")))
   (add-hook 'message-send-hook  'jsrn-send-mail-set-smtp)
+
   ;; flyspelling the email: flyspell-buffer croaks across the "text follows ..." line
   (defun flyspell-body ()
     (interactive)
     (save-excursion
       (message-goto-body)
       (flyspell-region (point) (progn (end-of-buffer) (point)))))
+  
   ;; Setup email writing
   (defun jsrn-mu4e-compose-setup ()
     (flyspell-mode t)
@@ -174,26 +186,41 @@
                   (lambda () (interactive) (jsrn-cycle-dictionary) (flyspell-body)))
     )
   (add-hook 'mu4e-compose-mode-hook 'jsrn-mu4e-compose-setup)
+
   ;; Don't ask on exiting
   (setq mu4e-confirm-quit nil)
+
   ;; backspace should clear mark like in dired
   (define-key mu4e-headers-mode-map (kbd "<backspace>")
     (lambda () (interactive)
       (mu4e-headers-prev)
       (mu4e-headers-mark-for-unmark)
       (mu4e-headers-prev)))
+
   ;; A better mark-for-move funtion which properly handles multiple messages in region
   (define-key mu4e-headers-mode-map (kbd "m")
     (lambda () (interactive)
       (let ((target (mu4e~mark-get-move-target)))
         (mu4e-mark-set 'move target))))
-  (fill-keymaps (list mu4e-headers-mode-map
-                      mu4e-view-mode-map)
-                (kbd "S-<SPC>") 'scroll-down-command)
+
   ;; Disable evil
   (evil-set-initial-state 'mu4e-main-mode 'emacs)
   (evil-set-initial-state 'mu4e-headers-mode 'emacs)
   (evil-set-initial-state 'mu4e-view-mode 'emacs)
-  ;; Fast opening, since mu4e close all the time
+
+  ;; Various keymappings and shortcut functions
   (global-set-key [(f12)] 'mu4e)
+  ;; Search for the sender of current message
+  (defun jsrn-search-for-sender ()
+    (interactive)
+    (let* ((msg (mu4e-message-at-point))
+           (from (or (cdr (car (mu4e-message-field msg :from)))
+                     (mu4e-warn "No message at point"))))
+      (message "%s" from)
+      (mu4e~headers-search-execute (concat "from:" from) t) 
+    ))
+  (fill-keymaps (list mu4e-headers-mode-map
+                      mu4e-view-mode-map)
+                (kbd "S-<SPC>") 'scroll-down-command
+                [(f7)] 'jsrn-search-for-sender)
 )
