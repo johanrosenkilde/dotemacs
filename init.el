@@ -85,8 +85,16 @@ See `pour-mappings-to'."
 ;;       GLOBALLY DEFINED CUSTOM FUNCTIONS AND KEYS
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;; Make the useless I into the very useful X with Ctrl and Meta
 (keyboard-translate ?\C-i ?\C-x)
 (define-key key-translation-map (kbd "M-i") (kbd "M-x"))
+;; Do the same such that emacsclient understands
+(add-hook 'after-make-frame-functions
+          '(lambda (frame)
+             (with-selected-frame frame (keyboard-translate ?\C-i ?\C-x))
+             (define-key key-translation-map (kbd "M-i") (kbd "M-x"))
+             ))
+
 (global-set-key [(f1)] '(lambda ()
                           (interactive)
                           (woman (current-word))))
