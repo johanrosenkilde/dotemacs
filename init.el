@@ -515,6 +515,53 @@ Add additional BINDINGS if specified."
 ;;                 type S <new delim> to insert also newlines on inside
 (require 'surround)
 (global-surround-mode)
+;; Add capability for finding nearest delimiters when typing SPC
+;; This is done by redefining two functions sorround-*-overlay
+(defun find-nearest-text-objects (types object-map)
+  (let ((tmin -1)
+        (tmax most-positive-fixnum))
+    (dolist (type types (list tmin tmax))
+      (let ((range (funcall (lookup-key object-map type))))
+        (when (evil-range-p range)
+              (setq tmin (max (evil-range-beginning range) tmin))
+              (setq tmax (min (evil-range-end range) tmax)))
+      ))
+    ))
+(defun surround-outer-overlay (char)
+  "Return outer overlay for the delimited range represented by CHAR.
+This overlay includes the delimiters.
+See also `surround-inner-overlay'."
+  (let ((range
+         (if (string-equal " " (string char))
+             ;; choose nearest
+             (find-nearest-text-objects (list "[" "{" "(") evil-outer-text-objects-map)
+           ;; we chose a specific delimiter
+           (funcall (lookup-key evil-outer-text-objects-map (string char))))))
+    (when (evil-range-p range)
+      (progn
+        (surround-trim-whitespace-from-range range "[ \t]")
+        (make-overlay (evil-range-beginning range)
+                      (evil-range-end range)
+                      nil nil t)))
+    ))
+(defun surround-inner-overlay (char)
+  "Return inner overlay for the delimited range represented by CHAR.
+This overlay excludes the delimiters.
+See also `surround-outer-overlay'."
+  (let ((range
+         (if (string-equal " " (string char))
+             ;; choose nearest
+             (find-nearest-text-objects (list "[" "{" "(") evil-inner-text-objects-map)
+           ;; we chose a specific delimiter
+           (funcall (lookup-key evil-inner-text-objects-map (string char))))))
+    (when (evil-range-p range)
+      (progn
+        (when (eq (char-syntax char) ?\()
+          (surround-trim-whitespace-from-range range "[ \t]"))
+        (make-overlay (evil-range-beginning range)
+                      (evil-range-end range)
+                      nil nil t))
+      )))
 ;; Some extras for certain modes
 (add-hook 'LaTeX-mode-hook (lambda ()
                              (push '(?~ . ("\\texttt{" . "}")) surround-pairs-alist)
