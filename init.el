@@ -122,7 +122,6 @@ See `pour-mappings-to'."
 (global-set-key [(shift f5)] 'orgtbl-insert-radio-table)
 (global-set-key "\M-?" 'hippie-expand)
 (global-set-key (kbd "C-x m") 'ffap) ;; Find file at point (and override compose-mail)
-(global-set-key (kbd "C-x 4") '(lambda () (interactive) (switch-to-buffer-other-window nil)))
 (global-set-key (kbd "S-<backspace>") 'delete-horizontal-space)
 
 ;; Other window control
@@ -423,27 +422,29 @@ line starting with the string given as the argument."
              evil-right-key 'evil-window-right
              (kbd "C-g") nil
              ;; Splitting
-             "\\" 'split-window-vertically
-             "|"  'split-window-horizontally
+             "\\" 'split-window-horizontally
              ;; Deleting
-             "D" 'delete-window
              (kbd "C-d") 'delete-window
              "1" 'delete-other-windows
              ;; Sizing
-             (kbd "RET") 'enlarge-window)
+             (kbd "RET") 'enlarge-window
+             ;; Buffer switching
+             "p"         '(lambda () (interactive) (switch-to-buffer nil))
+             (kbd "C-p") '(lambda () (interactive)
+                            (switch-to-buffer-other-window nil))
+             ;; Moving
+             evil-left-key  'evil-window-left
+             evil-down-key  'evil-window-down
+             evil-up-key    'evil-window-up
+             evil-right-key 'evil-window-right
+             (kbd "C-w")    'evil-window-prev
+             )
 
-;; Put selected Evil Keys in Emacs mode
-(fill-keymap evil-emacs-state-map
-             (kbd (concat "C-w " evil-left-key))  'evil-window-left
-             (kbd (concat "C-w " evil-down-key))  'evil-window-down
-             (kbd (concat "C-w " evil-up-key))    'evil-window-up
-             (kbd (concat "C-w " evil-right-key)) 'evil-window-right
-             (kbd "C-w C-w") 'evil-window-prev)
-(fill-keymap evil-insert-state-map (kbd "C") 'self-insert-command) ;??? This is strange
+;; Put all window bindings in emacs state also
+(define-key evil-emacs-state-map (kbd "C-w") evil-window-map) 
 
-;; For some reason ?!
-(define-key shell-mode-map (kbd "C-d")
-  '(lambda () (interactive) (evil-scroll-down 20)))
+;;??? This is strangely needed
+(fill-keymap evil-insert-state-map (kbd "C") 'self-insert-command) 
 
 ;; Evil key-bindings for movement
 (defmacro evil-add-hjkl-bindings (keymap &optional state &rest bindings)
