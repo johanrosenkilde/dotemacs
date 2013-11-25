@@ -517,8 +517,15 @@ Add additional BINDINGS if specified."
 (require 'surround)
 (global-surround-mode)
 ;; Add capability for finding nearest delimiters when typing SPC
-;; This is done by redefining two functions sorround-*-overlay
-(defun find-nearest-text-objects (types object-map)
+;; For surround mode, this is done by redefining two functions sorround-*-overlay
+(setq jsrn-delimiter-objects (list "[" "{" "("))
+(defun find-nearest-text-objects (&optional types object-map)
+  "Find the nearest occurence of a text object like [ and ( using functions
+amongst those given in object-map."
+  (when (eq nil types)
+    (setq types jsrn-delimiter-objects))
+  (when (eq nil object-map)
+    (setq object-map evil-outer-text-objects-map))
   (let ((tmin -1)
         (tmax most-positive-fixnum))
     (dolist (type types (list tmin tmax))
@@ -535,7 +542,7 @@ See also `surround-inner-overlay'."
   (let ((range
          (if (string-equal " " (string char))
              ;; choose nearest
-             (find-nearest-text-objects (list "[" "{" "(") evil-outer-text-objects-map)
+             (find-nearest-text-objects)
            ;; we chose a specific delimiter
            (funcall (lookup-key evil-outer-text-objects-map (string char))))))
     (when (evil-range-p range)
@@ -552,7 +559,7 @@ See also `surround-outer-overlay'."
   (let ((range
          (if (string-equal " " (string char))
              ;; choose nearest
-             (find-nearest-text-objects (list "[" "{" "(") evil-inner-text-objects-map)
+             (find-nearest-text-objects jsrn-delimiter-objects evil-inner-text-objects-map)
            ;; we chose a specific delimiter
            (funcall (lookup-key evil-inner-text-objects-map (string char))))))
     (when (evil-range-p range)
@@ -563,6 +570,27 @@ See also `surround-outer-overlay'."
                       (evil-range-end range)
                       nil nil t))
       )))
+;; Add similar functionality for the Evil-born functions c/v + a/i:
+(evil-define-text-object jsrn-a-delimiter (count &optional beg end type)
+  "select innermost parenthetic delimiter.
+note: hackish solution, probably only works for count=1 and more or less none of
+the optional values set"
+  :extend-selection t
+  (find-nearest-text-objects)
+  )
+(evil-define-text-object jsrn-inside-delimiter (count &optional beg end type)
+  "select innermost parenthetic delimiter.
+note: hackish solution, probably only works for count=1 and more or less none of
+the optional values set"
+  :extend-selection nil
+  (let ((range (find-nearest-text-objects)))
+    (list (+ (evil-range-beginning range) 1) (- (evil-range-end range) 1))
+  ))
+(fill-keymap evil-visual-state-map
+             "a "        'jsrn-a-delimiter
+             "i "        'jsrn-inside-delimiter
+             )
+
 ;; Some extras for certain modes
 (add-hook 'LaTeX-mode-hook (lambda ()
                              (push '(?~ . ("\\texttt{" . "}")) surround-pairs-alist)
@@ -774,10 +802,13 @@ sometimes if more than one Emacs has this set"
 (setq sage-path "/home/jsrn/local/sage/sage-5.8")
 (add-to-list 'load-path (cl-concatenate 'string sage-path "/local/share/emacs"))
 (require 'sage "sage")
+(require 'sage-view "sage-view")
+(defun sage-view-cleanup-copied-text (str)
+  (concat "Monkey " str)
+  )
 (setq sage-command (cl-concatenate 'string sage-path "/sage"))
 (defun jsrn-sage-mode-hook ()
   (interactive)
-  (require 'sage-view "sage-view")
   (add-hook 'sage-startup-after-prompt-hook 'sage-view)
   (setq sage-block-delim "###")
   (defun sage-backward-block ()
