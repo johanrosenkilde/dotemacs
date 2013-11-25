@@ -953,6 +953,12 @@ last main file"
               (define-key diff-mode-map (kbd "k") 'diff-hunk-prev)
               ))
 
+;; Undo-tree mode
+(define-key undo-tree-visualizer-mode-map (kbd "n") 'undo-tree-visualize-redo)
+(define-key undo-tree-visualizer-mode-map (kbd "e") 'undo-tree-visualize-undo)
+(define-key undo-tree-visualizer-mode-map (kbd "y") 'undo-tree-visualize-switch-branch-left)
+(define-key undo-tree-visualizer-mode-map (kbd "o") 'undo-tree-visualize-switch-branch-right)
+
 (define-derived-mode mgt-list-mode nil "mtg"
   "Major mode writing MTG lists. Open motl list in one buffer and activate this
 mode, and write in another also with this mode, then word completion works for
