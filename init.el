@@ -8,7 +8,7 @@
 ;; Other global nice options
 (setq inhibit-splash-screen t)
 (setq initial-scratch-message "")
-(setq major-mode 'text-mode)
+(setq-default major-mode 'text-mode)
 (scroll-bar-mode -1) ;; Emacs gurus don't need no stinking scroll bars
 (add-to-list 'default-frame-alist '(font . "Droid Sans Mono-8"))
 (add-to-list 'default-frame-alist '(left-fringe . 0))
@@ -381,6 +381,7 @@ line starting with the string given as the argument."
                               (debugger-mode . emacs)
                               (shell-mode . emacs)
                               (diff-mode . emacs)
+                              (undo-tree-visualizer-mode . emacs)
                               )
       do (evil-set-initial-state mode state))
 
@@ -632,14 +633,14 @@ sometimes if more than one Emacs has this set"
                 (kbd (concat "M-" evil-left-key))  'org-metaleft
                 (kbd (concat "M-" evil-down-key))  'org-metadown
                 (kbd (concat "M-" evil-up-key))    'org-metaup
-                (kbd (concat "M-" evil-right-key)) 'org-metaright
-                (kbd "~")  'jsrn-org-up-element)
+                (kbd (concat "M-" evil-right-key)) 'org-metaright)
   (fill-keymap evil-normal-state-map
                (kbd (concat "M-" evil-left-key-uc))  'org-shiftmetaleft
                (kbd (concat "M-" evil-down-key-uc))  'org-shiftmetadown
                (kbd (concat "M-" evil-up-key-uc))    'org-shiftmetaup
                (kbd (concat "M-" evil-right-key-uc)) 'org-shiftmetaright
-               (kbd "C-c a") 'org-agenda)
+               (kbd "C-c a") 'org-agenda
+               (kbd "~")  'jsrn-org-up-element)
   ;; Let winner keys overwrite org-mode
   (define-key evil-normal-state-map (kbd "M-S-<left>") 'winner-undo) 
   (define-key evil-normal-state-map (kbd "M-S-<right>") 'winner-redo)
