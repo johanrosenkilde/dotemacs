@@ -368,8 +368,9 @@ line starting with the string given as the argument."
   "Store current position in jump list"
   (evil-set-jump))
 
-; Disable Evil in certain modes
-(cl-loop for (mode . state) in '((eassist-mode . emacs)
+; Enable//Disable Evil in certain modes
+(cl-loop for (mode . state) in '(
+                              (eassist-mode . emacs)
                               (xgtags-select-mode . emacs)
                               (magit-branch-manager-mode . emacs)
                               (reftex-select-label-mode . emacs)
@@ -379,6 +380,8 @@ line starting with the string given as the argument."
                               (shell-mode . emacs)
                               (diff-mode . emacs)
                               (undo-tree-visualizer-mode . emacs)
+                              ;; Disable
+                              (completion-list-mode . normal)
                               )
       do (evil-set-initial-state mode state))
 
@@ -392,9 +395,11 @@ line starting with the string given as the argument."
 (evil-declare-key 'motion woman-mode-map (kbd "<return>") 'woman-follow)
 (evil-declare-key 'motion reftex-toc-mode-map (kbd "<return>") 'reftex-toc-goto-line-and-hide)
 (evil-declare-key 'motion finder-mode-map (kbd "<return>") 'finder-select)
+(evil-declare-key 'motion completion-list-mode-map (kbd "<return>") 'choose-completion)
 ;; Same for quit q
-(evil-declare-key 'normal woman-mode-map (kbd "q") 'Man-quit)
-(evil-declare-key 'normal reftex-toc-mode-map (kbd "q") 'reftex-toc-quit)
+(evil-declare-key 'normal woman-mode-map "q" 'Man-quit)
+(evil-declare-key 'normal reftex-toc-mode-map "q" 'reftex-toc-quit)
+(evil-declare-key 'normal completion-list-mode-map "q" 'quit-window)
 
 ;; make cursor look like Vim when in Vim normal mode
 (defun cofi/evil-cursor ()
