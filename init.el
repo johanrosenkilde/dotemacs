@@ -124,9 +124,6 @@ See `pour-mappings-to'."
 (global-set-key (kbd "C-x m") 'ffap) ;; Find file at point (and override compose-mail)
 (global-set-key (kbd "S-<backspace>") 'delete-horizontal-space)
 
-;; Other window control
-(global-set-key (kbd "C-M-b") 'scroll-other-window-down)
-(global-set-key (kbd "C-M-d") 'scroll-other-window)
 ;; Remove annoying shortcuts I sometimes press by mistake
 (global-unset-key (kbd "C-x C-c")) ;; for killing emacs fast
 (global-unset-key (kbd "C-h h")) ;; show the HELLO message
@@ -462,12 +459,12 @@ Add additional BINDINGS if specified."
 
 (defun jsrn-scroll-down ()
   (interactive)
-  (evil-scroll-down 20)
+  (evil-scroll-down nil)
   (recenter)
   )
 (defun jsrn-scroll-up ()
   (interactive)
-  (evil-scroll-up 20)
+  (evil-scroll-up nil)
   (recenter)
   )
 (fill-keymaps (list evil-motion-state-map evil-normal-state-map)
@@ -482,6 +479,8 @@ Add additional BINDINGS if specified."
               (kbd "S-SPC")  'jsrn-scroll-up
               (kbd "C-d")    'jsrn-scroll-down
               (kbd "SPC")    'jsrn-scroll-down
+              (kbd "C-w SPC")  'scroll-other-window
+              (kbd "C-w S-SPC")'scroll-other-window-down
 	      )
 
 ; Workman fixes 

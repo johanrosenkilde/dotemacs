@@ -221,6 +221,11 @@
     ))
   (fill-keymaps (list mu4e-headers-mode-map
                       mu4e-view-mode-map)
-                (kbd "S-<SPC>") 'scroll-down-command
                 [(f7)] 'jsrn-search-for-sender)
+  (fill-keymap mu4e-headers-mode-map
+                (kbd "S-<SPC>") 'scroll-down-command
+  (fill-keymap mu4e-view-mode-map
+                (kbd "S-<SPC>") 'jsrn-scroll-up
+                (kbd "<SPC>") 'jsrn-scroll-down
+                )
 )
