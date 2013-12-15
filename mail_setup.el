@@ -27,6 +27,16 @@
 ))
 (jsrn-smtpmail-setup "jsrn")
 
+(defun jsrn-attach-file (file &optional type)
+  "Essentially call `mml-attach-file' but without description and always
+  attached disposition."
+  (interactive
+    (let* ((file (mml-minibuffer-read-file "Attach file: "))
+           (type (mml-minibuffer-read-type file)))
+      (list file type)))
+  (mml-attach-file file type nil "attachment")
+)
+
 (defun jsrn-mu4e-setup ()
   (add-to-list 'load-path"/usr/local/share/emacs/site-lisp/mu4e")
   (require 'mu4e)
@@ -95,6 +105,7 @@
             ("/dtu/Archives.2013" . ?A)
             ))
   
+  ;; View the contents of all inboxes with 'bi'
   (add-to-list 'mu4e-bookmarks
      '("maildir:/atuin/INBOX or maildir:/dtu/INBOX"  "Inboxes"  ?i))
 
@@ -179,14 +190,15 @@
           (reftex-citation)))
     (define-key mu4e-compose-mode-map (kbd "C-c B") 'jsrn-insert-citation)
     (fill-keymaps (list evil-normal-state-map evil-insert-state-map)
-                  (kbd "C-c ! c")
-                  (lambda ()
-                    (interactive)
-                    (Footnote-add-footnote)
-                    (jsrn-insert-citation)))
-    (fill-keymaps (list evil-normal-state-map evil-insert-state-map)
+                  (kbd "C-c ! c") (lambda ()
+                                    (interactive)
+                                    (Footnote-add-footnote)
+                                    (jsrn-insert-citation))
                   [(f6)]
-                  (lambda () (interactive) (jsrn-cycle-dictionary) (flyspell-body)))
+                    (lambda () (interactive) (jsrn-cycle-dictionary) (flyspell-body))
+                  ;; Change attach file to my slightly quicker and nicer one
+                  (kbd "C-c C-a")  'jsrn-attach-file
+                  )
     )
   (add-hook 'mu4e-compose-mode-hook 'jsrn-mu4e-compose-setup)
 
