@@ -533,12 +533,14 @@ amongst those given in object-map."
   (let ((tmin -1)
         (tmax most-positive-fixnum))
     (dolist (type types (list tmin tmax))
-      (let ((range (funcall (lookup-key object-map type))))
-        (when (evil-range-p range)
-              (setq tmin (max (evil-range-beginning range) tmin))
-              (setq tmax (min (evil-range-end range) tmax)))
-      ))
-    ))
+      (condition-case nil
+        (let ((range (funcall (lookup-key object-map type))))
+          (when (evil-range-p range)
+                (setq tmin (max (evil-range-beginning range) tmin))
+                (setq tmax (min (evil-range-end range) tmax)))
+          )
+        (error nil))
+    )))
 (defun surround-outer-overlay (char)
   "Return outer overlay for the delimited range represented by CHAR.
 This overlay includes the delimiters.
