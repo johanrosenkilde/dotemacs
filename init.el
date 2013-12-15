@@ -18,6 +18,7 @@
 (setq mouse-drag-copy-region t) ;; mouse region copies
 (setq grep-find-command "grep -r --exclude=.git ") ;; grep ignores Git
 
+
 (defadvice isearch-exit (after jsrn-goto-match-beginning activate)
   "After a search ends by RET, go to beginning of match."
   (when (and isearch-forward isearch-other-end)
@@ -140,7 +141,7 @@ only the newline character"
   (if (= (current-column) 0) ; If we are at beginning, kill newline char
       (backward-delete-char 1)
     (kill-line 0)))
-(global-set-key (kbd "M-C-<backspace>") 'kill-line-backwards)
+(global-set-key (kbd "M-<backspace>") 'kill-line-backwards)
 
 (defun beginning-of-visual-line-smart ()
   "Move point to first non-whitespace character or beginning-of-visual-line.
@@ -157,6 +158,8 @@ If point was already at that position, move point to beginning of line."
     (and (= oldpos (point))
          (beginning-of-line))))
 (global-set-key (kbd "C-a") 'beginning-of-visual-line-smart) ;Override default C-a
+
+;;TODO: delete-visual-line to replace S-d
 
 ;;Function for reloading the .emacs file
 (defun reload-dotemacs ()
@@ -396,6 +399,7 @@ line starting with the string given as the argument."
 (evil-declare-key 'motion reftex-toc-mode-map (kbd "<return>") 'reftex-toc-goto-line-and-hide)
 (evil-declare-key 'motion finder-mode-map (kbd "<return>") 'finder-select)
 (evil-declare-key 'motion completion-list-mode-map (kbd "<return>") 'choose-completion)
+(evil-declare-key 'insert shell-mode-map (kbd "<return>") 'comint-send-input)
 ;; Same for quit q
 (evil-declare-key 'normal woman-mode-map "q" 'Man-quit)
 (evil-declare-key 'normal reftex-toc-mode-map "q" 'reftex-toc-quit)
@@ -983,13 +987,6 @@ last main file"
 ;; Text-mode
 (add-hook 'text-mode-hook '(lambda () (visual-line-mode)))
 
-;; Diff-mode
-(add-hook 'diff-mode-hook
-          '(lambda ()
-              (define-key diff-mode-map (kbd "j") 'diff-hunk-next)
-              (define-key diff-mode-map (kbd "k") 'diff-hunk-prev)
-              ))
-
 ;; Undo-tree mode
 (define-key undo-tree-visualizer-mode-map (kbd "n") 'undo-tree-visualize-redo)
 (define-key undo-tree-visualizer-mode-map (kbd "e") 'undo-tree-visualize-undo)
@@ -1008,6 +1005,17 @@ complete card names"
   (modify-syntax-entry ?|  "." (syntax-table))
   )
 
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;       DIFF
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(add-hook 'diff-mode-hook
+          '(lambda ()
+             (fill-keymap diff-mode-map
+                          evil-down-key 'diff-hunk-next
+                          evil-up-key   'diff-hunk-prev
+                          "q"           'kill-buffer
+             )))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;       DIMINISH (Cleaning up mode line)
