@@ -1,0 +1,75 @@
+" general keys
+map <c-g> <Escape>
+
+" movement keys in Workman
+map y <Left>
+map n <Down>
+map e <Up>
+map o <Right>
+nmap n <Down><Down><Down><Down><Down><Down><Down><Down>
+nmap e <Up><Up><Up><Up><Up><Up><Up><Up>
+
+" other Workman, normal mode
+" Open URL
+nnoremap O o
+" Open URL from current
+nnoremap U O
+" Next buffer
+nnoremap s gt
+" Previous buffer
+nnoremap h gT
+" Last visited buffer
+nnoremap <c-h> <c-^>
+" find next
+nnoremap k n
+
+" Yank marked text
+vnoremap j <c-c>
+" Yank current url
+nnoremap j y
+
+" Select first hit in Startpage
+nnoremap <c-\'> :js content.document.getElementById("title_1").click()<cr>
+
+" Disable C-g for showing Find bar
+" Doesn't work but might in Pentadactyl?
+vnoremap <c-g> <Nop>
+inoremap <c-g> <Nop>
+cnoremap <c-g> <Nop>
+nnoremap <c-g> <Nop>
+" Shortcut for killing Find bar (since above doesn't work)
+nnoremap <c-g> :js gFindBar.close();<cr>
+
+" Shortcut for dr body narrower
+nnoremap W :js dr_body_narrow.switchWidth()<cr>
+
+" Show the date
+:map <F2> :echo Date()<CR>
+
+" Let Firefox handle certain commands
+" For Zotero
+"nnoremap zf i<c-s-z>
+"nnoremap <c-s-x> i<c-s-x>
+"command zscrape js Zotero_Browser.scrapeThisPage(".")
+
+" Options
+set visualbell
+set defsearch=gg
+set focuscontent=true
+
+" Make Firefox run faster by using JIT
+" set! javascript.options.jit.chrome=true
+
+" Load configuration file into current browser, useful for updating after editing this file.
+command! sourcerc :source ~/.vimperatorrc
+
+javascript <<EOF
+(function(){
+  var zoteroPanel = document.createElement("label");
+  zoteroPanel.setAttribute("id", "zotero-panel-clone");    
+  zoteroPanel.appendChild(document.getElementById("zotero-status-image"));
+  zoteroPanel.firstChild.setAttribute("style", "padding: 0; max-height: 11px;");
+  document.getElementById("liberator-status")
+    .insertBefore(zoteroPanel, document.getElementById("liberator-status-position"));
+})();
+EOF
