@@ -927,13 +927,14 @@ last main file"
   (defun anki-prepare ()
     "Clone this buffer, format it for anki importing it, and save it in homedir"
     (interactive)
-    (let ((buf (clone-buffer)))
-      (set-buffer buf)
-      (goto-char (point-min))
-      (while (re-search-forward " *\\(\t\\|   \\)[\t ]*" nil t)
-	(replace-match ";"))
-      (write-file "~/anki_import.txt")
-      ))
+    (let ((buf (current-buffer)))
+      (with-temp-buffer
+	(insert-buffer-substring buf)
+	(goto-char (point-min))
+	(while (re-search-forward " *\\(\t\\|   \\)[\t ]*" nil t)
+	  (replace-match ";"))
+	(write-file "~/anki_import.txt")
+	)))
   ;; Some html bindings
   (fill-keymaps (list evil-visual-state-map
 		      evil-insert-state-map)
