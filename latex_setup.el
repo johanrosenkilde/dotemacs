@@ -68,6 +68,9 @@
                     ))
   ;; Don't prompt for ref style, just insert cref always
   (setq reftex-ref-macro-prompt nil)
+  ;; The above seems to be broken in current AUCTeX so work-around
+  (fill-keymaps (list evil-normal-state-map evil-insert-state-map)
+                (kbd "C-c )") (lambda () (interactive) (reftex-reference " ")))
   (add-to-list 'reftex-ref-style-alist '("Default" t
                                          (("\\cref" 13)
                                           ("\\cpageref" 112))))
