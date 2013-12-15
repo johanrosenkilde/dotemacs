@@ -28,6 +28,8 @@
   (flyspell-mode t)                  ; always turn on flyspell
   (turn-on-reftex)                   ; always turn on reftex
   (setq TeX-insert-braces nil)       ; dont ever insert braces at macro expansion
+  ;; Activate the more reliable but simpler error system (for C-c `)
+  (setq LaTeX-command-style '(("" "%(PDF)%(latex) -file-line-error %S%(PDFout)")))
   (TeX-source-correlate-mode)        ; activate forward/reverse search
   (TeX-PDF-mode)
   ;; Make forward search work properly for Okular
