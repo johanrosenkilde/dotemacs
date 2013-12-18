@@ -37,6 +37,15 @@
   (mml-attach-file file type nil "attachment")
 )
 
+(defun jsrn-mailto-from-kill ()
+  "Parse the contents of the top of the kill ring as a mailto-link and apply it"
+  (interactive)
+  (setq uri (current-kill 0 t))
+  (set-text-properties 0 (length uri) nil uri)
+  (when (string-match "\".*\"" uri)
+    (setq uri (substring uri 1 (- (length uri) 1))))
+  (mu4e~compose-browse-url-mail uri))
+
 (defun jsrn-mu4e-setup ()
   (add-to-list 'load-path"/usr/local/share/emacs/site-lisp/mu4e")
   (require 'mu4e)
@@ -225,6 +234,7 @@
 
   ;; Various keymappings and shortcut functions
   (global-set-key [(f12)] 'mu4e)
+  (global-set-key [(f8)] 'jsrn-mailto-from-kill)
   ;; Search for the sender of current message
   (defun jsrn-search-for-sender ()
     (interactive)
