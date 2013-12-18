@@ -57,6 +57,9 @@ set visualbell
 set defsearch=gg
 set focuscontent=true
 
+" Get the focus back from insisting pages
+autocmd PageLoad .*(youtube|groups.google|amazon)\\.* :normal <Esc>
+
 " Make Firefox run faster by using JIT
 " set! javascript.options.jit.chrome=true
 
