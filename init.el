@@ -468,6 +468,8 @@ Add additional BINDINGS if specified."
 
 (defun jsrn-scroll-down ()
   (interactive)
+  (when (eq 1 (point))
+    (evil-scroll-down nil))
   (evil-scroll-down nil)
   (recenter)
   )
