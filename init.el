@@ -10,6 +10,7 @@
 (setq initial-scratch-message "")
 (setq-default major-mode 'text-mode)
 (scroll-bar-mode -1) ;; Emacs gurus don't need no stinking scroll bars
+(menu-bar-mode 0)    ;; or menu bars
 (add-to-list 'default-frame-alist '(font . "Droid Sans Mono-8"))
 (add-to-list 'default-frame-alist '(left-fringe . 0))
 (add-to-list 'default-frame-alist '(right-fringe . 0))
@@ -17,7 +18,7 @@
 (setq-default indent-tabs-mode nil) ; never insert tabs, do spaces
 (setq mouse-drag-copy-region t) ;; mouse region copies
 (setq grep-find-command "grep -r --exclude=.git ") ;; grep ignores Git
-
+(setq visible-bell t)
 
 (defadvice isearch-exit (after jsrn-goto-match-beginning activate)
   "After a search ends by RET, go to beginning of match."
@@ -192,6 +193,17 @@ line starting with the string given as the argument."
   (let ((delim (if (string-equal delim "") "$" delim)))
     (mark-current-block delim)
   ))
+
+(defun toggle-fullscreen ()
+  "Toggle full screen on X11.
+  By Ivan Kanis: Harvested from EmacsWiki 2013-12-20"
+  (interactive)
+  (when (eq window-system 'x)
+    (set-frame-parameter
+     nil 'fullscreen
+     (when (not (frame-parameter nil 'fullscreen)) 'fullboth))))
+(global-set-key [f11] 'toggle-fullscreen)
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;       PACKAGE-INSTALL
