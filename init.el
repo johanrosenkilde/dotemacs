@@ -54,6 +54,20 @@
       (setq lst (cdr lst)))
     (nreverse acc)))
 
+(defun find-first (lst pred)
+  "Return first element of list matching predicate or nil.
+Note: there is no way of discerning between a success of a 'nil' element and a failure."
+  (setq running t)
+  (setq res nil)
+  (while (and running lst)
+    (if (funcall pred (car lst))
+      (progn
+       (setq running nil)
+       (setq res (car lst)))
+      (setq lst (cdr lst))
+    ))
+  res)
+
 (defun group (lst n)
   "Group `LST' into portions of `N'."
   (let (groups)
@@ -261,6 +275,7 @@ line starting with the string given as the argument."
                   (point)
                   nil
                   -1)))
+(define-key ac-mode-map (kbd "M-/") 'auto-complete)
 (define-key lisp-mode-shared-map (kbd "C-c C-h") 'jsj-ac-show-help)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -982,7 +997,11 @@ last main file"
 (define-key undo-tree-visualizer-mode-map (kbd "y") 'undo-tree-visualize-switch-branch-left)
 (define-key undo-tree-visualizer-mode-map (kbd "o") 'undo-tree-visualize-switch-branch-right)
 
-(define-derived-mode mgt-list-mode nil "mtg"
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;       MTG (MAGIC) LIST MODE
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(define-derived-mode mtg-list-mode nil "mtg"
   "Major mode writing MTG lists. Open motl list in one buffer and activate this
 mode, and write in another also with this mode, then word completion works for
 complete card names"
@@ -991,8 +1010,40 @@ complete card names"
        mode-require-final-newline)
   (set (make-local-variable 'indent-line-function) 'indent-relative)
   (modify-syntax-entry ?  "_" (syntax-table))
+  (modify-syntax-entry ?\* " " (syntax-table))
+  (modify-syntax-entry ?, "_" (syntax-table))
+  (modify-syntax-entry ?' "_" (syntax-table))
+  (modify-syntax-entry ?\( "_" (syntax-table))
+  (modify-syntax-entry ?\) "_" (syntax-table))
   (modify-syntax-entry ?|  "." (syntax-table))
+  (setq ac-sources (list 'ac-source-abbrev ))
+  (unless (string-match ".*motl.*" (buffer-name))
+    (message "Remember to activate mtg-list-mode in MOTL buffer also"))
+  ;;(define-key evil-insert-state-map (kbd "<return>") 'evil-ret)
   )
+(setq mtg-counted-card-matcher "^[[:digit:]]* \\(.*\\)")
+(defun jsrn-mtg-lookup-card-in-motl-buffer ()
+  (interactive)
+  (let* ((card-counted (current-word))
+         (card (if (string-match mtg-counted-card-matcher card-counted)
+                   (match-string 1 card-counted)
+                 card-counted))
+         (motl-buffer
+          (find-first (buffer-list)
+                      (lambda (buf)
+                        (string-match ".*motl.*" (buffer-name buf))))))
+    (pop-to-buffer motl-buffer)
+    (goto-char (point-min))
+    (search-forward card)
+    ))
+(define-key mtg-list-mode-map [(f5)] 'jsrn-mtg-lookup-card-in-motl-buffer)
+(defun jsrn-mtg-mode-hook ()
+  (auto-complete-mode t)
+  (setq mtg-ac-source-counted-names (copy-list ac-source-words-in-same-mode-buffers))
+  (add-to-list 'mtg-ac-source-counted-names '(prefix . mtg-counted-card-matcher))
+  (setq ac-sources (list 'ac-source-words-in-same-mode-buffers 'mtg-ac-source-counted-names))
+  )
+(add-hook 'mtg-list-mode-hook 'jsrn-mtg-mode-hook)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
