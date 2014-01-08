@@ -46,12 +46,23 @@
     (setq uri (substring uri 1 (- (length uri) 1))))
   (mu4e~compose-browse-url-mail uri))
 
+(defun jsrn-view-message-expand-links ()
+  "View a currently viewed message with links expanded"
+  (interactive)
+  ;; Add the -k flag to vilistextum and reread the message
+  (setq old-command mu4e-html2text-command)
+  (setq mu4e-html2text-command "vilistextum -k -y\"iso-8859-1\" - -")
+  (mu4e~view-in-headers-context (mu4e-headers-view-message))
+  (sleep-for 0.2) ; avoid funny race condition
+  (setq mu4e-html2text-command old-command)
+)
+
 (defun jsrn-mu4e-setup ()
   (add-to-list 'load-path"/usr/local/share/emacs/site-lisp/mu4e")
   (require 'mu4e)
   
   ;; Handling html messages
-  (setq mu4e-html2text-command "vilistextum -k -y\"iso-8859-1\" - -")
+  (setq mu4e-html2text-command "vilistextum -y\"iso-8859-1\" - -")
   (setq mu4e-view-prefer-html t)
   (defun mu4e-view-in-browser ()
     "View the body of the message in a web browser."
@@ -252,5 +263,6 @@
   (fill-keymap mu4e-view-mode-map
                 (kbd "S-<SPC>") 'jsrn-scroll-up
                 (kbd "<SPC>") 'jsrn-scroll-down
+                (kbd ",") 'jsrn-view-message-expand-links
                 )
 )
