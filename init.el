@@ -449,6 +449,9 @@ line starting with the string given as the argument."
  
 
 ;; windowing
+(defun jsrn-delete-window-below ()
+  (interactive)
+  )
 (fill-keymap evil-window-map
              ;; Moving (these exist for Qwerty)
              evil-left-key  'evil-window-left
@@ -458,6 +461,7 @@ line starting with the string given as the argument."
              (kbd "C-g") nil
              ;; Splitting
              "\\" 'split-window-horizontally
+             "/" 'split-window-vertically
              ;; Deleting
              (kbd "C-d") 'delete-window
              "1" 'delete-other-windows
@@ -473,6 +477,10 @@ line starting with the string given as the argument."
              evil-up-key    'evil-window-up
              evil-right-key 'evil-window-right
              (kbd "C-w")    'evil-window-prev
+             (kbd "v")    '(lambda ()  (interactive) (evil-window-down 1) (delete-window))
+             ;; override C-w C-o/n since it is easy to type when wanting C-w o/n
+             (kbd "C-o")    'evil-window-right 
+             (kbd "C-n")    'evil-window-down
              )
 
 ;; Put all window bindings in emacs state also
