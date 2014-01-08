@@ -123,6 +123,8 @@
             ("/dtu/To use"        . ?U)
             ("/atuin/INBOX.To Use". ?u)
             ("/dtu/Archives.2013" . ?A)
+            ("/drafts"            . ?d)
+            ("/trash"             . ?w)
             ))
   
   ;; View the contents of all inboxes with 'bi'
