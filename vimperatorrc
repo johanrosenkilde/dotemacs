@@ -43,6 +43,9 @@ nnoremap <c-g> :js gFindBar.close();<cr>
 " Shortcut for dr body narrower
 nnoremap W :js dr_body_narrow.switchWidth()<cr>
 
+" Duplicate tab and go back in the copy
+nnoremap <C-k> :tabdup<CR>:back<CR>
+
 " Show the date
 :map <F2> :echo Date()<CR>
 
