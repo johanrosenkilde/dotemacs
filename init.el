@@ -373,6 +373,7 @@ line starting with the string given as the argument."
              "n" 'isearch-repeat-forward
              "N" 'isearch-repeat-backward
              (kbd "C-#") 'jsrn-goto-first-symbol-use
+             (kbd "M-p") '(lambda () (interactive) (evil-paste-pop -1))
              ;; Tab in normal mode works as tab in Emacs
              (kbd "TAB") 'indent-for-tab-command)
 ;; Key-bindings in insert mode
