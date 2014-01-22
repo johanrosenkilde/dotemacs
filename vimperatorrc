@@ -6,8 +6,8 @@ map y <Left>
 map n <Down>
 map e <Up>
 map o <Right>
-nmap n <Down><Down><Down><Down><Down><Down><Down><Down>
-nmap e <Up><Up><Up><Up><Up><Up><Up><Up>
+nmap n <Down><Down><Down><Down>
+nmap e <Up><Up><Up><Up>
 
 " other Workman, normal mode
 " Open URL
@@ -15,13 +15,15 @@ nnoremap O o
 " Open URL from current
 nnoremap U O
 " Next buffer
-nnoremap s gt
+nnoremap s gT
 " Previous buffer
-nnoremap h gT
+nnoremap h gt
 " Last visited buffer
 nnoremap <c-h> <c-^>
 " find next
 nnoremap k n
+" go back (insert mode), override Open (which I never use)
+inoremap <c-o> <Esc><c-o>
 
 " Yank marked text
 vnoremap j <c-c>
