@@ -391,6 +391,7 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
              (kbd "C-y") 'yank)
 ;; Key-bindings in insert mode
 (fill-keymap evil-insert-state-map
+             (kbd "<return>") 'newline-and-indent
              (kbd "C-y") 'yank
              (kbd "C-p") 'evil-paste-pop)
 ;; Key-bindings in visual mode
@@ -724,8 +725,8 @@ sometimes if more than one Emacs has this set"
                (kbd "C-c a") 'org-agenda
                (kbd "~")  'jsrn-org-up-element)
   ;; Let winner keys overwrite org-mode
-  (define-key evil-normal-state-map (kbd "M-S-<left>") 'winner-undo) 
-  (define-key evil-normal-state-map (kbd "M-S-<right>") 'winner-redo)
+  (define-key evil-normal-state-local-map (kbd "M-S-<left>") 'winner-undo) 
+  (define-key evil-normal-state-local-map (kbd "M-S-<right>") 'winner-redo)
   )
 (add-hook 'org-mode-hook 'jsrn-org-mode-hook)
 
@@ -842,7 +843,6 @@ sometimes if more than one Emacs has this set"
 (require 'pretty-lambdada) ;typeset word "lambda" as the symbol
 (defun jsrn-python-mode-hook ()
   (interactive)
-  (define-key evil-insert-state-map (kbd "<return>") 'newline-and-indent)
   (pretty-lambda-mode 1)
   )
 
@@ -982,7 +982,7 @@ last main file"
 (defun jsrn-gdb-mode-hook ()
   (interactive)
   (set-fringe-style 'default)
-  (define-key evil-normal-state-map (kbd "C-p") 'gud-print)
+  (define-key evil-normal-state-local-map (kbd "C-p") 'gud-print)
   )
 (add-hook 'gdb-frames-mode-hook 'jsrn-gdb-mode-hook)
 
@@ -1009,8 +1009,8 @@ last main file"
 	(write-file "~/anki_import.txt")
 	)))
   ;; Some html bindings
-  (fill-keymaps (list evil-visual-state-map
-		      evil-insert-state-map)
+  (fill-keymaps (list evil-visual-state-local-map
+		      evil-insert-state-local-map)
 		(kbd "C-M-b") (lambda () (interactive) (sgml-tag "b"))
 		(kbd "C-<return>") (lambda () (interactive) (insert "<br/>"))
 		(kbd "C-M-i")   (lambda () (interactive) (sgml-tag "i"))
@@ -1063,7 +1063,7 @@ complete card names"
   (setq ac-sources (list 'ac-source-abbrev ))
   (unless (string-match ".*motl.*" (buffer-name))
     (message "Remember to activate mtg-list-mode in MOTL buffer also"))
-  ;;(define-key evil-insert-state-map (kbd "<return>") 'evil-ret)
+  ;;(define-key evil-insert-state-local-map (kbd "<return>") 'evil-ret)
   )
 (setq mtg-counted-card-matcher "^[[:digit:]]* \\(.*\\)")
 (defun jsrn-mtg-lookup-card-in-motl-buffer ()
@@ -1095,14 +1095,17 @@ complete card names"
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (setq multi-term-program "/bin/zsh")
 (defun jsrn-term-mode-hook ()
-  (fill-keymaps (list evil-normal-state-map evil-insert-state-map)
+  (fill-keymaps (list evil-normal-state-local-map evil-insert-state-local-map)
                 (kbd "C-<return>") 'term-send-input
                 (kbd "M-<left>") 'multi-term-prev
                 (kbd "M-<right>") 'multi-term-next
                 )
-  (fill-keymap evil-visual-state-map
+  (fill-keymap evil-insert-state-local-map
+               (kbd "<return>") 'term-send-input)
+  (fill-keymap evil-visual-state-local-map
                (kbd "<return>") 'term-send-region)
   )
+
 (add-hook 'term-mode-hook 'jsrn-term-mode-hook)
 (defun last-term-buffer (l)
   "Return most recently used term buffer given a list of buffers."
