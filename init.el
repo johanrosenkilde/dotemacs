@@ -16,9 +16,9 @@
 (add-to-list 'default-frame-alist '(right-fringe . 0))
 (setq compilation-scroll-output t)
 (setq-default indent-tabs-mode nil) ; never insert tabs, do spaces
-(setq mouse-drag-copy-region t) ;; mouse region copies
 (setq grep-find-command "grep -r --exclude=.git ") ;; grep ignores Git
 (setq visible-bell t)
+(setq split-height-threshold 9999) ;; never automatically split horisontally
 
 (defadvice isearch-exit (after jsrn-goto-match-beginning activate)
   "After a search ends by RET, go to beginning of match."
@@ -134,8 +134,6 @@ See `pour-mappings-to'."
     )))
 (global-set-key [(f2)] 'jsrn-recompile)
 (global-set-key [(f4)] 'ffap) ;; look-up file at point
-(global-set-key [(f5)] 'orgtbl-mode)
-(global-set-key [(shift f5)] 'orgtbl-insert-radio-table)
 (global-set-key "\M-?" 'hippie-expand)
 (global-set-key (kbd "C-x m") 'ffap) ;; Find file at point (and override compose-mail)
 (global-set-key (kbd "S-<backspace>") 'delete-horizontal-space)
@@ -491,19 +489,6 @@ line starting with the string given as the argument."
 ;;??? This is strangely needed
 (fill-keymap evil-insert-state-map (kbd "C") 'self-insert-command) 
 
-;; Evil key-bindings for movement
-(defmacro evil-add-hjkl-bindings (keymap &optional state &rest bindings)
-  "Add \"h\", \"j\", \"k\", \"l\" bindings to KEYMAP in STATE.
-Add additional BINDINGS if specified."
-  (declare (indent defun))
-  `(evil-define-key ,state ,keymap
-     "y" (lookup-key evil-motion-state-map "y")
-     "n" (lookup-key evil-motion-state-map "n")
-     "e" (lookup-key evil-motion-state-map "e")
-     "o" (lookup-key evil-motion-state-map "o")
-     ":" (lookup-key evil-motion-state-map ":")
-     ,@bindings))
-
 (defun jsrn-scroll-down ()
   (interactive)
   (when (eq 1 (point))
@@ -710,12 +695,12 @@ sometimes if more than one Emacs has this set"
     (interactive)
     (push-mark)
     (org-up-element))
-  (fill-keymaps (list evil-normal-state-map evil-insert-state-map)
+  (fill-keymaps (list org-mode-map)
                 (kbd (concat "M-" evil-left-key))  'org-metaleft
                 (kbd (concat "M-" evil-down-key))  'org-metadown
                 (kbd (concat "M-" evil-up-key))    'org-metaup
                 (kbd (concat "M-" evil-right-key)) 'org-metaright)
-  (fill-keymap evil-normal-state-map
+  (fill-keymap org-mode-map
                (kbd (concat "M-" evil-left-key-uc))  'org-shiftmetaleft
                (kbd (concat "M-" evil-down-key-uc))  'org-shiftmetadown
                (kbd (concat "M-" evil-up-key-uc))    'org-shiftmetaup
