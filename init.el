@@ -866,7 +866,7 @@ sometimes if more than one Emacs has this set"
 ;;       SAGE
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;(add-to-list 'auto-mode-alist '("\\.sage\\'" . sage-mode))
-(setq sage-path "/home/jsrn/local/sage/sage-5.8")
+(setq sage-path "/home/jsrn/local/sage/sage-5.13")
 ;;(setq sage-mode-path (cl-concatenate 'string sage-path "/local/share/emacs"))
 (setq sage-mode-path "/home/jsrn/local/sage-mode/sage-mode-jsrn/emacs")
 (add-to-list 'load-path sage-mode-path)
@@ -885,8 +885,8 @@ sometimes if more than one Emacs has this set"
 ;;   )
 (define-key inferior-sage-mode-map (kbd "S-SPC") 'jsrn-scroll-up)
 (define-key inferior-sage-mode-map (kbd "C-SPC") 'jsrn-scroll-down)
+(define-key sage-mode-map (kbd "C-c C-h") 'sage-pcomplete-or-help)
 ;; (add-hook 'inferior-sage-mode-hook 'jsrn-inferior-sage-mode-hook)
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;       FSHARP F#
