@@ -370,15 +370,16 @@ line starting with the string given as the argument."
              ;; Search using Emacs' isearch but using Vim keybindings
              "/" 'isearch-forward
              "?" 'isearch-backward
-             "n" 'isearch-repeat-forward
              "N" 'isearch-repeat-backward
              (kbd "C-#") 'jsrn-goto-first-symbol-use
              (kbd "M-p") '(lambda () (interactive) (evil-paste-pop -1))
              ;; Tab in normal mode works as tab in Emacs
-             (kbd "TAB") 'indent-for-tab-command)
+             (kbd "TAB") 'indent-for-tab-command
+             (kbd "C-y") 'yank)
 ;; Key-bindings in insert mode
 (fill-keymap evil-insert-state-map
-             (kbd "C-y") 'yank)
+             (kbd "C-y") 'yank
+             (kbd "C-p") 'evil-paste-pop)
 ;; Key-bindings in visual mode
 (fill-keymap evil-visual-state-map
              ;; Provide a visual-time shorcut to commenting
@@ -468,7 +469,8 @@ line starting with the string given as the argument."
              ;; Sizing
              (kbd "RET") 'enlarge-window
              ;; Buffer switching
-             "p"         '(lambda () (interactive) (switch-to-buffer nil))
+             "p"         'switch-to-prev-buffer
+             "P"         'switch-to-next-buffer
              (kbd "C-p") '(lambda () (interactive)
                             (switch-to-buffer-other-window nil))
              ;; Moving
