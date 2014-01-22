@@ -340,13 +340,27 @@ line starting with the string given as the argument."
       evil-operator-state-tag (propertize "O" 'face '((:background "purple"))))
 ;; Escape quits anything
 (fill-keymaps (list evil-normal-state-map
-                   evil-visual-state-map)
+                    evil-visual-state-map)
               [escape] 'keyboard-quit)
+;; esc quits
+(defun minibuffer-keyboard-quit ()
+  "Abort recursive edit.
+In Delete Selection mode, if the mark is active, just deactivate it;
+then it takes a second \\[keyboard-quit] to abort the minibuffer."
+  (interactive)
+  (if (and delete-selection-mode transient-mark-mode mark-active)
+      (setq deactivate-mark t)
+    (when (get-buffer "*Completions*") (delete-windows-on "*Completions*"))
+    (abort-recursive-edit)))
 (fill-keymaps (list minibuffer-local-map
                    minibuffer-local-ns-map
                    minibuffer-local-completion-map
-                   minibuffer-local-must-match-map)
+                   minibuffer-local-must-match-map
+                   minibuffer-local-isearch-map)
               [escape] 'minibuffer-keyboard-quit)
+(fill-keymap isearch-mode-map [escape] 'isearch-cancel)
+(global-set-key [escape] 'evil-exit-emacs-state)
+
 ;; Key-bindings in all modes
 (fill-keymaps (list evil-normal-state-map
                     evil-visual-state-map
