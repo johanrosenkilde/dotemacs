@@ -286,6 +286,7 @@ line starting with the string given as the argument."
 (setq ido-use-filename-at-point 'guess)
 (setq ido-file-extensions-order '(".tex" ".sage" ".py" ".bib" ".txt"))
 (global-set-key "\M-x" 'smex) ;; awesome function chooser
+(add-to-list 'ido-ignore-buffers "*terminal")
 
 
 
@@ -423,6 +424,7 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
                               (debugger-mode . emacs)
                               (shell-mode . emacs)
                               (diff-mode . emacs)
+                              (multi-term-mode . emacs)
                               (undo-tree-visualizer-mode . emacs)
                               ;; Disable
                               (completion-list-mode . normal)
@@ -1086,6 +1088,36 @@ complete card names"
   (setq ac-sources (list 'ac-source-words-in-same-mode-buffers 'mtg-ac-source-counted-names))
   )
 (add-hook 'mtg-list-mode-hook 'jsrn-mtg-mode-hook)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;       TERMINAL
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(setq multi-term-program "/bin/zsh")
+(defun jsrn-term-mode-hook ()
+  (fill-keymaps (list evil-normal-state-map evil-insert-state-map)
+                (kbd "C-<return>") 'term-send-input
+                (kbd "M-<left>") 'multi-term-prev
+                (kbd "M-<right>") 'multi-term-next
+                )
+  (fill-keymap evil-visual-state-map
+               (kbd "<return>") 'term-send-region)
+  )
+(add-hook 'term-mode-hook 'jsrn-term-mode-hook)
+(defun last-term-buffer (l)
+  "Return most recently used term buffer given a list of buffers."
+  (when l
+    (if (eq 'term-mode (with-current-buffer (car l) major-mode))
+        (car l) (last-term-buffer (cdr l)))))
+(defun get-term ()
+  "Switch to the term buffer last used, or create a new one if
+    none exists, or if the current buffer is already a term."
+  (interactive)
+  (let ((b (last-term-buffer (buffer-list))))
+    (if (or (not b) (eq 'term-mode major-mode))
+        (multi-term)
+      (switch-to-buffer b))))
+(global-set-key [(f3)] 'get-term)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
