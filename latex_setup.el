@@ -68,6 +68,11 @@
                     ))
   ;; Don't prompt for ref style, just insert cref always
   (setq reftex-ref-macro-prompt nil)
+  ;; Don't put stupid parentheses around refs to equations.
+  ;;NOTE: overridden by next line
+  ;;(setq reftex-label-alist (list '("equation" 101 "eqn:" "~\\ref{%s}" t)))
+  ;; Insert eqref for equations
+  (setq reftex-label-alist (list '("equation" 101 "eqn:" "~\\eqref{%s}" t)))
   ;; The above seems to be broken in current AUCTeX so work-around
   (fill-keymaps (list evil-normal-state-map evil-insert-state-map)
                 (kbd "C-c )") (lambda () (interactive) (reftex-reference " ")))
@@ -126,6 +131,9 @@
   (add-to-list 'font-latex-math-environments "align*")
   (add-to-list 'font-latex-math-environments "IEEEeqnarray")
   (add-to-list 'font-latex-math-environments "IEEEeqnarray*")
+  (add-to-list 'reftex-label-alist '("IEEEeqnarray" 101 "eqn:" "~\\eqref{%s}" t))
+  (add-to-list 'reftex-label-alist '("IEEEeqnarray*" 101 "eqn:" "~\\eqref{%s}" t))
+  (add-to-list 'reftex-label-alist '("align" 101 "eqn:" "~\\eqref{%s}" t))
   (setq texmathp-tex-commands '(("IEEEeqnarray" env-on) ("IEEEeqnarray*" env-on)))
   )
 (add-hook 'LaTeX-mode-hook 'jsrn-latex-mode-hook)
