@@ -379,13 +379,13 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
     (evil-backward-word-begin)
     ))
 (fill-keymap evil-normal-state-map
-             (kbd "S-a") '(lambda () (interactive) (end-of-visual-line) (evil-insert-state))
+             (kbd "A") (lambda () (interactive) (end-of-visual-line) (evil-insert-state))
              ;; Search using Emacs' isearch but using Vim keybindings
              "/" 'isearch-forward
              "?" 'isearch-backward
              "N" 'isearch-repeat-backward
              (kbd "C-#") 'jsrn-goto-first-symbol-use
-             (kbd "M-p") '(lambda () (interactive) (evil-paste-pop -1))
+             (kbd "M-p") (lambda () (interactive) (evil-paste-pop -1))
              ;; Tab in normal mode works as tab in Emacs
              (kbd "TAB") 'indent-for-tab-command
              (kbd "C-y") 'yank)
@@ -485,7 +485,7 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
              ;; Buffer switching
              "p"         'switch-to-prev-buffer
              "P"         'switch-to-next-buffer
-             (kbd "C-p") '(lambda () (interactive)
+             (kbd "C-p") (lambda () (interactive)
                             (switch-to-buffer-other-window nil))
              ;; Moving
              evil-left-key  'evil-window-left
@@ -493,7 +493,7 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
              evil-up-key    'evil-window-up
              evil-right-key 'evil-window-right
              (kbd "C-w")    'evil-window-prev
-             (kbd "v")    '(lambda ()  (interactive) (evil-window-down 1) (delete-window))
+             (kbd "v")    (lambda ()  (interactive) (evil-window-down 1) (delete-window))
              ;; override C-w C-o/n since it is easy to type when wanting C-w o/n
              (kbd "C-o")    'evil-window-right 
              (kbd "C-n")    'evil-window-down
@@ -820,7 +820,7 @@ sometimes if more than one Emacs has this set"
 (global-set-key [(f12)] 'magit-status)
 (evil-set-initial-state 'magit-mode 'normal)
 (fill-keymap magit-mode-map
-	     (kbd "<return>") '(lambda () (interactive) (magit-visit-item t))
+	     (kbd "<return>") (lambda () (interactive) (magit-visit-item t))
 	     (kbd "S-SPC")    'magit-show-item-or-scroll-down
 	     )
 
@@ -951,7 +951,7 @@ last main file"
   (define-key fsharp-mode-map [(f5)] 'jsrn-fsharp-reload-project-libs)
   (define-key fsharp-mode-map [(shift f5)] 'jsrn-fsharp-reload-project-entire)
   (define-key inferior-fsharp-mode-map (kbd "C-d")
-    '(lambda () (interactive) (evil-scroll-down 20)))
+    (lambda () (interactive) (evil-scroll-down 20)))
   )
 (add-hook 'fsharp-mode-hook 'jsrn-fsharp-mode-hook)
 
@@ -1011,13 +1011,13 @@ last main file"
   ;; Some html bindings
   (fill-keymaps (list evil-visual-state-map
 		      evil-insert-state-map)
-		(kbd "C-M-b") '(lambda () (interactive) (sgml-tag "b"))
-		(kbd "C-<return>") '(lambda () (interactive) (insert "<br/>"))
-		(kbd "C-M-i")   '(lambda () (interactive) (sgml-tag "i"))
+		(kbd "C-M-b") (lambda () (interactive) (sgml-tag "b"))
+		(kbd "C-<return>") (lambda () (interactive) (insert "<br/>"))
+		(kbd "C-M-i")   (lambda () (interactive) (sgml-tag "i"))
 		)
   )
 (define-key anki-mode-map [(f2)] 'anki-prepare)
-(define-key anki-mode-map [(f5)] '(lambda () (interactive)
+(define-key anki-mode-map [(f5)] (lambda () (interactive)
 				    (beolingus-lookup (current-word))))
 
 
@@ -1033,7 +1033,7 @@ last main file"
 ;;       OTHER MODES
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Text-mode
-(add-hook 'text-mode-hook '(lambda () (visual-line-mode)))
+(add-hook 'text-mode-hook (lambda () (visual-line-mode)))
 
 ;; Undo-tree mode
 (define-key undo-tree-visualizer-mode-map (kbd "n") 'undo-tree-visualize-redo)
@@ -1142,4 +1142,4 @@ complete card names"
                           flyspell-mode
                           reftex-mode)
       do (diminish minor-mode))
-(add-hook 'LaTeX-mode-hook '(lambda () (diminish 'outline-minor-mode)))
+(add-hook 'LaTeX-mode-hook (lambda () (diminish 'outline-minor-mode)))
