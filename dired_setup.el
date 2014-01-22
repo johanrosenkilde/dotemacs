@@ -96,3 +96,23 @@
                   (t
                    (concat "Dired " dired-actual-switches)))))
     (force-mode-line-update)))
+
+(defun dired-open-native ()
+  "Open marked files (or the file the cursor is on) from dired."
+  ;; Taken from http://truongtx.me/
+  (interactive)
+  (let* ((files (dired-get-marked-files t current-prefix-arg))
+         (n (length files)))
+    (when (or (<= n 3)
+              (y-or-n-p (format "Open %d files?" n)))
+      (dolist (file files)
+        (call-process "xdg-open"
+                      nil 0 nil file)))))
+(define-key dired-mode-map (kbd "M-o") 'dired-open-native)
+
+(defun ensure-buffer-name-ends-in-slash ()
+  "change buffer name to end with slash"
+  (let ((name (buffer-name)))
+    (if (not (string-match "/$" name))
+        (rename-buffer (concat name "/") t))))
+(add-hook 'dired-mode-hook 'ensure-buffer-name-ends-in-slash)
