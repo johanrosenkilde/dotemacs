@@ -132,7 +132,7 @@
      '("maildir:/atuin/INBOX or maildir:/dtu/INBOX"  "Inboxes"  ?i))
 
   ;; Check mail using offlineimap every 5 min
-  (setq mu4e-get-mail-command "offlineimap"
+  (setq mu4e-get-mail-command "getmail"
         mu4e-update-interval 300
         mail-user-agent 'mu4e-user-agent)
 
