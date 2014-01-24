@@ -537,7 +537,7 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
               (kbd "C-w S-SPC")'scroll-other-window-down
 	      )
 
-; Workman fixes 
+;; Workman fixes 
 (if workman
     (progn
       (fill-keymap evil-normal-state-map
@@ -555,6 +555,7 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
                    "l"   'exchange-point-and-mark)
     )
 )
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;       SURROUND-MODE
@@ -651,6 +652,45 @@ the optional values set"
                              (push '(?~ . ("\\texttt{" . "}")) surround-pairs-alist)
                              (push '(?/ . ("\\emph{"   . "}")) surround-pairs-alist)
                              (push '(?* . ("\\textbf{" . "}")) surround-pairs-alist)))
+
+;; Related neat jumping
+(setq jsrn-delimiter-chars (list ?\[ ?\{ ?\())
+(setq jsrn-delimiter-chars-ends (list ?\] ?\} ?\)))
+(evil-define-motion beginning-of-delim (count)
+  :type exclusive
+    (let* ((count (if count count 1))
+           )
+      (while (> count 0)
+        (backward-char)
+        (let ((char (char-after)))
+          (if (member char jsrn-delimiter-chars)
+              (decf count)
+            (when (member char jsrn-delimiter-chars-ends)
+              (incf count))
+            )))
+      (forward-char)))
+(evil-define-motion end-of-delim (count)
+  :type exclusive
+    (let* ((count (if count count 1))
+           )
+      (while (> count 0)
+        (forward-char)
+        (let ((char (char-after)))
+          (if (member char jsrn-delimiter-chars)
+              (incf count)
+            (when (member char jsrn-delimiter-chars-ends)
+              (decf count))
+            )))
+      ))
+(define-key evil-motion-state-map (kbd "p") 'evil-next-close-brace)
+(define-key evil-motion-state-map (kbd "P") 'evil-previous-open-brace)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;       ACE-JUMP
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(require 'ace-jump-mode)
+(define-key global-map (kbd "C-SPC") 'ace-jump-mode)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;       ORG-MODE
