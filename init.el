@@ -915,13 +915,35 @@ sometimes if more than one Emacs has this set"
 ;;   )
 ;; (add-hook 'sage-mode-hook 'jsrn-sage-mode-hook)
 
-;; (defun jsrn-inferior-sage-mode-hook ()
-;;   (interactive)
-;;   )
-(define-key inferior-sage-mode-map (kbd "S-SPC") 'jsrn-scroll-up)
-(define-key inferior-sage-mode-map (kbd "C-SPC") 'jsrn-scroll-down)
+(defun jsrn-inferior-sage-mode-hook ()
+  (interactive)
+  (fill-keymap evil-insert-state-local-map
+               (kbd "<return>") 'comint-send-input)
+  )
+(define-key inferior-sage-mode-map (kbd "C-SPC") 'jsrn-scroll-up)
+(define-key inferior-sage-mode-map (kbd "M-C-SPC") 'jsrn-scroll-down)
 (define-key sage-mode-map (kbd "C-c C-h") 'sage-pcomplete-or-help)
-;; (add-hook 'inferior-sage-mode-hook 'jsrn-inferior-sage-mode-hook)
+(defun sage-send-class ()
+  (interactive)
+  (save-excursion
+    (search-backward-regexp "^class ") ; find a class line or error
+    (let ((begin (point)))
+      (push-mark) ; for history jumping
+      (next-line)
+      (search-forward-regexp "^[^ \\t\n]") ; find first non-indented line
+      (backward-char) ; go to right before
+      (sage-send-region begin (point))
+      )))
+(defun sage-restart ()
+  (interactive)
+  (when (buffer-name sage-buffer) ; test if sage-buffer is defined and not killed
+    ;; get the sage process and unset its query flag
+      (set-process-query-on-exit-flag (get-buffer-process sage-buffer) nil)
+      (kill-buffer sage-buffer)
+      (setq sage-buffer nil))
+  (sage))
+(define-key sage-mode-map (kbd "C-c C") 'sage-send-class)
+(add-hook 'inferior-sage-mode-hook 'jsrn-inferior-sage-mode-hook)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;       FSHARP F#
