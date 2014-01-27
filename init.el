@@ -198,6 +198,7 @@ line starting with the string given as the argument."
         (next-line)
         (search-forward-regexp ldelim nil 0)
         (goto-char (match-beginning 0))
+        (backward-char)
         beg
         )))
 (defun mark-current-block-i (delim)
