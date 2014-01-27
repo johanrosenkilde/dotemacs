@@ -554,6 +554,7 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
                    "Y"   'evil-window-top
                    "U"   'evil-yank-line
                    "k"   'isearch-repeat-forward
+                   "K"   'isearch-repeat-backward
                    )
       (fill-keymaps (list evil-normal-state-map evil-visual-state-map)
                     "j"   'evil-yank)
@@ -661,9 +662,23 @@ the optional values set"
                              (push '(?/ . ("\\emph{"   . "}")) surround-pairs-alist)
                              (push '(?* . ("\\textbf{" . "}")) surround-pairs-alist)))
 
-;; Related neat jumping
+
+;; Replace with clipboard without changing clipboard
+(evil-define-operator evil-destroy (beg end type register yank-handler)
+  "Destroy text irrevocably"
+  (evil-delete beg end type ?_ yank-handler))
+(evil-define-operator evil-destroy-replace (beg end type register yank-handler)
+  (evil-destroy beg end type register yank-handler)
+  (evil-paste-before 1 register))
+(define-key evil-motion-state-map (kbd "!") 'evil-destroy-replace)
+
+
+;; More prominent shortcut for d/v/etc to next close brace/ prev open brace
+;; (were "[{" and "]}")
 (define-key evil-motion-state-map (kbd "p") 'evil-next-close-brace)
 (define-key evil-motion-state-map (kbd "P") 'evil-previous-open-brace)
+; reinstate paste in visual mode
+(define-key evil-visual-state-map (kbd "p") 'evil-paste-after) 
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
