@@ -20,12 +20,6 @@
  '(recentf-mode t)
  '(recentf-save-file "~/.emacs.d/.recentf")
  '(sage-view-anti-aliasing-level 4)
- '(sage-view-latex-head "\\documentclass{article}
-\\usepackage[active, tightpage, pdftex, displaymath]{preview}
-\\usepackage{amstext}
-\\begin{document}
-\\begin{preview}
-\\begin{math}")
  '(sage-view-scale 1.0)
  '(sage-view-scale-factor 1)
  '(tool-bar-mode nil))
