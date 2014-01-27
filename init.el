@@ -216,6 +216,13 @@ line starting with the string given as the argument."
      (when (not (frame-parameter nil 'fullscreen)) 'fullboth))))
 (global-set-key [f11] 'toggle-fullscreen)
 
+(defun set-term-frame ()
+  (interactive)
+  (set-background-color "black")
+  (set-foreground-color "grey")
+  (set-frame-width (selected-frame) 100)
+  (get-term)
+  )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;       PACKAGE-INSTALL
@@ -1157,6 +1164,16 @@ complete card names"
     ;;   (term-send-raw "aC-?") ; an a and a backspace for resyncing position at prompt
     ;;   ))
     ;; (evil-insert 0) (term-send-right) (term-send-left))
+  (defun term-send-prompt ()
+    (interactive)
+    (term-goto-prompt-insert nil)
+    (term-goto-line-end)
+    (sleep-for 0.1)
+    (term-send-input)
+    )
+  (defun term-delete-line-back ()
+    (interactive)
+    (term-send-raw-string "\C-u"))
   (fill-keymap evil-normal-state-local-map
                (kbd evil-left-key) 'term-go-normal-left
                (kbd evil-right-key) 'term-go-normal-right
@@ -1169,13 +1186,18 @@ complete card names"
                (kbd "i")   '(lambda () (interactive) (term-goto-prompt-insert nil))
                (kbd "a")   '(lambda () (interactive) (term-goto-prompt-insert t))
                (kbd "D")   '(lambda () (interactive) (term-send-raw-string "\C-k"))
+               (kbd "<return>")   'term-send-prompt
+               ;TODO:
+               ;  down-arrow
+               ;  C-return for sending whatever is currently in front of cursor on line
                )
   (fill-keymaps (list evil-normal-state-local-map evil-insert-state-local-map)
-                (kbd "<return>")   'term-send-input
-                (kbd "C-<return>") 'term-send-input
+                (kbd "C-<return>") 'term-send-prompt
                 (kbd "M-<left>") 'multi-term-prev
                 (kbd "M-<right>") 'multi-term-next
-                (kbd "C-<backspace>")   '(lambda () (interactive) (term-send-raw-string "\C-u"))
+                (kbd "M-<backspace>")   'term-delete-line-back
+                (kbd "C-<backspace>")   'term-send-backward-kill-word
+                (kbd "C-r")         '(lambda () (interactive) (term-send-raw-string "\C-r"))
                 )
   ;; NOTE: Remember that moving the cursor in Emacs does not (always) move the
   ;; cursor in term
