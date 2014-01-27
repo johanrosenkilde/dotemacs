@@ -847,19 +847,6 @@ sometimes if more than one Emacs has this set"
 
 (setq ispell-silently-savep t)
 
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;       MAGIT
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(require 'magit)
-(global-set-key [(f12)] 'magit-status)
-(evil-set-initial-state 'magit-mode 'normal)
-(fill-keymap magit-mode-map
-	     (kbd "<return>") (lambda () (interactive) (magit-visit-item t))
-	     (kbd "S-SPC")    'magit-show-item-or-scroll-down
-	     )
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;       DESKTOP (session management)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1266,13 +1253,36 @@ complete card names"
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;       DIFF
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(add-hook 'diff-mode-hook
-          '(lambda ()
-             (fill-keymap diff-mode-map
-                          evil-down-key 'diff-hunk-next
-                          evil-up-key   'diff-hunk-prev
-                          "q"           'kill-buffer
-             )))
+(defun jsrn-diff-mode-hook ()
+  (interactive)
+  (fill-keymap evil-motion-state-local-map
+               evil-down-key 'diff-hunk-next
+               evil-up-key   'diff-hunk-prev
+               "q"           'kill-buffer)
+  )
+(add-hook 'diff-mode-hook 'jsrn-diff-mode-hook)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;       MAGIT
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(require 'magit)
+(global-set-key [(f12)] 'magit-status)
+(evil-set-initial-state 'magit-mode 'normal)
+(fill-keymap magit-mode-map
+	     (kbd "<return>") (lambda () (interactive) (magit-visit-item t))
+	     (kbd "S-SPC")    'magit-show-item-or-scroll-down
+             evil-down-key 'magit-goto-next-section
+             evil-up-key   'magit-goto-previous-section
+	     )
+(defun jsrn-magit-mode-hook ()
+  (interactive)
+  (fill-keymap evil-motion-state-local-map
+               (kbd (concat "C-" evil-down-key)) 'evil-next-line
+               (kbd (concat "C-" evil-up-key))   'evil-previous-line
+               ))
+(add-hook 'magit-mode-hook 'jsrn-magit-mode-hook)
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;       DIMINISH (Cleaning up mode line)
