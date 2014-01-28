@@ -926,6 +926,23 @@ sometimes if more than one Emacs has this set"
 (define-key inferior-sage-mode-map (kbd "C-SPC") 'jsrn-scroll-up)
 (define-key inferior-sage-mode-map (kbd "M-C-SPC") 'jsrn-scroll-down)
 (define-key sage-mode-map (kbd "C-c C-h") 'sage-pcomplete-or-help)
+(defun sage-refind-sage ()
+  "Ensure that the local buffer's sage points to a running process. Otherwise,
+  find a running sage process for it, or return nil"
+  (interactive)
+  (if (and sage-buffer (buffer-name sage-buffer))
+      sage-buffer
+    (progn
+      (let ((buf (find-first (buffer-list) (lambda (buf)
+                                             (string-match "Sage-main"
+                                                           (buffer-name buf))))
+                 ))
+        (when buf
+          (setq sage-buffer buf))
+        buf))
+  ))
+(defadvice sage-send-region (before sage-send-region-refind-sage activate)
+  (sage-refind-sage))
 (defun sage-send-class ()
   (interactive)
   (save-excursion
@@ -933,13 +950,13 @@ sometimes if more than one Emacs has this set"
     (let ((begin (point)))
       (push-mark) ; for history jumping
       (next-line)
-      (search-forward-regexp "^[^ \\t\n]") ; find first non-indented line
-      (backward-char) ; go to right before
+      (when (search-forward-regexp "^[^ \\t\n]" 1) ; find first non-indented line
+        (backward-char)) ; go to right before if we are not at file end
       (sage-send-region begin (point))
       )))
 (defun sage-restart ()
   (interactive)
-  (when (buffer-name sage-buffer) ; test if sage-buffer is defined and not killed
+  (when (buffer-name (sage-refind-sage)) ; test if sage-buffer is defined and not killed
     ;; get the sage process and unset its query flag
       (set-process-query-on-exit-flag (get-buffer-process sage-buffer) nil)
       (kill-buffer sage-buffer)
