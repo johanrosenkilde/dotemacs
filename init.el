@@ -952,6 +952,8 @@ sometimes if more than one Emacs has this set"
           (setq sage-buffer buf))
         buf))
   ))
+(defadvice sage-send-buffer (before sage-send-region-refind-sage activate)
+  (sage-refind-sage))
 (defadvice sage-send-region (before sage-send-region-refind-sage activate)
   (sage-refind-sage))
 (defun sage-send-class ()
@@ -961,7 +963,7 @@ sometimes if more than one Emacs has this set"
     (let ((begin (point)))
       (push-mark) ; for history jumping
       (next-line)
-      (when (search-forward-regexp "^[^ \\t\n]" 1) ; find first non-indented line
+      (when (search-forward-regexp "^[^ \\t\n]" nil 1) ; find first non-indented line
         (backward-char)) ; go to right before if we are not at file end
       (sage-send-region begin (point))
       )))
@@ -973,7 +975,11 @@ sometimes if more than one Emacs has this set"
       (kill-buffer sage-buffer)
       (setq sage-buffer nil))
   (sage))
-(define-key sage-mode-map (kbd "C-c C") 'sage-send-class)
+(fill-keymap sage-mode-map
+             (kbd "C-c C") 'sage-send-class
+             (kbd "C-c C-z") '(lambda () (interactive) 
+                                (switch-to-buffer-other-window (sage-refind-sage)))
+             )
 (add-hook 'inferior-sage-mode-hook 'jsrn-inferior-sage-mode-hook)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
