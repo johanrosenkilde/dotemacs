@@ -225,6 +225,14 @@ line starting with the string given as the argument."
   (get-term)
   )
 
+(defun show-clock ()
+  (interactive)
+  (pos-tip-show (concat " It is now:\n " (current-time-string)) )
+  )
+(global-set-key [f6] 'show-clock)
+
+
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;       PACKAGE-INSTALL
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
