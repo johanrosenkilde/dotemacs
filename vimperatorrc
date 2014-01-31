@@ -51,6 +51,10 @@ nnoremap <C-k> :tabdup<CR>:back<CR>
 " Show the date
 :map <F2> :echo Date()<CR>
 
+" Toggle navigation panel
+:map <f3> :js document.getElementById("nav-bar").hidden = !document.getElementById("nav-bar").hidden<CR>
+javascript <<EOF
+
 " Let Firefox handle certain commands
 " For Zotero
 "nnoremap zf i<c-s-z>
@@ -73,6 +77,7 @@ autocmd PageLoad .*(youtube|groups.google|amazon)\\.* :normal <Esc>
 " Load configuration file into current browser, useful for updating after editing this file.
 command! sourcerc :source ~/.vimperatorrc
 
+" Add the Zotero button to the status panel
 javascript <<EOF
 (function(){
   var zoteroPanel = document.createElement("label");
