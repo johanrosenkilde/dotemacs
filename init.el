@@ -369,6 +369,9 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
               [escape] 'minibuffer-keyboard-quit)
 (fill-keymap isearch-mode-map [escape] 'isearch-cancel)
 (global-set-key [escape] 'evil-exit-emacs-state)
+(fill-keymap evil-emacs-state-map
+             [escape] 'keyboard-quit)
+
 
 ;; Key-bindings in all modes
 (fill-keymaps (list evil-normal-state-map
