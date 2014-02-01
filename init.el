@@ -172,6 +172,17 @@ If point was already at that position, move point to beginning of line."
          (beginning-of-line))))
 (global-set-key (kbd "C-a") 'beginning-of-visual-line-smart) ;Override default C-a
 
+(defun mark-current-line-smart ()
+  "Smartly mark the current line in Evil char mode, i.e. without leading space
+and trailing. Assumes one is in visual mode\n"
+  (interactive)
+  (beginning-of-line 1)
+  (skip-syntax-forward " " (line-end-position))
+  (exchange-point-and-mark)
+  (end-of-line)
+  (evil-backward-char) ; corner-case: normal mode with cursor at eol
+  )
+
 ;;TODO: delete-visual-line to replace S-d
 
 ;;Function for reloading the .emacs file
@@ -415,6 +426,7 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
              (kbd "C-p") 'evil-paste-pop)
 ;; Key-bindings in visual mode
 (fill-keymap evil-visual-state-map
+             "v" 'mark-current-line-smart
              ;; Provide a visual-time shorcut to commenting
              "z" 'comment-region
              "Z" 'uncomment-region)
