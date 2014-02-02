@@ -698,8 +698,20 @@ the optional values set"
 
 ;; More prominent shortcut for d/v/etc to next close brace/ prev open brace
 ;; (were "[{" and "]}")
-(define-key evil-motion-state-map (kbd "p") 'evil-next-close-brace)
-(define-key evil-motion-state-map (kbd "P") 'evil-previous-open-brace)
+(setq jsrn-delimiter-chars (list ?\[ ?\{ ?\())
+(setq jsrn-delimiter-chars-ends (list ?\] ?\} ?\)))
+(evil-define-motion beginning-of-delim (count)
+  :type exclusive
+  (let ((nearest (find-nearest-text-objects jsrn-delimiter-objects evil-inner-text-objects-map)))
+    (goto-char (car nearest))
+    ))
+(evil-define-motion end-of-delim (count)
+  :type exclusive
+  (let ((nearest (find-nearest-text-objects jsrn-delimiter-objects evil-inner-text-objects-map)))
+    (goto-char (car (cdr nearest)))
+      ))
+(define-key evil-motion-state-map (kbd "p") 'end-of-delim)
+(define-key evil-motion-state-map (kbd "P") 'beginning-of-delim)
 ; reinstate paste in visual mode
 (define-key evil-visual-state-map (kbd "p") 'evil-paste-after) 
 
