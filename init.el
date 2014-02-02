@@ -276,6 +276,8 @@ line starting with the string given as the argument."
 ;; sudo support and others
 (require 'tramp)
 
+;; Jump as an ace
+(require 'ace-jump-mode)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;       AUTO-COMPLETE
@@ -566,6 +568,7 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
               (kbd "SPC")    'jsrn-scroll-down
               (kbd "C-w SPC")  'scroll-other-window
               (kbd "C-w S-SPC")'scroll-other-window-down
+              (kbd "C-f")    'ace-jump-mode
 	      )
 
 ;; Workman fixes 
@@ -715,12 +718,6 @@ the optional values set"
 ; reinstate paste in visual mode
 (define-key evil-visual-state-map (kbd "p") 'evil-paste-after) 
 
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;       ACE-JUMP
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(require 'ace-jump-mode)
-(define-key global-map (kbd "C-SPC") 'ace-jump-mode)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;       ORG-MODE
