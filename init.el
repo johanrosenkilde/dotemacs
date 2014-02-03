@@ -316,6 +316,7 @@ line starting with the string given as the argument."
 (setq ido-file-extensions-order '(".tex" ".sage" ".py" ".bib" ".txt"))
 (global-set-key "\M-x" 'smex) ;; awesome function chooser
 (add-to-list 'ido-ignore-buffers "*terminal")
+(load "ido_goto_symbol")
 
 
 
@@ -420,7 +421,9 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
              (kbd "M-p") (lambda () (interactive) (evil-paste-pop -1))
              ;; Tab in normal mode works as tab in Emacs
              (kbd "TAB") 'indent-for-tab-command
-             (kbd "C-y") 'yank)
+             (kbd "C-y") 'yank
+             (kbd "M-n") 'ido-goto-symbol
+             )
 ;; Key-bindings in insert mode
 (fill-keymap evil-insert-state-map
              (kbd "<return>") 'newline-and-indent
