@@ -143,6 +143,7 @@ See `pour-mappings-to'."
 (global-unset-key (kbd "C-h h")) ;; show the HELLO message
 (global-unset-key (kbd "C-h C-c")) ;; show the COPYING message
 (global-unset-key (kbd "C-h p")) ;; show the package Finder buffer
+(global-unset-key (kbd "C-z")) ;; minimise Emacs
 
 
 (defun kill-line-backwards ()
@@ -562,7 +563,9 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 	      evil-right-key 'evil-forward-char
 	      evil-up-key    'evil-previous-visual-line
 	      evil-down-key  'evil-next-visual-line
-              "B"            'evil-backward-word-end
+              "B"            'evil-backward-WORD-end
+              "l"            'evil-forward-word-end
+              "L"            'evil-forward-WORD-end
               "$"            'evil-end-of-visual-line
               "^"            'evil-first-non-blank-of-visual-line
               (kbd "C-b")    'jsrn-scroll-up
