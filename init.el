@@ -435,6 +435,7 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
              (kbd "TAB") 'indent-for-tab-command
              (kbd "C-y") 'yank
              (kbd "M-n") 'ido-goto-symbol
+             (kbd "M-,") 'imenu-anywhere
              )
 ;; Key-bindings in insert mode
 (fill-keymap evil-insert-state-map
