@@ -19,6 +19,7 @@
 (setq grep-find-command "grep -r --exclude=.git ") ;; grep ignores Git
 (setq visible-bell t)
 (setq split-height-threshold 9999) ;; never automatically split horisontally
+(setq sentence-end-double-space nil) ;; sentences end with a dot, not with two spaces
 
 (defadvice isearch-exit (after jsrn-goto-match-beginning activate)
   "After a search ends by RET, go to beginning of match."
@@ -436,6 +437,7 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
              (kbd "C-y") 'yank
              (kbd "M-n") 'ido-goto-symbol
              (kbd "M-,") 'imenu-anywhere
+             (kbd "z d") (lambda () (interactive) (kill-buffer (current-buffer))) ;; kill current buffer
              )
 ;; Key-bindings in insert mode
 (fill-keymap evil-insert-state-map
