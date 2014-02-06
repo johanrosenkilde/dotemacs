@@ -325,6 +325,7 @@ using tramp/sudo, if the file is not writable by user."
 (setq ido-everywhere t)
 (setq ido-use-filename-at-point 'guess)
 (setq ido-file-extensions-order '(".tex" ".sage" ".py" ".bib" ".txt"))
+(setq ido-auto-merge-work-directories-length -1) ; don't suggest stuff in other dirs
 (global-set-key "\M-x" 'smex) ;; awesome function chooser
 (add-to-list 'ido-ignore-buffers "*terminal")
 (load "ido_goto_symbol")
