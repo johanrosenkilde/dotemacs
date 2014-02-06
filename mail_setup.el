@@ -267,4 +267,9 @@
                 (kbd "<SPC>") 'jsrn-scroll-down
                 (kbd ",") 'jsrn-view-message-expand-links
                 )
+
+  ;; Workman fixes
+  (fill-keymap mu4e-headers-mode-map
+               evil-down-key   'mu4e-headers-next
+               evil-up-key     'mu4e-headers-prev)
 )
