@@ -57,6 +57,28 @@
   (setq mu4e-html2text-command old-command)
 )
 
+;; while mu4e doesn't have this feature, from
+;; https://groups.google.com/group/mu-discuss/browse_thread/thread/551b7a6487a0aeb3
+(defun ido-select-recipient ()
+  "Inserts a contact from the mu cache.  Uses ido to select the contact from all
+those present in the database."
+  (interactive)
+  (insert
+   (ido-completing-read
+    "Recipient: "
+    (mapcar
+     (lambda (contact-string)
+       (let* ((data (split-string contact-string ","))
+              (name (when (> (length (car data)) 0)
+                      (car data)))
+              (address (cadr data)))
+         (if name
+             (format "%s <%s>" name address)
+           address)))
+     (remove-if (lambda (string) (= 0 (length string)))
+                (split-string (shell-command-to-string "mu cfind --format=csv")
+                              "\n"))))))
+
 (defun jsrn-mu4e-setup ()
   (add-to-list 'load-path"/usr/local/share/emacs/site-lisp/mu4e")
   (require 'mu4e)
@@ -170,7 +192,9 @@
         (replace-match email nil nil nil 1))
     )
   )
-  (define-key mu4e-compose-mode-map [(f2)] 'next-from-address)
+  (fill-keymap mu4e-compose-mode-map
+               (kbd "<backtab>") 'ido-select-recipient
+               [(f2)] 'next-from-address)
 
   (defun jsrn-set-from-address ()
     "Set the From address, and Sent Folder based on the To address of the original"
