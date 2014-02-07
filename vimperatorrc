@@ -31,7 +31,14 @@ vnoremap j <c-c>
 nnoremap j y
 
 " Select first hit in Startpage
-nnoremap <c-\'> :js content.document.getElementById("title_1").click()<cr>
+javascript <<EOF
+function startpageClick(args) {
+  if (args == null)
+    args = 1;
+  content.document.getElementById("title_"+ args).click();
+}
+mappings.add(modes.NORMAL, ["<c-\'>"], "Goto StartPage result", startpageClick, {count: true});
+EOF
 
 " Disable C-g for showing Find bar
 " Doesn't work but might in Pentadactyl?
@@ -53,7 +60,6 @@ nnoremap <C-k> :tabdup<CR>:back<CR>
 
 " Toggle navigation panel
 :map <f3> :js document.getElementById("nav-bar").hidden = !document.getElementById("nav-bar").hidden<CR>
-javascript <<EOF
 
 " Let Firefox handle certain commands
 " For Zotero
