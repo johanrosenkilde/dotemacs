@@ -909,11 +909,12 @@ sometimes if more than one Emacs has this set"
 ;;       DESKTOP (session management)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'desktop)
+(require 'mdesktop)
 (setq history-length 250)
 (setq desktop-save t) ; don't ask, just act
-(setq jsrn-desktop-base-dir "~/.emacs.d/desktops/")
-(load "desktop_setup")
-(global-set-key [(f8)] 'desktop-switch)
+(add-to-list 'desktop-globals-to-save 'file-name-history)
+(setq desktop-base-file-name "desktop")
+(global-set-key [(f8)] 'mdesktop-switch)
 
 
 

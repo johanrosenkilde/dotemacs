@@ -8,11 +8,6 @@
 ;;; This file adds a small amount of extra functionality on top of desktop.el to
 ;;; support easy, dynamic switching betweek different desktops.
 
-(defcustom mdesktop-base-file-name "desktop"
-  "The base file name to use for desktop files"
-  :type 'string
-  :group 'mdesktop)
-
 (defcustom mdesktop-base-dir "~/.emacs.d/desktops/"
   "The base directory where desktops are saved"
   :type 'string
@@ -32,7 +27,7 @@
   "Save the current desktop as a new desktop"
   (interactive "sName of desktop: ")
   (setq mdesktop-current desktop)
-  (setq desktop-dirname (concat desktop-base-dir mdesktop-current))
+  (setq desktop-dirname (concat mdesktop-base-dir mdesktop-current))
   (mkdir desktop-dirname t)
   (mdesktop-save-current))
 
