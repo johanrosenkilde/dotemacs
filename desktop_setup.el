@@ -1,61 +1,82 @@
-(add-to-list 'desktop-globals-to-save 'file-name-history)
-(setq desktop-base-file-name "desktop")
-(setq jsrn-desktop-current nil)
-(defun desktop-save-current ()
+;; Copyright (C) 2013 Johan S. R. Nielsen
+
+;; Author: Johan S. R. Nielsen <jsrn@jsrn.dk>
+;; Keywords: desktop
+
+;;; Commentary:
+
+;;; This file adds a small amount of extra functionality on top of desktop.el to
+;;; support easy, dynamic switching betweek different desktops.
+
+(defcustom mdesktop-base-file-name "desktop"
+  "The base file name to use for desktop files"
+  :type 'string
+  :group 'mdesktop)
+
+(defcustom mdesktop-base-dir "~/.emacs.d/desktops/"
+  "The base directory where desktops are saved"
+  :type 'string
+  :group 'mdesktop)
+
+(setq mdesktop-current nil)
+
+(defun mdesktop-save-current ()
   "Saves the current desktop"
   (interactive)
-  (if jsrn-desktop-current
+  (if mdesktop-current
       (desktop-save desktop-dirname t)
     (error "No current desktop set")
     ))
 
-(defun desktop-save-new (desktop)
+(defun mdesktop-save-new (desktop)
   "Save the current desktop as a new desktop"
   (interactive "sName of desktop: ")
-  (setq jsrn-desktop-current desktop)
-  (setq desktop-dirname (concat jsrn-desktop-base-dir jsrn-desktop-current))
-  (mkdir dirname t)
-  (desktop-save-current))
+  (setq mdesktop-current desktop)
+  (setq desktop-dirname (concat desktop-base-dir mdesktop-current))
+  (mkdir desktop-dirname t)
+  (mdesktop-save-current))
 
-(defun desktop-discard ()
+(defun mdesktop-discard ()
   "Discard the current desktop without saving and clear everything"
   (interactive)
   (if (y-or-n-p "Are you sure you wish to discard the current desktop without saving?")
     (progn
-      (setq jsrn-desktop-current nil)
+      (setq mdesktop-current nil)
       (desktop-clear))))
 
-(defun desktop-put-away-current-for-switch ()
+(defun mdesktop-put-away-current-for-switch ()
   "Save the current desktop and clears as preparation for a desktop switch.
    Usually not necessary to call directly"
   (interactive)
-  (if (eq jsrn-desktop-current nil)
+  (if (eq mdesktop-current nil)
       (if (y-or-n-p "Do you wish to save your current unnamed desktop first?")
-          (call-interactively 'desktop-save-new))
-    (desktop-save-current))
+          (call-interactively 'mdesktop-save-new))
+    (mdesktop-save-current))
   (desktop-clear)
-  (setq jsrn-desktop-current nil))
+  (setq mdesktop-current nil))
 
-(defun desktop-create-new (desktop)
+(defun mdesktop-create-new (desktop)
   "Create a new, blank desktop. Saves the current desktop first"
   (interactive "sName of desktop: ")
-  (desktop-put-away-current-for-switch)
-  (desktop-save-new desktop))
+  (mdesktop-put-away-current-for-switch)
+  (mdesktop-save-new desktop))
 
-(defun desktop-switch (desktop)
+(defun mdesktop-switch (desktop)
   (interactive (list (completing-read "Switch to desktop: "
-                                      (directory-files jsrn-desktop-base-dir))))
-  (if (file-exists-p (concat jsrn-desktop-base-dir desktop))
+                                      (directory-files mdesktop-base-dir))))
+  (if (file-exists-p (concat mdesktop-base-dir desktop))
       (progn
-        (desktop-put-away-current-for-switch)
-        (setq jsrn-desktop-current desktop)
-        (setq desktop-dirname (concat jsrn-desktop-base-dir jsrn-desktop-current))
+        (mdesktop-put-away-current-for-switch)
+        (setq mdesktop-current desktop)
+        (setq desktop-dirname (concat mdesktop-base-dir mdesktop-current))
         (desktop-read desktop-dirname))
     (error "The desktop %s does not exist" desktop)))
 
-(defun desktop-save-on-kill-emacs ()
-  "Save the current desktop, if set, when emacs dies. Never query the user"
+(defun mdesktop-save-on-kill-emacs ()
+  "Save the current desktop, if set, when emacs dies. Never query the user."
   (interactive)
-  (if jsrn-desktop-current
+  (if mdesktop-current
       (desktop-save desktop-dirname t)))
-(add-hook 'kill-emacs-hook 'desktop-save-on-kill-emacs)
+(add-hook 'kill-emacs-hook 'mdesktop-save-on-kill-emacs)
+
+(provide 'mdesktop)
