@@ -1378,3 +1378,27 @@ complete card names"
                           reftex-mode)
       do (diminish minor-mode))
 (add-hook 'LaTeX-mode-hook (lambda () (diminish 'outline-minor-mode)))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;       PRINTING
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(require 'printing)		; load printing package
+(setq jsrn-pr-printer-alist
+      '((chimera "lpr"     nil "chimera")   ;; Ulm University
+        ))
+(setq jsrn-current-printer 'chimera)
+(defun jsrn-pr-set-printers ()
+  (interactive)
+  (setq pr-path-alist
+        '((unix      "." ghostview mpage PATH)
+          (ghostview "/usr/bin/gv")
+          (mpage     "/usr/bin/mpage")
+          ))
+  (setq pr-txt-printer-alist jsrn-pr-printer-alist)
+  (setq pr-ps-printer-alist jsrn-pr-printer-alist)
+  (setq pr-txt-name  jsrn-current-printer)
+  (setq pr-ps-name  jsrn-current-printer)
+  (pr-update-menus t)		; update now printer and utility menus
+)
+(jsrn-pr-set-printers)
