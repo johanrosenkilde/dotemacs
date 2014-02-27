@@ -375,6 +375,7 @@ using tramp/sudo, if the file is not writable by user."
 (setq evil-find-skip-newlines t
       evil-move-cursor-back nil
       evil-ex-search-highlight-all nil
+      evil-symbol-word-search t
       evil-want-fine-undo t)
 (setq evil-normal-state-tag (propertize "N" 'face '((:background "green" :foreground "black")))
       evil-emacs-state-tag (propertize "E" 'face '((:background "orange" :foreground "black")))
