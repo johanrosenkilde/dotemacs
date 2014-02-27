@@ -83,6 +83,7 @@ those present in the database."
   (add-to-list 'load-path"/usr/local/share/emacs/site-lisp/mu4e")
   (require 'mu4e)
   
+  (setq mu4e-compose-signature "")
   ;; Handling html messages
   (setq mu4e-html2text-command "vilistextum -y\"iso-8859-1\" - -")
   (setq mu4e-view-prefer-html t)
@@ -160,16 +161,16 @@ those present in the database."
 
   ;; Messages should be replied from the recipient if it was one of the
   ;; registered email addresses
-  (setq mu4e-my-email-addresses '("atuin@atuin.dk"
-                                  "jsrn@jsrn.dk"
-                                  "johan.nielsen@uni-ulm.de"
-                                  "jsrn@dtu.dk"
-                                  "spammy@atuin.dk"
-                                  "jsrn@atuin.dk"
-                                  "johan@atuin.dk"
-                                  "webmaster@atuin.dk"
-                                  "j.s.r.nielsen@mat.dtu.dk"
-                                  "santaphile@gmail.dk"))
+  (setq mu4e-user-mail-address-list '("atuin@atuin.dk"
+                                      "jsrn@jsrn.dk"
+                                      "johan.nielsen@uni-ulm.de"
+                                      "jsrn@dtu.dk"
+                                      "spammy@atuin.dk"
+                                      "jsrn@atuin.dk"
+                                      "johan@atuin.dk"
+                                      "webmaster@atuin.dk"
+                                      "j.s.r.nielsen@mat.dtu.dk"
+                                      "santaphile@gmail.dk"))
   (setq jsrn-mu4e-email-to-sent-folder '(("j.s.r.nielsen@mat.dtu.dk" . "/dtu/Sent")
                                          ("jsrn@dtu.dk" . "/dtu/Sent"))
         jsrn-mu4e-mailbox-default "/atuin/INBOX.Sent")
@@ -184,10 +185,10 @@ those present in the database."
       (beginning-of-buffer)
       (re-search-forward "<\\(.*\\)>")
       (let* ((oldmail (match-string 1))
-            (inlist (member oldmail mu4e-my-email-addresses))
+            (inlist (member oldmail mu4e-user-mail-address-list))
             (email  (if (and inlist (cdr inlist))
                         (car (cdr inlist))
-                      (car mu4e-my-email-addresses))))
+                      (car mu4e-user-mail-address-list))))
         (message "%s" inlist)
         (replace-match email nil nil nil 1))
     )
@@ -202,7 +203,7 @@ those present in the database."
           (let ((msg mu4e-compose-parent-message))
             (if msg
                 (let ((toaddr (cdr (car (mu4e-message-part-field msg :to)))))
-                  (if (and (not (eq toaddr nil)) (member (downcase toaddr) mu4e-my-email-addresses))
+                  (if (and (not (eq toaddr nil)) (member (downcase toaddr) mu4e-user-mail-address-list))
                       (downcase toaddr)
                     jsrn-user-mail-address))
               jsrn-user-mail-address)))
@@ -269,6 +270,9 @@ those present in the database."
   (evil-set-initial-state 'mu4e-headers-mode 'emacs)
   (evil-set-initial-state 'mu4e-view-mode 'emacs)
 
+  ;; When wrapping mails with w, wrap at 80
+  (set-fill-column 80)
+
   ;; Various keymappings and shortcut functions
   (global-set-key [(f12)] 'mu4e)
   (global-set-key [(f8)] 'jsrn-mailto-from-kill)
@@ -283,7 +287,8 @@ those present in the database."
     ))
   (fill-keymaps (list mu4e-headers-mode-map
                       mu4e-view-mode-map)
-                [(f7)] 'jsrn-search-for-sender)
+                [(f7)] 'jsrn-search-for-sender
+                "w" 'longlines-mode)
   (fill-keymap mu4e-headers-mode-map
                 (kbd "S-<SPC>") 'scroll-down-command)
   (fill-keymap mu4e-view-mode-map
