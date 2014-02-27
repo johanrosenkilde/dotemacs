@@ -810,9 +810,15 @@ sometimes if more than one Emacs has this set"
                (kbd (concat "M-" evil-up-key-uc))    'org-shiftmetaup
                (kbd (concat "M-" evil-right-key-uc)) 'org-shiftmetaright
                (kbd "C-c a") 'org-agenda)
+  (fill-keymap org-agenda-mode-map
+               evil-up-key     'org-agenda-previous-line
+               evil-down-key   'org-agenda-next-line
+               )
   (fill-keymaps (list evil-motion-state-local-map
                       evil-normal-state-local-map)
                 (kbd "~")  'jsrn-org-up-element)
+  ;; Let org mode override M-n
+  (define-key evil-normal-state-local-map (kbd "M-n") 'org-metadown)
   ;; Let winner keys overwrite org-mode
   (define-key evil-normal-state-local-map (kbd "M-S-<left>") 'winner-undo) 
   (define-key evil-normal-state-local-map (kbd "M-S-<right>") 'winner-redo)
