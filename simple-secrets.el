@@ -102,10 +102,11 @@ after adding it to the secret file."
       (setq pass (secret-generate-password))
       (kill-new pass)))
   ;; append-to-file doesn't work with epa (Emacs 24.1) so do append manually
-  (with-current-buffer secret-password-file
+  (with-temp-buffer
+    (insert-file-contents secret-password-file)
     (goto-char (point-max))
     (insert (concat "\n" key "\t" pass))
-    (save-buffer))
+    (write-file secret-password-file))
   (add-to-list 'secret-password-keys key))
 
 (defun secret-update-password (key pass)
@@ -121,12 +122,27 @@ after adding it to the secret file."
     (progn
       (setq pass (secret-generate-password))
       (kill-new pass)))
-  (with-current-buffer secret-password-file
+  (with-temp-buffer
+    (insert-file-contents secret-password-file)
     (goto-char (point-min))
     (re-search-forward (concat "^" key))
     (kill-whole-line)
     (insert (concat key "\t" pass "\n"))
-    (save-buffer))
+    (write-file secret-password-file))
+  )
+
+(defun secret-remove (key)
+  "Remove the binding for this key"
+  (interactive
+   (list (ido-completing-read "Key or site: " secret-password-keys)))
+  (unless (member key secret-password-keys)
+    (error "This key does not exist"))
+  (with-temp-buffer
+    (insert-file-contents secret-password-file)
+    (goto-char (point-min))
+    (re-search-forward (concat "^" key))
+    (kill-whole-line)
+    (write-file secret-password-file))
   )
 
 (defun secret-generate-password ()
