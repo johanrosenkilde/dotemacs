@@ -1,4 +1,4 @@
-;; Copyright (C) 2013 Johan S. R. Nielsen
+;; Copyright (C) 2013-2014 Johan S. R. Nielsen
 
 ;; Author: Johan S. R. Nielsen <jsrn@jsrn.dk>
 ;; Keywords: desktop
@@ -7,6 +7,10 @@
 
 ;;; This file adds a small amount of extra functionality on top of desktop.el to
 ;;; support easy, dynamic switching betweek different desktops.
+
+(defgroup mdesktop nil
+  "Group for the `mdesktop' package"
+  )
 
 (defcustom mdesktop-base-dir "~/.emacs.d/desktops/"
   "The base directory where desktops are saved"
@@ -75,3 +79,5 @@
 (add-hook 'kill-emacs-hook 'mdesktop-save-on-kill-emacs)
 
 (provide 'mdesktop)
+
+;;; mdesktop.el ends here
