@@ -51,6 +51,8 @@ nnoremap <c-g> :js gFindBar.close();<cr>
 
 " Shortcut for dr body narrower
 nnoremap W :js dr_body_narrow.switchWidth()<cr>
+" Enable dr body narrower on certain domains
+autocmd PageLoad .*wikipedia\\.* js dr_body_narrow.switchWidth()
 
 " Duplicate tab and go back in the copy
 nnoremap <C-k> :tabdup<CR>:back<CR>
