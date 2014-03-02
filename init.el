@@ -402,10 +402,10 @@ using tramp/sudo, if the file is not writable by user."
 ;;       EVIL
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'evil)
+(setq-default evil-symbol-word-search t)
 (setq evil-find-skip-newlines t
       evil-move-cursor-back nil
       evil-ex-search-highlight-all nil
-      evil-symbol-word-search t
       evil-want-fine-undo t)
 (setq evil-normal-state-tag (propertize "N" 'face '((:background "green" :foreground "black")))
       evil-emacs-state-tag (propertize "E" 'face '((:background "orange" :foreground "black")))
@@ -803,6 +803,10 @@ sometimes if more than one Emacs has this set"
     (call-process "/usr/bin/notify-send" nil nil nil (format "Appointment:\n%s \n in  %s min" text mins)))
   ;; If we leave Emacs running overnight - reset the appointments one minute after midnight
   (run-at-time "24:01" nil 'jsrn-org-agenda-to-appt)
+  (fill-keymap org-agenda-mode-map
+               evil-up-key     'org-agenda-previous-line
+               evil-down-key   'org-agenda-next-line
+               )
   )
 (add-hook 'administrative-mode-hook 'jsrn-agenda-activate)
 
@@ -844,10 +848,6 @@ sometimes if more than one Emacs has this set"
                (kbd (concat "M-" evil-up-key-uc))    'org-shiftmetaup
                (kbd (concat "M-" evil-right-key-uc)) 'org-shiftmetaright
                (kbd "C-c a") 'org-agenda)
-  (fill-keymap org-agenda-mode-map
-               evil-up-key     'org-agenda-previous-line
-               evil-down-key   'org-agenda-next-line
-               )
   (fill-keymaps (list evil-motion-state-local-map
                       evil-normal-state-local-map)
                 (kbd "~")  'jsrn-org-up-element)
