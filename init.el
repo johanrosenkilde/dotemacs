@@ -360,6 +360,22 @@ using tramp/sudo, if the file is not writable by user."
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;       SECRETS: Password management
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defun jsrn-secret-activate ()
+  (interactive)
+  (require 'simple-secrets)
+  (secret-load-keys)
+  (evil-global-set-key 'normal (kbd "C-1") 'secret-lookup-clipboard)
+  (evil-global-set-key 'emacs (kbd "C-1") 'secret-lookup-clipboard)
+  (evil-global-set-key 'normal (kbd "C-2") 'secret-new)
+  (evil-global-set-key 'emacs (kbd "C-2") 'secret-new)
+  )
+(add-hook 'administrative-mode-hook 'jsrn-secret-activate)
+
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;       WORKMAN
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (if (eq workman t)
