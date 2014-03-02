@@ -21,12 +21,14 @@
   (setq fill-column 9999)            ; with hard senctence wrap, we don't want hard lines
   (visual-line-mode t)               ; but we do want visual word wrap
   (adaptive-wrap-prefix-mode t)      ; with adaptive indenting
-  (setq LaTeX-item-indent 0)         ; indent \item as other stuff inside envs (works
-                                        ; better with adaptive-wrap-prefix-mode)
   (LaTeX-math-mode t)                ; always turn on math mode
   (flyspell-mode t)                  ; always turn on flyspell
   (turn-on-reftex)                   ; always turn on reftex
-  (setq TeX-insert-braces nil)       ; dont ever insert braces at macro expansion
+  (setq TeX-insert-braces nil        ; dont ever insert braces at macro expansion
+        TeX-arg-item-label-p nil     ; dont ask for labels on all commands
+        LaTeX-item-indent 0          ; indent \item as other stuff inside envs (works
+                                     ; better with adaptive-wrap-prefix-mode)
+        )
   ;; Activate the more reliable but simpler error system (for C-c `)
   (setq LaTeX-command-style '(("" "%(PDF)%(latex) -file-line-error %S%(PDFout)")))
   (TeX-source-correlate-mode)        ; activate forward/reverse search

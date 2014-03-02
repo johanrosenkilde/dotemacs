@@ -11,15 +11,27 @@
 (setq-default major-mode 'text-mode)
 (scroll-bar-mode -1) ;; Emacs gurus don't need no stinking scroll bars
 (menu-bar-mode 0)    ;; or menu bars
+(tool-bar-mode -1)
 (add-to-list 'default-frame-alist '(font . "Droid Sans Mono-8"))
 (add-to-list 'default-frame-alist '(left-fringe . 0))
 (add-to-list 'default-frame-alist '(right-fringe . 0))
-(setq compilation-scroll-output t)
 (setq-default indent-tabs-mode nil) ; never insert tabs, do spaces
-(setq grep-find-command "grep -r --exclude=.git ") ;; grep ignores Git
-(setq visible-bell t)
-(setq split-height-threshold 9999) ;; never automatically split horisontally
-(setq sentence-end-double-space nil) ;; sentences end with a dot, not with two spaces
+(setq compilation-scroll-output t
+      grep-find-command "grep -r --exclude=.git "  ;; grep ignores Git
+      visible-bell t
+      split-height-threshold 9999  ;; never automatically split horisontally
+      sentence-end-double-space nil  ;; sentences end with a dot, not with two spaces
+      auto-save-file-name-transforms '((".*" "~/.emacs.d/autosaves/\\1" t))  ;; autosaves put away
+      backup-directory-alist (quote ((".*" . "~/.emacs.d/backups/")))
+      fill-column 80
+      )
+
+;; Some font settings, extracted from Custom
+(custom-set-faces
+ '(default ((t (:inherit nil :stipple nil :background "white" :foreground "black" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 80 :width normal :foundry "unknown" :family "Droid Sans Mono"))))
+ '(flyspell-incorrect ((t (:foreground "OrangeRed" :underline t))))
+ '(menu ((t (:height 1 :family "Droid Sans Mono"))))
+ '(table-cell ((t nil))))
 
 (defadvice isearch-exit (after jsrn-goto-match-beginning activate)
   "After a search ends by RET, go to beginning of match."
@@ -273,7 +285,8 @@ line starting with the string given as the argument."
 (global-set-key (kbd "M-S-<right>") 'winner-redo)
 
 ;; Build and keep list of recent files
-(recentf-mode 1)
+(recentf-mode t)
+(setq recentf-save-file "~/.emacs.d/.recentf")
 
 ;; sudo support and others
 (require 'tramp)
@@ -743,7 +756,9 @@ the optional values set"
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;       ORG-MODE
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(setq org-startup-indented t)
+(setq org-startup-indented t
+      org-deadline-warning-days 7
+      )
 (defun jsrn-agenda-activate ()
   "Activate the current Emacs as an agenda Emacs. Weird stuff seem to happen
 sometimes if more than one Emacs has this set"
@@ -765,6 +780,7 @@ sometimes if more than one Emacs has this set"
   (jsrn-org-agenda-to-appt)
   ;; Activate appointments so we get notifications
   (appt-activate t)
+  (setq appt-display-format 'window)
   (defun appt-disp-window (mins curtime text)
     "Redefine Appointment reminder function to show a Memo using system call"
     (call-process "/usr/bin/notify-send" nil nil nil (format "Appointment:\n%s \n in  %s min" text mins)))
@@ -841,6 +857,7 @@ sometimes if more than one Emacs has this set"
 (setq ls-lisp-use-insert-directory-program nil)
 ;; Dired does not open a million buffers
 (toggle-diredp-find-file-reuse-dir 1)
+(put 'dired-find-alternate-file 'disabled nil)
 ;; When Dired does something to a file, requiring a target, it suggests other open dired buffer
 (setq dired-dwim-target 1)
 ;; Dired doesn't show dot-files per default. Use C-u s <Ret> to change
@@ -906,6 +923,9 @@ sometimes if more than one Emacs has this set"
   (interactive)
   (flyspell-goto-next-error)
   (ispell-word))
+(setq flyspell-auto-correct-binding nil
+      flyspell-highlight-flag t
+      )
 (define-key flyspell-mode-map [(control ?\.)] 'jsrn-spell-goto-next-and-suggest)
 (define-key flyspell-mode-map [(control ?\,)] nil)
 (define-key flyspell-mode-map [(f6)] 'jsrn-cycle-dictionary)
@@ -977,6 +997,9 @@ sometimes if more than one Emacs has this set"
 (require 'sage "sage")
 (require 'sage-view "sage-view")
 (require 'sage-blocks "sage-blocks")
+(setq sage-view-anti-aliasing-level 4
+      sage-view-scale 1.0
+      sage-view-scale-factor 1)
 (defadvice sage-backward-block (before sage-backward-block-mark activate)
   (push-mark))
 (defadvice sage-forward-block (before sage-forward-block-mark activate)
