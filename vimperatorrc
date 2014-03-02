@@ -96,3 +96,12 @@ javascript <<EOF
     .insertBefore(zoteroPanel, document.getElementById("liberator-status-position"));
 })();
 EOF
+
+" Binding for copying the current page's host
+javascript <<EOF
+function yankHost(args) {
+    pathArray = content.window.location.href.split( '/' );
+    util.copyToClipboard(pathArray[2]);
+}
+EOF
+map J :js yankHost();<cr>
