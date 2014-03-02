@@ -8,11 +8,12 @@
   ;; Zathura again with the synctex directive.
   ;; TODO: This currently doesn't work:
   ;; - The pdf is correctly opened.
-  ;; - It seems that the correct command is called (tested in shell)
-  ;; - But Zathura doesn't update it's position (as it does when tested in shell)
-  ;; - And the Zathura window doesn't steal the focus (also not when called from
+  ;; - Zathura correctly updates it's position
+  ;; - But the Zathura window doesn't steal the focus (also not when called from
   ;;   shell)
-  ;; Backward search is still completely untested.
+  ;; Backward search is still completely untested, but the following argument to
+  ;; zathura should work
+  ;; -x \"emacsclient --eval '(progn (switch-to-buffer  (file-name-nondirectory \"'\"'\"%{input}\"'\"'\")) (goto-line %{line}))'\""
   (interactive)
   (let* ((pdfname (concat (file-name-sans-extension (TeX-master-file))
                           ".pdf"))
@@ -27,12 +28,13 @@
                         (set-process-query-on-exit-flag proc nil)
                         proc))))
          (pid (process-id zatproc))
-         (synctex (format "--synctex-forward %s:0:%s"
+         (synctex (format "%s:0:%s"
                           (TeX-current-line)
                           (TeX-current-file-name-master-relative)))
          )
-    (message synctex)
-    (start-process "zathura" nil "zathura" synctex pdfname)
+    ;;TODO: the monkey buffer is for debugging to check that Zathura doesn't
+    ;;output an error
+    (start-process "zathura" (get-buffer-create "monkey") "zathura" "--synctex-forward" synctex pdfname)
     ))
 
 (setq TeX-auto-save t)
