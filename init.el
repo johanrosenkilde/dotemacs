@@ -254,7 +254,7 @@ line starting with the string given as the argument."
   (interactive)
   (pos-tip-show (concat " It is now:\n " (current-time-string)) )
   )
-(global-set-key [f6] 'show-clock)
+(global-set-key [f1] 'show-clock)
 
 
 
@@ -303,6 +303,7 @@ using tramp/sudo, if the file is not writable by user."
 
 ;; Jump as an ace
 (require 'ace-jump-mode)
+(setq ace-jump-mode-scope 'window)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;       AUTO-COMPLETE
