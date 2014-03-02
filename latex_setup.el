@@ -1,3 +1,40 @@
+(setq zathura-procs ())
+(defun zathura-forward-search ()
+  ;; Open the compiled pdf in Zathura with synctex. This is complicated since
+  ;; 1) Zathura refuses to acknowledge Synctex directive if the pdf is not
+  ;; already opened
+  ;; 2) This means we have to bookkeep open Zathura processes ourselves: first
+  ;; open a new pdf from the beginning, if it is not already open. Then call
+  ;; Zathura again with the synctex directive.
+  ;; TODO: This currently doesn't work:
+  ;; - The pdf is correctly opened.
+  ;; - It seems that the correct command is called (tested in shell)
+  ;; - But Zathura doesn't update it's position (as it does when tested in shell)
+  ;; - And the Zathura window doesn't steal the focus (also not when called from
+  ;;   shell)
+  ;; Backward search is still completely untested.
+  (interactive)
+  (let* ((pdfname (concat (file-name-sans-extension (TeX-master-file))
+                          ".pdf"))
+         (zatentry (assoc pdfname zathura-procs))
+         (zatproc (if (and zatentry (process-live-p (cdr zatentry)))
+                      (cdr zatentry)
+                    (progn
+                      (let ((proc (start-process "zathura" nil "zathura" "-s" pdfname)))
+                        (when zatentry
+                          (setq zathura-procs (delq zatentry zathura-procs)))
+                        (add-to-list 'zathura-procs (cons pdfname proc))
+                        (set-process-query-on-exit-flag proc nil)
+                        proc))))
+         (pid (process-id zatproc))
+         (synctex (format "--synctex-forward %s:0:%s"
+                          (TeX-current-line)
+                          (TeX-current-file-name-master-relative)))
+         )
+    (message synctex)
+    (start-process "zathura" nil "zathura" synctex pdfname)
+    ))
+
 (setq TeX-auto-save t)
 (setq TeX-parse-self t)
 (setq-default TeX-parse-self nil)
@@ -45,6 +82,10 @@
   (add-to-list 'TeX-expand-list '("%u" okular-make-url)) ;; Expand %u to the result of above fun
   (setq TeX-view-program-list '(("okular" "okular --unique %u")))
   (setq TeX-view-program-selection (quote ((output-pdf "okular") (output-dvi "xdvi"))))
+  ;; TODO: To open pdfs with Zathura, if zathura-forward-search can be made to work.
+  ;; (add-to-list 'TeX-view-program-list
+  ;;              '("zathura" zathura-forward-search))
+  ;; (setq TeX-view-program-selection (quote ((output-pdf "zathura") (output-dvi "xdvi"))))
   (electric-pair-mode)               ; insert matching braces
   (define-key LaTeX-mode-map (kbd "$") 'self-insert-command) ; makes electric pairs work for $
 
