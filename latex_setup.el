@@ -153,6 +153,12 @@
   ;;TODO: This doesn't work since the keybinding keeps getting redefined by reftex
   (define-key evil-normal-state-map (kbd "C-c - ") '(lambda () (interactive) t))
 
+  ;; Set evil jump when using Latex's jumping stuff
+  (defadvice latex-mark-environment (before marker activate)
+    (evil-set-jump))
+  (defadvice latex-mark-section (before marker activate)
+    (evil-set-jump))
+
   ;; Let M-q fill entire entries and not just single items
   (setq fill-paragraph-function (lambda (&optional args) (bibtex-fill-entry)))
   ;; Teach AucTeX about align and IEEEeqnarray
@@ -171,3 +177,16 @@
   (setq texmathp-tex-commands '(("IEEEeqnarray" env-on) ("IEEEeqnarray*" env-on)))
   )
 (add-hook 'LaTeX-mode-hook 'jsrn-latex-mode-hook)
+
+(defun jsrn-bibtex-mode-hook ()
+  (fill-keymap bibtex-mode-map
+               (kbd "M-[") 'backward-block
+               (kbd "M-]") 'forward-block
+               (kbd "C-j") 'yank-block
+               )
+  (fill-keymap evil-motion-state-local-map
+               (kbd "M-[") 'backward-block
+               (kbd "M-]") 'forward-block
+               )
+  )
+(add-hook 'bibtex-mode-hook 'jsrn-bibtex-mode-hook)
