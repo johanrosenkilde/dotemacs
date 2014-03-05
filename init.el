@@ -524,6 +524,9 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
                               (undo-tree-visualizer-mode . emacs)
                               ;; Disable
                               (completion-list-mode . normal)
+                              ;; Disable strange motion state
+                              (help-mode . normal)
+                              (Info-mode . normal)
                               )
       do (evil-set-initial-state mode state))
 
@@ -543,6 +546,8 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 (evil-declare-key 'normal woman-mode-map "q" 'Man-quit)
 (evil-declare-key 'normal reftex-toc-mode-map "q" 'reftex-toc-quit)
 (evil-declare-key 'normal completion-list-mode-map "q" 'quit-window)
+(evil-declare-key 'normal help-mode-map "q" 'quit-window)
+(evil-declare-key 'normal Info-mode-map "q" 'quit-window)
 
 ;; make cursor look like Vim when in Vim normal mode
 (defun cofi/evil-cursor ()
