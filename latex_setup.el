@@ -165,6 +165,8 @@
   ;;TODO: This doesn't work since the keybinding keeps getting redefined by reftex
   (define-key evil-normal-state-map (kbd "C-c - ") '(lambda () (interactive) t))
 
+  ;; Let M-q fill entire entries and not just single items
+  (setq fill-paragraph-function (lambda (&optional args) (bibtex-fill-entry)))
   ;; Teach AucTeX about align and IEEEeqnarray
   (LaTeX-add-environments
    '("align" LaTeX-env-label)
