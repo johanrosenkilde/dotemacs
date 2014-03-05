@@ -91,18 +91,6 @@
   (electric-pair-mode)               ; insert matching braces
   (define-key LaTeX-mode-map (kbd "$") 'self-insert-command) ; makes electric pairs work for $
 
-  ;; Toggle outline mode and add Org-like key-bindings
-  (outline-minor-mode t) ; remember that it is diminished in diminish area
-  (local-set-key (kbd "C-<tab>") 'outline-toggle-children)
-  (setq jsrn-current-sublevels 1)
-  (local-set-key (kbd "C-S-<tab>")
-                 '(lambda ()
-                    "Cycle through hiding levels 1, 2, or show all"
-                    (interactive)
-                    (setq jsrn-current-sublevels (+ (mod jsrn-current-sublevels 3) 1))
-                    (if (eq jsrn-current-sublevels 1)
-                        (show-all)
-                      (hide-sublevels jsrn-current-sublevels))))
   (local-set-key (kbd "C-c 0")
                  '(lambda ()
                     "Choose a label and insert the appropriate cref{...} for that label"
