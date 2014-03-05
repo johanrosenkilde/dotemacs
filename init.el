@@ -211,26 +211,37 @@ and trailing. Assumes one is in visual mode\n"
 
     (delete-process (get-process pname))))
 
-(defun mark-current-block (&optional delim)
-    "Find last delimiter line, set mark and then go to next delimiter
-line. Return the set mark.
-If no argument is given, a delimiter line is a blank line. Otherwise, it is a
-line starting with the string given as the argument."
-    (let ((ldelim (if delim (concat "^" delim) "^$")))
-      (search-backward-regexp ldelim nil 0)
-      (let ((beg (point)))
-        (push-mark)
-        (next-line)
-        (search-forward-regexp ldelim nil 0)
-        (goto-char (match-beginning 0))
-        (backward-char)
-        beg
-        )))
-(defun mark-current-block-i (delim)
-  (interactive "sDelimiting lines match from start (default is empty line): ")
-  (let ((delim (if (string-equal delim "") "$" delim)))
-    (mark-current-block delim)
-  ))
+;; Block movement
+(setq block-delimiter "[:blank:]*$")
+(defun backward-block ()
+  "Move backwards to the last beginning of a block."
+  (interactive)
+  (backward-char 1)
+  (search-backward-regexp (concat "^" block-delimiter) nil 0))
+
+(defun forward-block ()
+  "Move forwards to the next beginning of a block."
+  (interactive)
+  ; If point is on a delimiter, we should skip this, so search from beginning of
+  ; next line (this will match immediately, if next line is a delimiter)
+  (forward-line)
+  ; search forward: if it worked, move to begin of delimiter, otherwise end of file
+  (when (search-forward-regexp (concat "^" block-delimiter) nil 0)
+      (goto-char (match-beginning 0))))
+
+(defun yank-block ()
+  "Yank the block point is currently in"
+  (interactive)
+  (save-excursion
+    (let ((begin
+          (progn
+            (unless (looking-at (concat "^" block-delimiter))
+              (backward-block))
+            (point))))
+      (forward-block)
+      (evil-yank-lines begin (point))
+    ))
+  )
 
 (defun toggle-fullscreen ()
   "Toggle full screen on X11.
@@ -374,7 +385,6 @@ using tramp/sudo, if the file is not writable by user."
 (add-hook 'administrative-mode-hook 'jsrn-secret-activate)
 
 
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;       WORKMAN
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -496,6 +506,9 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
   "Store current position in jump list"
   (evil-set-jump))
 
+;; Some motions
+(evil-declare-motion 'backward-block)
+(evil-declare-motion 'forward-block)
 ; Enable//Disable Evil in certain modes
 (cl-loop for (mode . state) in '(
                               (eassist-mode . emacs)
@@ -588,17 +601,19 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 ;;??? This is strangely needed
 (fill-keymap evil-insert-state-map (kbd "C") 'self-insert-command) 
 
-(defun jsrn-scroll-down ()
-  (interactive)
+(evil-define-motion jsrn-scroll-down ()
+  "Scroll down half a page and recenter"
+  :type inclusive
+  :jump t
   (when (eq 1 (point))
-    (push-mark)
     (evil-scroll-down nil))
-  (push-mark)
   (evil-scroll-down nil)
   (recenter)
   )
-(defun jsrn-scroll-up ()
-  (interactive)
+(evil-define-motion jsrn-scroll-up ()
+  "Scroll up half a page and recenter"
+  :type inclusive
+  :jump t
   (push-mark)
   (evil-scroll-up nil)
   (recenter)
@@ -938,6 +953,7 @@ sometimes if more than one Emacs has this set"
       )))
 (defun jsrn-spell-goto-next-and-suggest ()
   (interactive)
+  (evil-set-jump)
   (flyspell-goto-next-error)
   (ispell-word))
 (setq flyspell-auto-correct-binding nil
