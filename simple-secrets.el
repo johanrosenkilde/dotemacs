@@ -44,7 +44,7 @@
   :type 'string
   :group 'simple-secrets)
 
-(defcustom secret-generate-password-command "pwgen -N 1 -ny"
+(defcustom secret-generate-password-command "pwgen -cny -N 1 12"
   "The command for generating new random passwords"
   :type 'string
   :group 'simple-secrets)
