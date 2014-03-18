@@ -127,7 +127,9 @@ after adding it to the secret file."
     (goto-char (point-min))
     (re-search-forward (concat "^" key))
     (kill-whole-line)
-    (insert (concat key "\t" pass "\n"))
+    (insert (concat key "\t" pass))
+    (unless (eq (point) (point-max))
+      (insert "\n"))
     (write-file secret-password-file))
   )
 
@@ -142,7 +144,10 @@ after adding it to the secret file."
     (goto-char (point-min))
     (re-search-forward (concat "^" key))
     (kill-whole-line)
+    (when (looking-at "^$")
+      (delete-char -1))
     (write-file secret-password-file))
+  (setq secret-password-keys (delete key secret-password-keys))
   )
 
 (defun secret-generate-password ()
