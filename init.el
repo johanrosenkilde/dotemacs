@@ -924,17 +924,23 @@ sometimes if more than one Emacs has this set"
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;       ELISP
+;;       LISP
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun jsrn-emacs-lisp-mode-hook ()
   (setq evil-shift-width 2)
   (auto-fill-mode t)
   (show-paren-mode t)
   (highlight-parentheses-mode t)
+  (require 'paredit)
+  (paredit-mode)
+  (fill-keymap evil-normal-state-local-map
+    "D" 'paredit-kill
+    "H" 'forward-sexp
+    "S" 'backward-sexp
+    "Q" (lambda () (interactive) (up-list -1))
+    )
   )
 (add-hook 'emacs-lisp-mode-hook 'jsrn-emacs-lisp-mode-hook)
-
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;       FLYSPELL
