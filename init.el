@@ -1044,15 +1044,13 @@ sometimes if more than one Emacs has this set"
 (setq sage-view-anti-aliasing-level 4
       sage-view-scale 1.0
       sage-view-scale-factor 1)
-(defadvice sage-backward-block (before sage-backward-block-mark activate)
-  (push-mark))
-(defadvice sage-forward-block (before sage-forward-block-mark activate)
-  (push-mark))
 (add-hook 'sage-startup-after-prompt-hook 'sage-view)
 (setq sage-command (cl-concatenate 'string sage-path "/sage"))
 (defun jsrn-sage-mode-hook ()
   (interactive)
   (electric-pair-mode)
+  (evil-declare-motion 'sage-forward-block)
+  (evil-declare-motion 'sage-backward-block)
   )
 (add-hook 'sage-mode-hook 'jsrn-sage-mode-hook)
 
@@ -1449,7 +1447,7 @@ complete card names"
 ;;       MONKY
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'monky)
-(evil-set-initial-state 'monky-mode 'normal)
+(evil-set-initial-state 'monky-mode 'emacs)
 (fill-keymap monky-mode-map
 	     (kbd "<return>") (lambda () (interactive) (monky-visit-item t))
 	     (kbd "S-SPC")    'monky-show-item-or-scroll-down
