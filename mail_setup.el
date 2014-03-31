@@ -5,26 +5,38 @@
         smtpmail-queue-dir "~/mail/queued-mail/"
         smtpmail-debug-info t ; only to debug problems
         )
-  (if (eq nil (string-match ".*dtu.dk" from-email))
+  (cond
+   ((string-match ".*dtu.dk" from-email)
     (progn
-      (setq
-        smtpmail-smtp-server "web12.meebox.net"
-        smtpmail-smtp-user "atuin@atuin.dk"
-        smtpmail-smtp-service 465
-        smtpmail-local-domain "atuin.dk"
-        smtpmail-stream-type 'ssl
-        )
-     (message "Using Meebox SMTP"))
-    (progn
-        (setq
+       (setq
         smtpmail-smtp-server "smtpauth.imm.dtu.dk"
         smtpmail-smtp-user "jsrn"
         smtpmail-smtp-service 465
         smtpmail-local-domain nil
         smtpmail-stream-type 'ssl
         )
-       (message "Using DTU SMTP"))
-))
+       (message "Using DTU SMTP")))
+   ((string-match ".*uni-ulm.de" from-email)
+    (progn
+      (setq
+       smtpmail-smtp-server "mail.uni-ulm.de"
+       smtpmail-smtp-user "akz36"
+       smtpmail-smtp-service 587
+       smtpmail-local-domain nil
+       smtpmail-stream-type 'starttls
+       )
+      (message "Using uni-ulm SMTP")))
+   (t
+    (progn
+      (setq
+       smtpmail-smtp-server "web12.meebox.net"
+       smtpmail-smtp-user "atuin@atuin.dk"
+       smtpmail-smtp-service 465
+       smtpmail-local-domain "atuin.dk"
+       smtpmail-stream-type 'ssl
+       )
+      (message "Using Meebox SMTP")))
+     ))
 (jsrn-smtpmail-setup "jsrn")
 
 (defun jsrn-attach-file (file &optional type)
@@ -152,7 +164,7 @@ those present in the database."
   
   ;; View the contents of all inboxes with 'bi'
   (add-to-list 'mu4e-bookmarks
-     '("maildir:/atuin/INBOX or maildir:/dtu/INBOX"  "Inboxes"  ?i))
+     '("maildir:/atuin/INBOX or maildir:/dtu/INBOX or maildir:/gmail/INBOX"  "Inboxes"  ?i))
 
   ;; Check mail using offlineimap every 5 min
   (setq mu4e-get-mail-command "getmail"
