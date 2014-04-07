@@ -802,9 +802,25 @@ sometimes if more than one Emacs has this set"
   (interactive)
   (find-file "~/orgs/home.org")
   ;; Set files which contains agenda files to all .org files in specified dir
-  (setq org-agenda-files (directory-files "~/orgs" t ".org$" t))
+  (setq org-agenda-files (directory-files "~/orgs" t "^[^#]*org$" t))
   ;; Various agenda setup
   (setq org-agenda-repeating-timestamp-show-all nil) ; don't show repititions in agenda
+  ;; Setup org-capture
+  (setq org-default-notes-file "~/orgs/home.org")
+  (defun jsrn-read-date-prob-two-weeks ()
+      (concat "<" (org-read-date nil nil nil nil nil "+14") ">"))
+  (setq org-capture-templates
+        (list
+         '("r" "respond" entry (file+headline "~/orgs/home.org" "Mails")
+           "* TODO Besvar %:from on %:subject\nSCHEDULED: %(jsrn-read-date-prob-two-weeks)\n%U\n%a\n\n")
+         '("t" "ticket" entry (file+headline "~/orgs/home.org" "Mails")
+          "* Ticket for %:subject (%:from) \n%^t\n%U\n%a\n\n")
+         '("h" "handle" entry (file+headline "~/orgs/home.org" "Mails")
+          "* Handle %:subject from %:from \nSCHEDULED: %(jsrn-read-date-prob-two-weeks)\n%U\n%a\n\n")
+         '("e" "event" entry (file+headline "~/orgs/home.org" "Mails")
+          "* Event %:subject from %:from \n%^t\n%U\n%a\n\n")
+        ))
+  (define-key global-map "\C-cc" 'org-capture)
   ;; Reminder support for Org
   (defun jsrn-org-agenda-to-appt ()
     "Erase all reminders and rebuilt reminders for today from the agenda"
