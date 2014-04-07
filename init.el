@@ -853,10 +853,7 @@ sometimes if more than one Emacs has this set"
 
 (defun jsrn-org-mode-hook ()
   (visual-line-mode t)
-  (defun jsrn-org-up-element ()
-    (interactive)
-    (push-mark)
-    (org-up-element))
+  (evil-declare-motion 'org-up-element)
   (fill-keymaps (list org-mode-map)
                 (kbd (concat "M-" evil-left-key))  'org-metaleft
                 (kbd (concat "M-" evil-down-key))  'org-metadown
@@ -868,9 +865,11 @@ sometimes if more than one Emacs has this set"
                (kbd (concat "M-" evil-up-key-uc))    'org-shiftmetaup
                (kbd (concat "M-" evil-right-key-uc)) 'org-shiftmetaright
                (kbd "C-c a") 'org-agenda)
+  ;; to override evil binding for ~, we do it on the evil local maps
   (fill-keymaps (list evil-motion-state-local-map
+                      evil-visual-state-local-map
                       evil-normal-state-local-map)
-                (kbd "~")  'jsrn-org-up-element)
+                (kbd "~")  'org-up-element)
   ;; Let org mode override M-n
   (define-key evil-normal-state-local-map (kbd "M-n") 'org-metadown)
   ;; Let winner keys overwrite org-mode
