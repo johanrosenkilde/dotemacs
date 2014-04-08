@@ -136,7 +136,7 @@ those present in the database."
                                      ((string-equal mailbox "jsrn") "/atuin/INBOX.Sent")
                                      ((string-equal mailbox "dtu")   "/dtu/Sent")
                                      ((string-equal mailbox "gmail")   "/atuin/INBOX.Sent")))))
-        mu4e-drafts-folder "/drafts"
+        mu4e-drafts-folder "/atuin/INBOX.Drafts"
         mu4e-trash-folder "/trash"
         mu4e-refile-folder (lambda (msg)
                              (let ((mailbox (jsrn-mu4e-mailbox msg)))
@@ -158,7 +158,7 @@ those present in the database."
             ("/dtu/To use"        . ?U)
             ("/atuin/INBOX.To Use". ?u)
             ("/dtu/Archives.2013" . ?A)
-            ("/drafts"            . ?d)
+            ("/atuin/INBOX.Drafts". ?d)
             ("/trash"             . ?w)
             ))
   
