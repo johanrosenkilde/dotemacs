@@ -1066,6 +1066,11 @@ sometimes if more than one Emacs has this set"
   (electric-pair-mode)
   (evil-declare-motion 'sage-forward-block)
   (evil-declare-motion 'sage-backward-block)
+  (fill-keymap sage-mode-map
+               (kbd "C-<return>") 'sage-send-current-block
+               (kbd "M-{")      'sage-backward-block
+               (kbd "M-}")      'sage-forward-block)
+  (define-key inferior-sage-mode-map (kbd "C-<return>") 'sage-pull-next-block)
   )
 (add-hook 'sage-mode-hook 'jsrn-sage-mode-hook)
 
