@@ -91,6 +91,7 @@
   (electric-pair-mode)               ; insert matching braces
   (define-key LaTeX-mode-map (kbd "$") 'self-insert-command) ; makes electric pairs work for $
 
+  ;;When inserting a label, just use cref and don't ask
   (local-set-key (kbd "C-c 0")
                  '(lambda ()
                     "Choose a label and insert the appropriate cref{...} for that label"
@@ -154,9 +155,14 @@
   (define-key evil-normal-state-map (kbd "C-c - ") '(lambda () (interactive) t))
 
   ;; Set evil jump when using Latex's jumping stuff
-  (defadvice latex-mark-environment (before marker activate)
-    (evil-set-jump))
-  (defadvice latex-mark-section (before marker activate)
+  (defadvice LaTeX-mark-environment (before latex-mark-env-set-jump activate)
+    "Store current position in jump list"
+    (evil-set-jump)
+    (evil-set-jump) ;; it seems the last registered jump will be overwritten
+    )
+  (defadvice LaTeX-mark-section (before latex-mark-sec-set-jump activate)
+    "Store current position in jump list"
+    (evil-set-jump)
     (evil-set-jump))
 
   ;; Let M-q fill entire entries and not just single items
