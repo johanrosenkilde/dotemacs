@@ -92,6 +92,10 @@ those present in the database."
                               "\n"))))))
 
 (defun jsrn-mu4e-setup ()
+  ;; Setup smtp mail information
+  (require 'auth-source)
+  (setq auth-sources '((:source "~/.authinfo.gpg")))
+  
   (add-to-list 'load-path"/usr/local/share/emacs/site-lisp/mu4e")
   (require 'mu4e)
   
