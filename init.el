@@ -267,6 +267,27 @@ and trailing. Assumes one is in visual mode\n"
   )
 (global-set-key [f1] 'show-clock)
 
+(defun insert-file-name (filename &optional args)
+  "Insert name of file FILENAME into buffer after point.
+
+Prefixed with \\[universal-argument], expand the file name to
+its fully canocalized path.  See `expand-file-name'.
+
+Prefixed with \\[negative-argument], use relative path to file
+name from current directory, `default-directory'.  See
+`file-relative-name'.
+
+The default with no prefix is to insert the file name exactly as
+it appears in the minibuffer prompt."
+  ;; Based on insert-file in Emacs -- ashawley 20080926
+  (interactive "*fInsert file name: \nP")
+  (cond ((eq '- args)
+         (insert (file-relative-name filename)))
+        ((not (null args))
+         (insert (expand-file-name filename)))
+        (t
+         (insert filename))))
+
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -526,6 +547,7 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
                               (completion-list-mode . normal)
                               ;; Disable strange motion state
                               (help-mode . normal)
+                              (apropos-mode . normal)
                               (Info-mode . normal)
                               )
       do (evil-set-initial-state mode state))
@@ -1426,7 +1448,7 @@ complete card names"
     (if (or (not b) (eq 'term-mode major-mode))
         (multi-term)
       (switch-to-buffer b))))
-(global-set-key [(f3)] 'get-term)
+(global-set-key [(f9)] 'get-term)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1448,6 +1470,7 @@ complete card names"
 (require 'magit)
 (global-set-key [(f12)] 'magit-status)
 (evil-set-initial-state 'magit-mode 'normal)
+(evil-set-initial-state 'magit-process-mode 'emacs)
 (fill-keymap magit-mode-map
 	     (kbd "<return>") (lambda () (interactive) (magit-visit-item t))
 	     (kbd "S-SPC")    'magit-show-item-or-scroll-down
