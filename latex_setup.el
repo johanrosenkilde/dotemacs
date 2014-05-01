@@ -37,6 +37,25 @@
     (start-process "zathura" (get-buffer-create "monkey") "zathura" "--synctex-forward" synctex pdfname)
     ))
 
+(defun search-in-math (regex)
+  "Search for a given regular expression only in math mode."
+  (interactive "sSearch term: ")
+  (setq search-in-math-last regex)
+  (search-in-math-repeat)
+  )
+(defun search-in-math-repeat ()
+  "Search for the next occurence of an expression only in math mode.
+Uses last value searched for in math mode."
+  (interactive)
+  (let ((case-fold-search nil)) ;; math is always case sensitive
+    (when (not (search-forward-regexp search-in-math-last nil 0))
+      (message "Searched failed from search point and onwards."))
+    (while (not (or (texmathp) (eq (point) (point-max))))
+      (search-forward-regexp search-in-math-last))
+    (match-beginning 0)
+    )
+  )
+
 (setq TeX-auto-save t)
 (setq TeX-parse-self t)
 (setq-default TeX-parse-self nil)
