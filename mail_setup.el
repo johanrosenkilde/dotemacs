@@ -6,16 +6,16 @@
         smtpmail-debug-info t ; only to debug problems
         )
   (cond
-   ((string-match ".*dtu.dk" from-email)
-    (progn
-       (setq
-        smtpmail-smtp-server "smtpauth.imm.dtu.dk"
-        smtpmail-smtp-user "jsrn"
-        smtpmail-smtp-service 465
-        smtpmail-local-domain nil
-        smtpmail-stream-type 'ssl
-        )
-       (message "Using DTU SMTP")))
+   ;; ((string-match ".*dtu.dk" from-email)
+   ;;  (progn
+   ;;     (setq
+   ;;      smtpmail-smtp-server "smtpauth.imm.dtu.dk"
+   ;;      smtpmail-smtp-user "jsrn"
+   ;;      smtpmail-smtp-service 465
+   ;;      smtpmail-local-domain nil
+   ;;      smtpmail-stream-type 'ssl
+   ;;      )
+   ;;     (message "Using DTU SMTP")))
    ((string-match ".*uni-ulm.de" from-email)
     (progn
       (setq
@@ -138,7 +138,7 @@ those present in the database."
                              (let ((mailbox (jsrn-mu4e-mailbox msg)))
                                (cond ((string-equal mailbox "atuin") "/atuin/INBOX.Sent")
                                      ((string-equal mailbox "jsrn") "/atuin/INBOX.Sent")
-                                     ((string-equal mailbox "dtu")   "/dtu/Sent")
+                                     ;; ((string-equal mailbox "dtu")   "/dtu/Sent")
                                      ((string-equal mailbox "gmail")   "/atuin/INBOX.Sent")))))
         mu4e-drafts-folder "/atuin/INBOX.Drafts"
         mu4e-trash-folder "/trash"
@@ -157,11 +157,11 @@ those present in the database."
             ("/atuin/INBOX.Sent"  . ?s)
             ("/atuin/INBOX.To Use". ?u)
             ("/atuin/INBOX.Archives.2013". ?a)
-            ("/dtu/INBOX"         . ?I)
-            ("/dtu/Sent"          . ?S)
-            ("/dtu/To use"        . ?U)
+            ;; ("/dtu/INBOX"         . ?I)
+            ;; ("/dtu/Sent"          . ?S)
+            ;; ("/dtu/To use"        . ?U)
+            ;; ("/dtu/Archives.2013" . ?A)
             ("/atuin/INBOX.To Use". ?u)
-            ("/dtu/Archives.2013" . ?A)
             ("/atuin/INBOX.Drafts". ?d)
             ("/trash"             . ?w)
             ))
@@ -180,15 +180,15 @@ those present in the database."
   (setq mu4e-user-mail-address-list '("atuin@atuin.dk"
                                       "jsrn@jsrn.dk"
                                       "johan.nielsen@uni-ulm.de"
-                                      "jsrn@dtu.dk"
+                                      ;; "jsrn@dtu.dk"
                                       "spammy@atuin.dk"
                                       "jsrn@atuin.dk"
                                       "johan@atuin.dk"
                                       "webmaster@atuin.dk"
-                                      "j.s.r.nielsen@mat.dtu.dk"
                                       "santaphile@gmail.dk"))
-  (setq jsrn-mu4e-email-to-sent-folder '(("j.s.r.nielsen@mat.dtu.dk" . "/dtu/Sent")
-                                         ("jsrn@dtu.dk" . "/dtu/Sent"))
+  (setq jsrn-mu4e-email-to-sent-folder nil
+                                        ;; '(("j.s.r.nielsen@mat.dtu.dk" . "/dtu/Sent")
+                                        ;;   ("jsrn@dtu.dk" . "/dtu/Sent"))
         jsrn-mu4e-mailbox-default "/atuin/INBOX.Sent")
   
   ;; Only addresses from mail sent to me directly should go in auto-completions
