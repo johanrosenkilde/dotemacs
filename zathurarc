@@ -7,3 +7,7 @@ map E navigate previous
 
 map u focus_inputbar ":open "
 
+map k search forward
+map p search backward
+
+set selection-clipboard "clipboard"
