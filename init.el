@@ -1023,6 +1023,7 @@ sometimes if more than one Emacs has this set"
 (add-to-list 'desktop-globals-to-save 'file-name-history)
 (setq desktop-base-file-name "desktop")
 (global-set-key [(f8)] 'mdesktop-switch)
+(add-hook 'auto-save-hook 'mdesktop-save-current) ; save desktop ever so often
 
 
 
