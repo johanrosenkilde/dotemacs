@@ -549,6 +549,8 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
                               (help-mode . normal)
                               (apropos-mode . normal)
                               (Info-mode . normal)
+                              (woman-mode . normal)
+                              (compilation-mode . normal)
                               )
       do (evil-set-initial-state mode state))
 
@@ -1023,8 +1025,10 @@ sometimes if more than one Emacs has this set"
 (add-to-list 'desktop-globals-to-save 'file-name-history)
 (setq desktop-base-file-name "desktop")
 (global-set-key [(f8)] 'mdesktop-switch)
-(add-hook 'auto-save-hook 'mdesktop-save-current) ; save desktop ever so often
-
+(add-hook 'auto-save-hook '(lambda ()
+                             (if mdesktop-current
+                                 (mdesktop-save-current) ; save desktop ever so often
+                                 )))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
