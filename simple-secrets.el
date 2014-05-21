@@ -25,7 +25,7 @@
 ;;; 
 ;;; To use, set `secret-password-file' and put the following in your
 ;;; .emacs:
-;;;   (require 'secrets)
+;;;   (require 'simple-secrets)
 ;;;   (secret-load-keys)
 ;;;
 ;;; Now you have the following functions: `secret-lookup',
