@@ -987,7 +987,7 @@ sometimes if more than one Emacs has this set"
   (paredit-mode)
   (fill-keymap evil-normal-state-local-map
     "D" 'paredit-kill
-    "H" 'forward-sexp
+    "s" 'forward-sexp
     "S" 'backward-sexp
     "Q" (lambda () (interactive) (up-list -1))
     )
