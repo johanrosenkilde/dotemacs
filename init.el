@@ -1215,16 +1215,26 @@ last main file"
     (jsrn-fsharp-load-files (butlast fsharp-ac-project-files))
     (fsharp-show-subshell)
   )
-  (define-key fsharp-mode-map (kbd "C-c RET") 'fsharp-send-current-block)
-  (define-key fsharp-mode-map (kbd "M-RET") 'fsharp-eval-region)
-  (define-key fsharp-mode-map (kbd "C-SPC") 'completion-at-point)
-  (define-key fsharp-mode-map (kbd "C-c k") 'fsharp-goto-block-up)
-  (define-key fsharp-mode-map [(f5)] 'jsrn-fsharp-reload-project-libs)
-  (define-key fsharp-mode-map [(shift f5)] 'jsrn-fsharp-reload-project-entire)
-  (define-key inferior-fsharp-mode-map (kbd "C-d")
-    (lambda () (interactive) (evil-scroll-down 20)))
+  (fill-keymap fsharp-mode-map
+               (kbd "C-c RET") 'fsharp-send-current-block
+               (kbd "M-RET")   'fsharp-eval-region
+               (kbd "C-SPC")   'completion-at-point
+               (kbd "C-c k")   'fsharp-goto-block-up
+               [(f5)]          'jsrn-fsharp-reload-project-libs
+               [(shift f5)]    'jsrn-fsharp-reload-project-entire)
   )
 (add-hook 'fsharp-mode-hook 'jsrn-fsharp-mode-hook)
+
+(defun jsrn-inferior-fsharp-mode-hook ()
+  (interactive)
+  (fill-keymap evil-insert-state-local-map
+               (kbd "<return>") 'fsharp-comint-send)
+  )
+(fill-keymap inferior-fsharp-mode-map
+             (kbd "C-d")     '(lambda () (interactive) (evil-scroll-down 20))
+             (kbd "RET")     'fsharp-comint-send
+             )
+(add-hook 'inferior-fsharp-mode-hooks 'jsrn-inferior-fsharp-mode-hook) ;; note: non-standard hook
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;       C/C++ AND GDB
