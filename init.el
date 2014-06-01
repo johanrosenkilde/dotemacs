@@ -114,9 +114,9 @@ See `pour-mappings-to'."
   "Run the given key binding in the other window"
   (interactive)
   (other-window 1)
-  (condition-case nil
+  (condition-case err
       (funcall (key-binding keyb))
-    (error (beep)))
+    (error (princ (format "Error: %s" err))))
   (other-window -1))
 
 
@@ -671,11 +671,11 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
               (kbd "S-SPC")  'jsrn-scroll-up
               (kbd "C-d")    'jsrn-scroll-down
               (kbd "SPC")    'jsrn-scroll-down
-              (kbd "C-w SPC")    '(lambda () (interactive) (key-binding-other-window (kbd "SPC")))
-              (kbd "C-w S-SPC")  '(lambda () (interactive) (key-binding-other-window (kbd "S-SPC")))
-              (kbd "C-w TAB")    '(lambda () (interactive) (key-binding-other-window (kbd "TAB")))
-              (kbd "C-w G")    '(lambda () (interactive) (key-binding-other-window (kbd "G")))
-              (kbd "C-w g")    '(lambda () (interactive) (key-binding-other-window (kbd "gg")))
+              (kbd "C-w SPC")   '(lambda () (interactive) (key-binding-other-window (kbd "SPC")))
+              (kbd "C-w S-SPC") '(lambda () (interactive) (key-binding-other-window (kbd "S-SPC")))
+              (kbd "C-w TAB")   '(lambda () (interactive) (next-error))
+              (kbd "C-w G")     '(lambda () (interactive) (key-binding-other-window (kbd "G")))
+              (kbd "C-w g")     '(lambda () (interactive) (key-binding-other-window (kbd "gg")))
               (kbd "C-f")    'ace-jump-mode
 	      )
 
@@ -973,6 +973,14 @@ sometimes if more than one Emacs has this set"
 ;; Load the advanced, not-touched-so-often stuff
 (load "dired_setup")
 
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;       COMPILATION-MODE
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defun jsrn-compilation-mode-hook ()
+  (local-unset-key "g") ;; disable "recompile" command to reinstate Evil's g
+  )
+(add-hook 'compilation-mode-hook 'jsrn-compilation-mode-hook)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
