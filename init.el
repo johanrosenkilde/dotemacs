@@ -110,6 +110,16 @@ See `pour-mappings-to'."
                  keymap)))
       (pour-mappings-to map mappings))))
 
+(defun key-binding-other-window (keyb)
+  "Run the given key binding in the other window"
+  (interactive)
+  (other-window 1)
+  (condition-case nil
+      (funcall (key-binding keyb))
+    (error (beep)))
+  (other-window -1))
+
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;       GLOBALLY DEFINED CUSTOM FUNCTIONS AND KEYS
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -661,8 +671,11 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
               (kbd "S-SPC")  'jsrn-scroll-up
               (kbd "C-d")    'jsrn-scroll-down
               (kbd "SPC")    'jsrn-scroll-down
-              (kbd "C-w SPC")  'scroll-other-window
-              (kbd "C-w S-SPC")'scroll-other-window-down
+              (kbd "C-w SPC")    '(lambda () (interactive) (key-binding-other-window (kbd "SPC")))
+              (kbd "C-w S-SPC")  '(lambda () (interactive) (key-binding-other-window (kbd "S-SPC")))
+              (kbd "C-w TAB")    '(lambda () (interactive) (key-binding-other-window (kbd "TAB")))
+              (kbd "C-w G")    '(lambda () (interactive) (key-binding-other-window (kbd "G")))
+              (kbd "C-w g")    '(lambda () (interactive) (key-binding-other-window (kbd "gg")))
               (kbd "C-f")    'ace-jump-mode
 	      )
 
