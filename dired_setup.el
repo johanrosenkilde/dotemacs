@@ -116,3 +116,18 @@
     (if (not (string-match "/$" name))
         (rename-buffer (concat name "/") t))))
 (add-hook 'dired-mode-hook 'ensure-buffer-name-ends-in-slash)
+
+(defun dired-toggle-hidden-files ()
+  "Toggle between showing hidden files or not. This can also be done
+using C-u s."
+  (interactive)
+  (let ((flags dired-actual-switches))
+    (progn
+      (if (string-match "\\(.*\\)a\\(.*\\)" flags)
+          (setq dired-actual-switches
+                (concat (match-string 1 flags) (match-string 2 flags)))
+        (setq dired-actual-switches (concat flags "a")))
+      (revert-buffer)
+      (message dired-actual-switches)
+      (dired-sort-set-mode-line))
+    ))
