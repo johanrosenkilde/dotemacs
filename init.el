@@ -1183,7 +1183,8 @@ sometimes if more than one Emacs has this set"
   (electric-pair-mode)
   (column-number-mode)
   (defun fsharp-send-current-block ()
-    "Find last blank line and next blank line, and send all in between to Sage buffer"
+    "Find last blank line and next blank line, and send all in between
+to Fsharp buffer"
     (interactive)
     (save-excursion
       (evil-backward-paragraph)
@@ -1216,25 +1217,34 @@ last main file"
     (fsharp-show-subshell)
   )
   (fill-keymap fsharp-mode-map
-               (kbd "C-c RET") 'fsharp-send-current-block
+               (kbd "C-<return>") 'fsharp-send-current-block
                (kbd "M-RET")   'fsharp-eval-region
                (kbd "C-SPC")   'completion-at-point
                (kbd "C-c k")   'fsharp-goto-block-up
                [(f5)]          'jsrn-fsharp-reload-project-libs
-               [(shift f5)]    'jsrn-fsharp-reload-project-entire)
-  )
+               [(shift f5)]    'jsrn-fsharp-reload-project-entire
+               (kbd "C-c C-z") '(lambda () (interactive)
+                                  (fsharp-show-subshell) (other-window 1)))
+)
 (add-hook 'fsharp-mode-hook 'jsrn-fsharp-mode-hook)
 
 (defun jsrn-inferior-fsharp-mode-hook ()
   (interactive)
   (fill-keymap evil-insert-state-local-map
                (kbd "<return>") 'fsharp-comint-send)
-  )
-(fill-keymap inferior-fsharp-mode-map
-             (kbd "C-d")     '(lambda () (interactive) (evil-scroll-down 20))
-             (kbd "RET")     'fsharp-comint-send
-             )
+  (fill-keymap inferior-fsharp-mode-map
+               (kbd "C-d")     '(lambda () (interactive) (evil-scroll-down 20))
+               (kbd "RET")     'fsharp-comint-send
+               ))
 (add-hook 'inferior-fsharp-mode-hooks 'jsrn-inferior-fsharp-mode-hook) ;; note: non-standard hook
+
+(defun fsharpi-fix-ac ()
+  "Auto-complete regularly crashes. When it does, run this function to
+fix it again."
+  (interactive)
+  (setq ac-cursor-color "red")
+  (auto-complete-mode 1)
+  )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;       C/C++ AND GDB
