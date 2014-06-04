@@ -214,7 +214,7 @@ and trailing. Assumes one is in visual mode\n"
   (interactive)
   (load-file "~/.emacs"))
 
-(defun delete-process-interactive ()
+(defun kill-process-interactive ()
   (interactive)
   (let ((pname (ido-completing-read "Process Name: " 
                     (mapcar 'process-name (process-list)))))
