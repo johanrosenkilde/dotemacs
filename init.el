@@ -634,8 +634,9 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
              (kbd "C-n")    'evil-window-down
              )
 
-;; Put all window bindings in emacs state also
+;; Put all window bindings in emacs and insert state also
 (define-key evil-emacs-state-map (kbd "C-w") evil-window-map) 
+(define-key evil-insert-state-map (kbd "C-w") evil-window-map)
 
 ;;??? This is strangely needed
 (fill-keymap evil-insert-state-map (kbd "C") 'self-insert-command) 
