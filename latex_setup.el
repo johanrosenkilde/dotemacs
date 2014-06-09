@@ -67,7 +67,15 @@ Uses last value searched for in math mode."
                                             ("cpageref" "{")
                                             ))
 ;; Add some shortcuts in math mode
-(setq LaTeX-math-list '((?o "ell" nil)))
+;; NOTE: Due to a shitty way this was written in auctex, changing this
+;; doesn't take effect until reloading auctex (restarting emacs), or
+;; re-running line 4515 in `latex.el`.
+(setq LaTeX-math-list (list  '(?O "ldots" "Accents")
+                             '(?o "ell" nil)
+                             '("v v" "vec" nil)
+                             '(?2 "vec" nil)
+                             '(?1 "hat" nil)
+                             ))
 ;; For spelling, add the cref commands to the "don't check contents" list
 (setq flyspell-tex-command-regexp
   "\\(\\(begin\\|end\\)[ \t]*{\\|\\(cite[a-z*]*\\|label\\|c?\\(page\\)?ref\\|eqref\\|usepackage\\|documentclass\\)[ \t]*\\(\\[[^]]*\\]\\)?{[^{}]*\\)")
@@ -118,6 +126,9 @@ Uses last value searched for in math mode."
                     (let* ((label (reftex-reference " " t)))
                       (insert (format "\\cref{%s}" label)))
                     ))
+  ;;TODO
+  ;;(define-key  "e" reftex-select-previous)
+
   ;; Don't prompt for ref style, just insert cref always
   (setq reftex-ref-macro-prompt nil)
   ;; Don't put stupid parentheses around refs to equations.
