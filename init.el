@@ -1174,6 +1174,14 @@ sometimes if more than one Emacs has this set"
              (kbd "C-c C-z") '(lambda () (interactive) 
                                 (switch-to-buffer-other-window (sage-refind-sage)))
              )
+(defun sage-fix-preview ()
+  "This is a workaround for a bug in sage-mode preview, where opening a tex file
+  in the Emacs process will break further sage-view functionality.
+  AUCTeX sets a variable TEXINPUTS to make latex look for its version of
+  preview.sty, but it seems that this version does not work with sage-mode."
+  (interactive)
+  (setenv "TEXINPUTS" "")
+  )
 (add-hook 'inferior-sage-mode-hook 'jsrn-inferior-sage-mode-hook)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
