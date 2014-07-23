@@ -1185,6 +1185,51 @@ sometimes if more than one Emacs has this set"
 (add-hook 'inferior-sage-mode-hook 'jsrn-inferior-sage-mode-hook)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;       OCAML
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(setq opam-share (substring (shell-command-to-string "opam config var share") 0 -1))
+(add-to-list 'load-path (concat opam-share "/emacs/site-lisp"))
+(require 'merlin)
+(add-hook 'tuareg-mode-hook 'merlin-mode)
+(defun jsrn-tuareg-mode-hook ()
+  (setq compilation-environment
+        (with-temp-buffer
+          (ignore-errors (call-process "opam" nil t nil "config" "-env"))
+          (goto-line 1)
+          (while (re-search-forward "\"\\(.*\\)\"; *export.*$" nil t)
+            (replace-match "\\1" nil nil))
+          (split-string (buffer-substring 1 (point-max)))
+          ))
+  (defun ocaml-send-current-block ()
+    "Find last blank line and next blank line, and send all in between
+to OCaml buffer"
+    (interactive)
+    (save-excursion
+      (evil-backward-paragraph)
+      (let ((beg (point)))
+        (evil-forward-paragraph)
+        (tuareg-eval-region beg (point))
+      ))
+    )
+  (defun ocaml-goto-shell()
+    "Find the OCaml shell and show it"
+    (interactive)
+    (switch-to-buffer
+     (find-first (buffer-list) (lambda (buf)
+                                 (string-match "ocaml-toplevel" (buffer-name buf))))))
+  (fill-keymap tuareg-mode-map
+               (kbd "C-<return>") 'ocaml-send-current-block
+               (kbd "M-RET")   'tuareg-eval-region
+               (kbd "C-c C-c") 'tuareg-eval-buffer
+               (kbd "C-SPC")   'completion-at-point
+               (kbd "C-c n")   'merlin-error-next
+               (kbd "C-c p")   'merlin-error-prev
+               (kbd "C-c C-z") 'ocaml-goto-shell))
+(add-hook 'tuareg-mode-hook 'jsrn-tuareg-mode-hook)
+
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;       FSHARP F#
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun jsrn-fsharp-mode-hook ()
