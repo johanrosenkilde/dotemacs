@@ -1225,9 +1225,20 @@ to OCaml buffer"
                (kbd "M-RET")   'tuareg-eval-region
                (kbd "C-c C-c") 'tuareg-eval-buffer
                (kbd "C-SPC")   'completion-at-point
-               (kbd "C-c n")   'merlin-error-next
-               (kbd "C-c p")   'merlin-error-prev
-               (kbd "C-c C-z") 'ocaml-goto-shell))
+               (kbd "C-c C-z") 'ocaml-goto-shell)
+  (fill-keymap merlin-mode-map
+               [(f2)]              'merlin-type-enclosing
+               (kbd "C-<up>")    'merlin-type-enclosing-go-up
+               (kbd "C-<down>")  'merlin-type-enclosing-go-down
+               (kbd "C-<right>") 'merlin-type-enclosing
+               [(f3)]             'merlin-locate
+               [(shift f3)]       'merlin-pop-stack
+               [(f7)]         'merlin-error-next
+               [(shift f7)]   'merlin-error-prev
+               [(f8)]          'merlin-switch-to-ml
+               [(shift f8)]    'merlin-switch-to-mli
+               (kbd "TAB")     'merlin-try-completion)
+  )
 (add-hook 'tuareg-mode-hook 'jsrn-tuareg-mode-hook)
 
 
