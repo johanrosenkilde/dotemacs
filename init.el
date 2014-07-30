@@ -157,7 +157,7 @@ See `pour-mappings-to'."
     )))
 (global-set-key [(f2)] 'jsrn-recompile)
 (global-set-key [(f4)] 'ffap) ;; look-up file at point
-(global-set-key "\M-?" 'hippie-expand)
+(global-set-key (kbd "M-?") 'hippie-expand)
 (global-set-key (kbd "C-x m") 'ffap) ;; Find file at point (and override compose-mail)
 (global-set-key (kbd "S-<backspace>") 'delete-horizontal-space)
 
@@ -167,6 +167,7 @@ See `pour-mappings-to'."
 (global-unset-key (kbd "C-h C-c")) ;; show the COPYING message
 (global-unset-key (kbd "C-h p")) ;; show the package Finder buffer
 (global-unset-key (kbd "C-z")) ;; minimise Emacs
+(global-unset-key (kbd "C-h C-f")) ;; show the FAQ
 
 
 (defun kill-line-backwards ()
