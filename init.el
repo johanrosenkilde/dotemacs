@@ -1181,8 +1181,7 @@ sometimes if more than one Emacs has this set"
   (sage))
 (fill-keymap sage-mode-map
              (kbd "C-c C") 'sage-send-class
-             (kbd "C-c C-z") '(lambda () (interactive) 
-                                (switch-to-buffer-other-window (sage-refind-sage)))
+             (kbd "C-c C-z") 'run-sage
              )
 (defun sage-fix-preview ()
   "This is a workaround for a bug in sage-mode preview, where opening a tex file
