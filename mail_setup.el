@@ -101,7 +101,16 @@ those present in the database."
   
   (setq mu4e-compose-signature "")
   ;; Handling html messages
-  (setq mu4e-html2text-command "vilistextum -y\"iso-8859-1\" - -")
+  (setq jsrn-html2text-commands (list "vilistextum -y\"iso-8859-1\" - -"
+                                       "python2 /usr/lib/python3.4/site-packages/html2text.py"
+                                      ))
+  (defun jsrn-switch-html2text ()
+    (interactive)
+    (setq mu4e-html2text-command
+          (next-in-list jsrn-html2text-commands
+                        mu4e-html2text-command))
+    )
+
   (setq mu4e-view-prefer-html t)
   (defun mu4e-view-in-browser ()
     "View the body of the message in a web browser."
@@ -201,11 +210,7 @@ those present in the database."
       (beginning-of-buffer)
       (re-search-forward "<\\(.*\\)>")
       (let* ((oldmail (match-string 1))
-            (inlist (member oldmail mu4e-user-mail-address-list))
-            (email  (if (and inlist (cdr inlist))
-                        (car (cdr inlist))
-                      (car mu4e-user-mail-address-list))))
-        (message "%s" inlist)
+            (email  (next-in-list mu4e-user-mail-address-list oldmail)))
         (replace-match email nil nil nil 1))
     )
   )

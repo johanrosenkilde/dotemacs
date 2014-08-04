@@ -119,6 +119,13 @@ See `pour-mappings-to'."
     (error (princ (format "Error: %s" err))))
   (other-window -1))
 
+(defun next-in-list (ls obj)
+  "Find the element in ls which is after obj. Returns the first
+element of ls if obj is not in ls or is the last."
+  (let* ((inlist (member obj ls)))
+    (if (and inlist (cdr inlist))
+         (car (cdr inlist))
+       (car ls))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;       GLOBALLY DEFINED CUSTOM FUNCTIONS AND KEYS
