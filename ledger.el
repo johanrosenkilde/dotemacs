@@ -17,7 +17,7 @@
 
 (defun ledger-convert-date (date)
   (if (string-match
-  "\\([0-9][0-9]\\)\\.\\([0-9][0-9]\\)\\.\\([0-9][0-9][0-9][0-9]\\)"
+  "\\([0-9][0-9]\\).\\([0-9][0-9]\\).\\([0-9][0-9][0-9][0-9]\\)"
   date)
       (concat (match-string 3 date)
               "/" (match-string 2 date)
@@ -35,15 +35,15 @@
   into this buffer."
   (interactive "fCSV file: ")
   (setq transactions nil)
-  (let ((accounts (jsrn-ledger-find-accounts-in-buffer))
-        (credit (ido-completing-read "Credit account: " accounts))
-        (commodity (ido-completing-read "Commodity: " jsrn-ledger-commodities)))
+  (let* ((accounts (jsrn-ledger-find-accounts-in-buffer))
+         (credit (ido-completing-read "Credit account: " accounts))
+         (commodity (ido-completing-read "Commodity: " jsrn-ledger-commodities)))
     (with-temp-buffer
       (insert-file-contents file-name)
       (goto-char (point-min))
       (while (not (eq (point) (point-max)))
         (if (looking-at
-             "^\\([.0-9]+\\)[[:space:]]+\\(.*\\)[[:space:]]+\\(-?[.,0-9]+\\)$")
+             "^\\([-/.0-9]+\\)[[:space:]]+\\(.*\\)[[:space:]]+\\(-?[.,0-9]+\\)$")
             (let* ((raw-date (match-string 1)) ;; extract all matches before further regexp
                    (text (match-string 2))
                    (raw-val (match-string 3))
