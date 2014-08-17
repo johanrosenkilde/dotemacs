@@ -34,33 +34,37 @@
   Query for the debit account for each transaction. Insert the result
   into this buffer."
   (interactive "fCSV file: ")
-  (setq transactions nil)
   (let* ((accounts (jsrn-ledger-find-accounts-in-buffer))
-         (credit (ido-completing-read "Credit account: " accounts))
-         (commodity (ido-completing-read "Commodity: " jsrn-ledger-commodities)))
+         (accounts-copy (copy-list  accounts))
+         (ido-common-match-string "")
+         (credit (ido-completing-read "Credit account: " accounts-copy))
+         (commodity (ido-completing-read "Commodity: " jsrn-ledger-commodities))
+         (target-buf (current-buffer)))
     (with-temp-buffer
-      (insert-file-contents file-name)
-      (goto-char (point-min))
-      (while (not (eq (point) (point-max)))
-        (if (looking-at
-             "^\\([-/.0-9]+\\)[[:space:]]+\\(.*\\)[[:space:]]+\\(-?[.,0-9]+\\)$")
-            (let* ((raw-date (match-string 1)) ;; extract all matches before further regexp
-                   (text (match-string 2))
-                   (raw-val (match-string 3))
-                   (date (ledger-convert-date raw-date))
-                   (val  (concat raw-val " " commodity))
-                   (debit (ido-completing-read (format "Transaction: %s,   costing %s\nDebit account: " text val)
-                                               accounts)))
-              (progn
-                (add-to-list 'transactions (concat date " " text "\n\t" credit "\t\t" val
-                                                   "\n\t" debit))
-                (forward-line)))
-          (error "Line %d not well-formatted" (line-number-at-pos))
-          )
-        )))
-  (dolist (trans transactions)
-    (insert (concat trans "\n\n")))
-  )
+      (let ((source-buf (current-buffer)))
+        (insert-file-contents file-name)
+        (goto-char (point-min))
+        (while (not (eq (point) (point-max)))
+          (if (looking-at
+               "^\\([-/.0-9]+\\)[[:space:]]+\\(.*\\)[[:space:]]+\\(-?[.,0-9]+\\)$")
+              (let* ((raw-date (match-string 1)) ;; extract all matches before further regexp
+                     (text (match-string 2))
+                     (raw-val (match-string 3))
+                     (date (ledger-convert-date raw-date))
+                     (val  (concat raw-val " " commodity))
+                     (accounts-copy accounts)
+                     (debit (ido-completing-read
+                             (format "Transaction: %s,   costing %s\t(Press C-j for ignore transaction)\nDebit account: " text val)
+                             accounts-copy)))
+                (unless (string-equal "" debit)
+                  (set-buffer target-buf)
+                  (insert (concat date " " text "\n\t" credit "\t\t" val "\n\t" debit "\n\n"))
+                  (set-buffer source-buf))
+                (forward-line))
+            (error "Line %d not well-formatted" (line-number-at-pos))
+            )
+          )))
+    ))
 
 (defun ledger-convert-buffer (credit)
   "Convert current buffer filled with tab-separated list of expenses to Ledger transactions"
