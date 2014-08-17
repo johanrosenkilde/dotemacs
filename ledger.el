@@ -1,4 +1,19 @@
+(setq jsrn-ledger-commodities (list "kr" "EUR"))
 (setq ledger-convert-commodity "kr")
+
+(defun jsrn-ledger-find-accounts-in-buffer ()
+  (let ((origin (point))
+        accounts
+        (seed-regex (ledger-account-any-status-with-seed-regex "")))
+  (save-excursion
+    (goto-char (point-min))
+    (delete-dups
+     (progn
+       (while (re-search-forward seed-regex nil t)
+         (unless (between origin (match-beginning 0) (match-end 0))
+           (setq accounts (cons (match-string-no-properties 2) accounts))))
+       accounts)))))
+  
 
 (defun ledger-convert-date (date)
   (if (string-match
@@ -11,8 +26,40 @@
       )
   )
 
-(defun ledger-convert-value (value)
-  (concat value " " ledger-convert-commodity)
+(defun ledger-import-csv (file-name)
+  "Import a CSV file into the current (ledger) buffer.
+
+  Go through the CSV file, line-by-line, assuming the following format
+        DATE    TEXT    AMOUNT
+  Query for the debit account for each transaction. Insert the result
+  into this buffer."
+  (interactive "fCSV file: ")
+  (setq transactions nil)
+  (let ((accounts (jsrn-ledger-find-accounts-in-buffer))
+        (credit (ido-completing-read "Credit account: " accounts))
+        (commodity (ido-completing-read "Commodity: " jsrn-ledger-commodities)))
+    (with-temp-buffer
+      (insert-file-contents file-name)
+      (goto-char (point-min))
+      (while (not (eq (point) (point-max)))
+        (if (looking-at
+             "^\\([.0-9]+\\)[[:space:]]+\\(.*\\)[[:space:]]+\\(-?[.,0-9]+\\)$")
+            (let* ((raw-date (match-string 1)) ;; extract all matches before further regexp
+                   (text (match-string 2))
+                   (raw-val (match-string 3))
+                   (date (ledger-convert-date raw-date))
+                   (val  (concat raw-val " " commodity))
+                   (debit (ido-completing-read (format "Transaction: %s,   costing %s\nDebit account: " text val)
+                                               accounts)))
+              (progn
+                (add-to-list 'transactions (concat date " " text "\n\t" credit "\t\t" val
+                                                   "\n\t" debit))
+                (forward-line)))
+          (error "Line %d not well-formatted" (line-number-at-pos))
+          )
+        )))
+  (dolist (trans transactions)
+    (insert (concat trans "\n\n")))
   )
 
 (defun ledger-convert-buffer (credit)
@@ -36,6 +83,8 @@
       (error "Line %d not well-formatted: " (line-number-at-pos))
       )
     ))
+
+
 ;; (let ((url (concat
 ;;             "http://dict.tu-chemnitz.de/dings.cgi?lang=en&service=deen&opterrors=0&optpro=0&query="
 ;;             word "&iservice=&comment=&email="))
