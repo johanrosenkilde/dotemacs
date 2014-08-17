@@ -933,7 +933,9 @@ sometimes if more than one Emacs has this set"
   (fill-keymaps (list evil-motion-state-local-map
                       evil-visual-state-local-map
                       evil-normal-state-local-map)
-                (kbd "~")  'org-up-element)
+                (kbd "~")  (lambda () (interactive) (progn
+                                                      (evil-set-jump)
+                                                      (org-up-element))))
   ;; Let org mode override M-n
   (define-key evil-normal-state-local-map (kbd "M-n") 'org-metadown)
   ;; Let winner keys overwrite org-mode
@@ -1108,7 +1110,7 @@ sometimes if more than one Emacs has this set"
 ;;       SAGE
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;(add-to-list 'auto-mode-alist '("\\.sage\\'" . sage-mode))
-(setq sage-path "/home/jsrn/local/sage/sage-5.13")
+(setq sage-path "/home/jsrn/local/sage/sage-6.2")
 ;;(setq sage-mode-path (cl-concatenate 'string sage-path "/local/share/emacs"))
 (setq sage-mode-path "/home/jsrn/local/sage-mode/sage-mode-jsrn/emacs")
 (add-to-list 'load-path sage-mode-path)
@@ -1120,6 +1122,7 @@ sometimes if more than one Emacs has this set"
       sage-view-scale-factor 1)
 (add-hook 'sage-startup-after-prompt-hook 'sage-view)
 (setq sage-command (cl-concatenate 'string sage-path "/sage"))
+(evil-set-initial-state 'inferior-sage-mode 'normal)
 (defun jsrn-sage-mode-hook ()
   (interactive)
   (electric-pair-mode)
