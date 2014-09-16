@@ -929,6 +929,8 @@ sometimes if more than one Emacs has this set"
                (kbd (concat "M-" evil-down-key-uc))  'org-shiftmetadown
                (kbd (concat "M-" evil-up-key-uc))    'org-shiftmetaup
                (kbd (concat "M-" evil-right-key-uc)) 'org-shiftmetaright
+               (kbd (concat "C-M-" evil-up-key))    'org-backward-element
+               (kbd (concat "C-M-" evil-down-key)) 'org-forward-element
                (kbd "C-c a") 'org-agenda)
   ;; to override evil binding for ~, we do it on the evil local maps
   (fill-keymaps (list evil-motion-state-local-map
