@@ -1025,7 +1025,7 @@ sometimes if more than one Emacs has this set"
 (setq flyspell-issue-message-flag nil)
 (setq ispell-dictionary "british")
 ;; Cycle through dictionaries. First make the language ring
-(let ((langs '("british" "dansk" )))
+(let ((langs '("british" "dansk" "french")))
   (setq lang-ring (make-ring (length langs)))
   (dolist (elem langs) (ring-insert lang-ring elem)))
 (defun jsrn-cycle-dictionary ()
