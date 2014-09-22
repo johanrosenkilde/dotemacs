@@ -23,8 +23,10 @@
       sentence-end-double-space nil  ;; sentences end with a dot, not with two spaces
       auto-save-file-name-transforms '((".*" "~/.emacs.d/autosaves/\\1" t))  ;; autosaves put away
       backup-directory-alist (quote ((".*" . "~/.emacs.d/backups/")))
-      fill-column 80
+      
       )
+(setq-default fill-column 80)
+
 
 ;; Some font settings, extracted from Custom
 (custom-set-faces
