@@ -1,6 +1,16 @@
 (setq jsrn-ledger-commodities (list "kr" "EUR"))
 (setq ledger-convert-commodity "kr")
 
+(setq ledger-run "ledger --strict --market -f %(ledger-file)")
+(defun jsrn-ledger-report (spec)
+  (concat ledger-run " " spec))
+(setq ledger-reports (list 
+        (list "bal"     (jsrn-ledger-report "bal ^Assets"))
+        (list "reg"     (jsrn-ledger-report "reg"))
+        (list "payee"   (jsrn-ledger-report "reg @%(payee)"))
+        (list "account" (jsrn-ledger-report "reg %(account)"))
+        ))
+
 (defun jsrn-ledger-find-accounts-in-buffer ()
   (let ((origin (point))
         accounts
@@ -124,3 +134,4 @@
 ;;       )
 ;;     )
 ;;   )
+
