@@ -73,7 +73,7 @@ Uses last value searched for in math mode."
 (setq LaTeX-math-list (list  '(?O "ldots" "Accents")
                              '(?o "ell" nil)
                              '("v v" "vec" nil)
-                             '(?2 "vec" nil)
+                             '(?9 "vec" nil)
                              '(?1 "hat" nil)
                              ))
 ;; For spelling, add the cref commands to the "don't check contents" list
@@ -211,6 +211,11 @@ Uses last value searched for in math mode."
   (add-to-list 'reftex-label-alist '("IEEEeqnarray*" 101 "eqn:" "~\\eqref{%s}" t))
   (add-to-list 'reftex-label-alist '("align" 101 "eqn:" "~\\eqref{%s}" t))
   (setq texmathp-tex-commands '(("IEEEeqnarray" env-on) ("IEEEeqnarray*" env-on)))
+
+  ;; Other key bindings
+  (fill-keymap evil-normal-state-local-map
+               (kbd "C-#") 'jsrn-goto-first-symbol-use
+               )
   )
 (add-hook 'LaTeX-mode-hook 'jsrn-latex-mode-hook)
 
