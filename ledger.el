@@ -46,7 +46,7 @@
         (goto-char (point-min))
         (while (not (eq (point) (point-max)))
           (if (looking-at
-               "^\\([-/.0-9]+\\)[[:space:]]+\\(.*\\)[[:space:]]+\\(-?[.,0-9]+\\)$")
+               "^\\([-/.0-9]+\\)[[:space:]]+\\(.*\\)[[:space:]]+\\(-?[.,0-9]+\\)[[:space:]]*$")
               (let* ((raw-date (match-string 1)) ;; extract all matches before further regexp
                      (text (match-string 2))
                      (raw-val (match-string 3))
@@ -54,11 +54,11 @@
                      (val  (concat raw-val " " commodity))
                      (accounts-copy accounts)
                      (debit (ido-completing-read
-                             (format "Transaction: %s,   costing %s\t(Press C-j for ignore transaction)\nDebit account: " text val)
+                             (format "Transaction: %s,   amount %s\t(Press C-j for ignore transaction)\nDebit account: " text val)
                              accounts-copy)))
                 (unless (string-equal "" debit)
                   (set-buffer target-buf)
-                  (insert (concat date " " text "\n\t" credit "\t\t" val "\n\t" debit "\n\n"))
+                  (insert (concat date " " text "\n    " credit "\t\t\t" val "\n    " debit "\n\n"))
                   (set-buffer source-buf))
                 (forward-line))
             (error "Line %d not well-formatted" (line-number-at-pos))
