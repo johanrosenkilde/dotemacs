@@ -1112,7 +1112,7 @@ sometimes if more than one Emacs has this set"
 (require 'pymacs)
 
 ;; Load ropemacs
-(pymacs-load "ropemacs" "rope-")
+;(pymacs-load "ropemacs" "rope-")
 
 
 
