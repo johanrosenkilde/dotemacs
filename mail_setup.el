@@ -112,14 +112,18 @@ those present in the database."
   (setq mu4e-compose-signature "")
   ;; Handling html messages
   (setq jsrn-html2text-commands (list "vilistextum -y\"iso-8859-1\" - -"
-                                       "python2 /usr/lib/python3.4/site-packages/html2text.py"
+                                       "html2text_py"
                                       ))
   (defun jsrn-switch-html2text ()
     (interactive)
     (setq mu4e-html2text-command
           (next-in-list jsrn-html2text-commands
                         mu4e-html2text-command))
-    )
+    ;; refresh
+    (with-current-buffer mu4e~view-headers-buffer
+      (mu4e-headers-view-message)
+      ))
+  (define-key mu4e-view-mode-map [(f5)] 'jsrn-switch-html2text)
 
   (setq mu4e-view-prefer-html t)
   (defun mu4e-view-in-browser ()
