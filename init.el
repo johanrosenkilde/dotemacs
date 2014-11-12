@@ -1109,10 +1109,10 @@ the optional values set"
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;       OCAML
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(setq opam-share (substring (shell-command-to-string "opam config var share") 0 -1))
-(add-to-list 'load-path (concat opam-share "/emacs/site-lisp"))
-(require 'merlin)
-(add-hook 'tuareg-mode-hook 'merlin-mode)
+;; (setq opam-share (substring (shell-command-to-string "opam config var share") 0 -1))
+;; (add-to-list 'load-path (concat opam-share "/emacs/site-lisp"))
+;; ;TODO: Install merlin (require 'merlin)
+;; (add-hook 'tuareg-mode-hook 'merlin-mode)
 (defun jsrn-tuareg-mode-hook ()
   (setq compilation-environment
         (with-temp-buffer
