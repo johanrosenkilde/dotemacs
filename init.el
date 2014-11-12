@@ -1161,6 +1161,17 @@ to OCaml buffer"
 (add-hook 'tuareg-mode-hook 'jsrn-tuareg-mode-hook)
 
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;       HASKELL
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defun jsrn-haskell-mode-hook ()
+  (turn-on-haskell-doc)
+  (setq evil-shift-width 2)
+  )
+(add-hook 'haskell-mode-hook 'jsrn-haskell-mode-hook)
+
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;       FSHARP F#
