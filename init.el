@@ -341,6 +341,7 @@ it appears in the minibuffer prompt."
 (setq recentf-save-file "~/.emacs.d/.recentf")
 
 ;; sudo support and others
+(eval-after-load 'tramp '(setenv "SHELL" "/bin/bash"))
 (require 'tramp)
 ;; From djcb
 (defun find-file-as-root ()
