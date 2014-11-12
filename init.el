@@ -844,115 +844,11 @@ the optional values set"
 (define-key evil-visual-state-map (kbd "p") 'evil-paste-after) 
 
 
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;       ORG-MODE
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(setq org-startup-indented t
-      org-deadline-warning-days 7
-      )
-(defun jsrn-agenda-activate ()
-  "Activate the current Emacs as an agenda Emacs. Weird stuff seem to happen
-sometimes if more than one Emacs has this set"
-  (interactive)
-  (find-file "~/orgs/home.org")
-  ;; Set files which contains agenda files to all .org files in specified dir
-  (setq org-agenda-files (directory-files "~/orgs" t "^[^#]*org$" t))
-  ;; Various agenda setup
-  (setq org-agenda-repeating-timestamp-show-all nil) ; don't show repititions in agenda
-  ;; Setup org-capture
-  (setq org-default-notes-file "~/orgs/home.org")
-  (defun jsrn-read-date-prob-two-weeks ()
-      (concat "<" (org-read-date nil nil nil nil nil "+14") ">"))
-  (setq org-capture-templates
-        (list
-         '("a" "Do (no capture)" entry (file+headline "~/orgs/home.org" "Reminders")
-           "* TODO Do %^{Description}\n%^t\n%U\n\n")
-         '("r" "respond" entry (file+headline "~/orgs/home.org" "Reminders")
-           "* TODO Besvar %:from on %:subject\nSCHEDULED: %(jsrn-read-date-prob-two-weeks)\n%U\n%a\n\n")
-         '("t" "ticket" entry (file+headline "~/orgs/home.org" "Reminders")
-          "* Ticket for %:subject (%:from) \n%^t\n%U\n%a\n\n")
-         '("h" "handle" entry (file+headline "~/orgs/home.org" "Reminders")
-          "* Handle %:subject from %:from \nSCHEDULED: %(jsrn-read-date-prob-two-weeks)\n%U\n%a\n\n")
-         '("e" "event" entry (file+headline "~/orgs/home.org" "Reminders")
-          "* Event %:subject from %:from \n%^t\n%U\n%a\n\n")
-        ))
-  (define-key global-map "\C-cc" 'org-capture)
-  ;; Reminder support for Org
-  (defun jsrn-org-agenda-to-appt ()
-    "Erase all reminders and rebuilt reminders for today from the agenda"
-    (interactive)
-    (org-agenda-to-appt 'refresh)
-    )
-  ;; Rebuild the reminders everytime the agenda is displayed
-  (add-hook 'org-finalize-agenda-hook 'jsrn-org-agenda-to-appt 'append)
-  ;; Rebuild agenda reminders
-  (jsrn-org-agenda-to-appt)
-  ;; Activate appointments so we get notifications
-  (appt-activate t)
-  (setq appt-display-format 'window)
-  (defun appt-disp-window (mins curtime text)
-    "Redefine Appointment reminder function to show a Memo using system call"
-    (call-process "/usr/bin/notify-send" nil nil nil (format "Appointment:\n%s \n in  %s min" text mins)))
-  ;; If we leave Emacs running overnight - reset the appointments one minute after midnight
-  (run-at-time "24:01" nil 'jsrn-org-agenda-to-appt)
-  (fill-keymap org-agenda-mode-map
-               evil-up-key     'org-agenda-previous-line
-               evil-down-key   'org-agenda-next-line
-               )
-  )
-(add-hook 'administrative-mode-hook 'jsrn-agenda-activate)
-
-(defun jsrn-administrative-org-mode-hook ()
-  (defun is-org (buf)
-    "Return whether the given buffer has an open org file or not"
-    (let ((filename (buffer-file-name buf)))
-      (and filename (string-match "\\.org$" filename))))
-  (defun jsrn-show-last-org-buffer ()
-    "Goto the last visited org buffer"
-    (interactive)
-    (let ((bufs (buffer-list)))
-      (while (not (is-org (car bufs)))
-        (setq bufs (cdr bufs)))
-      (set-window-buffer nil (car bufs))))
-  (defun cycle-agenda-files-or-goto-org ()
-    (interactive)
-    (if (is-org (current-buffer))
-        (org-cycle-agenda-files)
-      (jsrn-show-last-org-buffer)))
-  (global-set-key (kbd "C-,") 'cycle-agenda-files-or-goto-org)
-)
-(add-hook 'administrative-mode-hook 'jsrn-administrative-org-mode-hook)
-
-(defun jsrn-org-mode-hook ()
-  (visual-line-mode t)
-  (evil-declare-motion 'org-up-element)
-  (fill-keymaps (list org-mode-map)
-                (kbd (concat "M-" evil-left-key))  'org-metaleft
-                (kbd (concat "M-" evil-down-key))  'org-metadown
-                (kbd (concat "M-" evil-up-key))    'org-metaup
-                (kbd (concat "M-" evil-right-key)) 'org-metaright)
-  (fill-keymap org-mode-map
-               (kbd (concat "M-" evil-left-key-uc))  'org-shiftmetaleft
-               (kbd (concat "M-" evil-down-key-uc))  'org-shiftmetadown
-               (kbd (concat "M-" evil-up-key-uc))    'org-shiftmetaup
-               (kbd (concat "M-" evil-right-key-uc)) 'org-shiftmetaright
-               (kbd (concat "C-M-" evil-up-key))    'org-backward-element
-               (kbd (concat "C-M-" evil-down-key)) 'org-forward-element
-               (kbd "C-c a") 'org-agenda)
-  ;; to override evil binding for ~, we do it on the evil local maps
-  (fill-keymaps (list evil-motion-state-local-map
-                      evil-visual-state-local-map
-                      evil-normal-state-local-map)
-                (kbd "~")  (lambda () (interactive) (progn
-                                                      (evil-set-jump)
-                                                      (org-up-element))))
-  ;; Let org mode override M-n
-  (define-key evil-normal-state-local-map (kbd "M-n") 'org-metadown)
-  ;; Let winner keys overwrite org-mode
-  (define-key evil-normal-state-local-map (kbd "M-S-<left>") 'winner-undo) 
-  (define-key evil-normal-state-local-map (kbd "M-S-<right>") 'winner-redo)
-  )
-(add-hook 'org-mode-hook 'jsrn-org-mode-hook)
+(load "org_setup")
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
