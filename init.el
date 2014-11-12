@@ -30,7 +30,11 @@
 
 ;; Some font settings, extracted from Custom
 (custom-set-faces
- '(default ((t (:inherit nil :stipple nil :background "white" :foreground "black" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 80 :width normal :foundry "unknown" :family "Droid Sans Mono"))))
+ '(default ((t (:inherit nil :stipple nil :background "white" :foreground
+                         "black" :inverse-video nil :box nil :strike-through nil
+                         :overline nil :underline nil :slant normal :weight
+                         normal :height 80 :width normal :foundry "unknown"
+                         :family "DejaVu Sans Mono"))))
  '(flyspell-incorrect ((t (:foreground "OrangeRed" :underline t))))
  '(menu ((t (:height 1 :family "Droid Sans Mono"))))
  '(table-cell ((t nil))))
