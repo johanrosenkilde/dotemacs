@@ -135,8 +135,6 @@ sometimes if more than one Emacs has this set"
             (format-time-string (car org-time-stamp-formats)
                                 (seconds-to-time (+ curday 86400)))))
           (setq curday (- curday 86400))))))
-
-  (jsrn-org-clock-mode-overrides) ;see below
 )
 
 (add-hook 'org-mode-hook 'jsrn-org-mode-hook)
