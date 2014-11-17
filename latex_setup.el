@@ -75,6 +75,7 @@ Uses last value searched for in math mode."
                              '("v v" "vec" nil)
                              '(?9 "vec" nil)
                              '(?1 "hat" nil)
+                             '(?2 "deg" nil)
                              ))
 ;; For spelling, add the cref commands to the "don't check contents" list
 (setq flyspell-tex-command-regexp
