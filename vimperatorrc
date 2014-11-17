@@ -105,3 +105,11 @@ function yankHost(args) {
 }
 EOF
 map J :js yankHost();<cr>
+
+javascript <<EOF
+function reloadPlugins(args) {
+    liberator.pluginFiles=[];
+    liberator.loadPlugins();
+    alert("Plugins reloaded");
+}
+EOF
