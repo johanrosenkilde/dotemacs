@@ -142,3 +142,12 @@
 ;;     )
 ;;   )
 
+(defun jsrn-ledger-mode ()
+  (make-local-variable 'block-delimiter)
+  (setq block-delimiter ";;;;")
+  (fill-keymap ledger-mode-map
+               (kbd "M-[") 'backward-block
+               (kbd "M-]") 'forward-block
+               )
+  )
+(add-hook 'ledger-mode-hook 'jsrn-ledger-mode)
