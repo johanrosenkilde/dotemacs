@@ -1030,7 +1030,7 @@ the optional values set"
 (require 'sage-blocks "sage-blocks")
 (setq sage-view-anti-aliasing-level 4
       sage-view-scale 1.0
-      sage-view-default-commands 'output
+      sage-view-default-commands t
       sage-view-scale-factor 1)
 (add-hook 'sage-startup-after-prompt-hook 'sage-view)
 ;; (setq sage-view-default-commands nil) ;; 23/10 2014: Workaround bug in sage-mode
