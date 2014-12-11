@@ -333,8 +333,7 @@ it appears in the minibuffer prompt."
 
 (defun describe-key-all (key)
   "Print all functions and their key-maps in order of search which defines the
-  key binding.
-  Most code takey from `where-is`"
+  key binding."
   (interactive "kDescribe key (or click or menu item): ")
   (let ((local-key (local-key-binding key))
         (global-key (global-key-binding key))
@@ -345,23 +344,24 @@ it appears in the minibuffer prompt."
                            (map (cdr mmap))
                            (lookup (lookup-key map key)))
                       (when lookup (add-to-list 'res (cons mapname lookup))))
-                    ))))
+                    )))
+        (active (current-active-maps)))
     (with-output-to-temp-buffer "*Describe all bindings to key*"
-      (princ (format "ALL loaded key maps which define the key binding\n\t%s\n\n\n" key))
+      (princ (format "ALL loaded key maps which define the key binding\n\t%s\n\n\n" (key-description key)))
       (when local-key
-        (princ (format "Local key map:\t\t`%s'\n\n" local-key))
+        (princ (format "Local key map:\t\t`%s'\t\t*ACTIVE*\n\n" local-key))
         )
       (when minors
         (progn
           (princ "Minor key maps:\n")
           (dolist (minor minors)
-            (princ (format "\t%s\t`%s'\n" (car minor) (cdr minor))) 
-            )
+            (princ (format "\t%s\t`%s'\t%s\n" (car minor) (cdr minor) 
+                           (if (find-first active (lambda (active) (eq active (car minor)))) "*ACTIVE*" ""))))
           (princ "\n")
           )
         )
       (when global-key
-        (princ (format "Global key map:\t\t`%s'\n\n" global-key))
+        (princ (format "Global key map:\t\t`%s'\t\t*ACTIVE*\n\n" global-key))
         )
       )
     )) 
