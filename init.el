@@ -352,6 +352,10 @@ it appears in the minibuffer prompt."
 (require 'uniquify)
 (setq uniquify-buffer-name-style 'reverse)
 
+(require 'help+)
+(require 'help-fns+)
+(require 'help-mode+)
+
 ;; Winner gives undo and redo of windows arrangements
 (require 'winner)
 (winner-mode 1)
