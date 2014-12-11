@@ -468,7 +468,7 @@ using tramp/sudo, if the file is not writable by user."
                         (function-called-at-point)))
                 (smex-prompt-string "Describe function: "))
            (smex-completing-read (if fn (cons (symbol-name fn) list-of-all-functions) list-of-all-functions) nil))))
-  (describe-function fun)
+  (describe-function (intern fun))
   )
 (global-set-key (kbd "C-h f") 'smex-describe-function)
 
