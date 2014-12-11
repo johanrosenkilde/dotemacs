@@ -331,6 +331,41 @@ it appears in the minibuffer prompt."
   (with-output-to-temp-buffer (concat "Output of " fun)
       (princ (format "%s" (funcall (intern fun) fun)))))
 
+(defun describe-key-all (key)
+  "Print all functions and their key-maps in order of search which defines the
+  key binding.
+  Most code takey from `where-is`"
+  (interactive "kDescribe key (or click or menu item): ")
+  (let ((local-key (local-key-binding key))
+        (global-key (global-key-binding key))
+        (minors (progn
+                  (setq res nil)
+                  (dolist (mmap minor-mode-map-alist res) 
+                    (let* ((mapname (car mmap))
+                           (map (cdr mmap))
+                           (lookup (lookup-key map key)))
+                      (when lookup (add-to-list 'res (cons mapname lookup))))
+                    ))))
+    (with-output-to-temp-buffer "*Describe all bindings to key*"
+      (princ (format "ALL loaded key maps which define the key binding\n\t%s\n\n\n" key))
+      (when local-key
+        (princ (format "Local key map:\t\t`%s'\n\n" local-key))
+        )
+      (when minors
+        (progn
+          (princ "Minor key maps:\n")
+          (dolist (minor minors)
+            (princ (format "\t%s\t`%s'\n" (car minor) (cdr minor))) 
+            )
+          (princ "\n")
+          )
+        )
+      (when global-key
+        (princ (format "Global key map:\t\t`%s'\n\n" global-key))
+        )
+      )
+    )) 
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;       PACKAGE-INSTALL
