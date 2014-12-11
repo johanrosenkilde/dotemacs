@@ -312,6 +312,24 @@ it appears in the minibuffer prompt."
         (t
          (insert filename))))
 
+;; Create a list of all functions that can be called (interactive or non)
+(setq list-of-all-functions
+      (progn 
+        (setq l nil)
+        (mapatoms 
+         (lambda (x)
+           (and (fboundp x)                          ; does x name a function?
+                (add-to-list 'l (symbol-name x)))))
+        (sort l 'string<)
+        ))
+
+(defun call-function (fun &optional args)
+  "Call the named function without arguments and put the results in a temporary buffer"
+  (interactive
+   (list (let ((smex-prompt-string "Enter function name: "))
+            (smex-completing-read list-of-all-functions nil))))
+  (with-output-to-temp-buffer (concat "Output of " fun)
+      (princ (format "%s" (funcall (intern fun) fun)))))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -392,6 +410,7 @@ using tramp/sudo, if the file is not writable by user."
 ;;       IDO MORE STUFF
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'ido)
+(require 'smex)
 (setq ido-everywhere t)
 (setq ido-enable-flex-matching t) ;match substr on what is written
 (setq ido-use-filename-at-point 'guess)
@@ -400,6 +419,19 @@ using tramp/sudo, if the file is not writable by user."
 (global-set-key "\M-x" 'smex) ;; awesome function chooser
 (add-to-list 'ido-ignore-buffers "*terminal")
 (ido-mode t)
+
+;; Use smex for C-h f
+(defun  smex-describe-function (fun &optional commandp)
+  "As `describe-function' but use smex completion."
+  (interactive
+   (list (let* ((fn (or (and (fboundp 'symbol-nearest-point)
+                             (symbol-nearest-point))
+                        (function-called-at-point)))
+                (smex-prompt-string "Describe function: "))
+           (smex-completing-read (if fn (cons (symbol-name fn) list-of-all-functions) list-of-all-functions) nil))))
+  (describe-function fun)
+  )
+(global-set-key (kbd "C-h f") 'smex-describe-function)
 
 (load "ido_goto_symbol")
 
