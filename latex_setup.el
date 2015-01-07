@@ -28,8 +28,6 @@
                           (TeX-current-line)
                           (TeX-current-file-name-master-relative)))
          )
-    ;;output an error
-    (message "Calling Zathura on %s with synctex %s" pdfname synctex)
     (start-process "zathura-synctex" zathura-launch-buf "zathura" "--synctex-forward" synctex pdfname)
     (start-process "raise-zathura-wmctrl" zathura-launch-buf "wmctrl" "-a" pdfname)
     ))
@@ -98,7 +96,6 @@ Uses last value searched for in math mode."
   (setq LaTeX-command-style '(("" "%(PDF)%(latex) -file-line-error %S%(PDFout)")))
   (TeX-source-correlate-mode)        ; activate forward/reverse search
   (TeX-PDF-mode)
-  ;; TODO: To open pdfs with Zathura, if zathura-forward-search can be made to work.
   (add-to-list 'TeX-view-program-list
                '("zathura" zathura-forward-search))
   (setq TeX-view-program-selection (quote ((output-pdf "zathura") (output-dvi "xdvi"))))
