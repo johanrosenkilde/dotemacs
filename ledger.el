@@ -1,11 +1,11 @@
 (setq jsrn-ledger-commodities (list "kr" "EUR"))
 (setq ledger-convert-commodity "kr")
 
-(setq ledger-run "ledger --strict --market -f %(ledger-file)")
+(setq ledger-run "ledger --strict -X kr -f %(ledger-file)")
 (defun jsrn-ledger-report (spec)
   (concat ledger-run " " spec))
 (setq ledger-reports (list 
-        (list "bal"     (jsrn-ledger-report "bal ^Assets"))
+        (list "bal"     (jsrn-ledger-report "bal ^Assets ^Liabil"))
         (list "reg"     (jsrn-ledger-report "reg"))
         (list "payee"   (jsrn-ledger-report "reg @%(payee)"))
         (list "account" (jsrn-ledger-report "reg %(account)"))
@@ -46,9 +46,9 @@
   (interactive "fCSV file: ")
   (let* ((target-buf (current-buffer))
          (date-regex "\\([-/.0-9]+\\)")
-         (name-regex "\\(.*\\)")
+         (name-regex "\\(.*?\\)") ;; non-greedy all-match
          (value-regex "\\(\\(-?[.,0-9]+\\)\\|\\(\"\\(-?[.,0-9]+\\)\"\\)\\)")
-         (end-regex "[ \\t]?")
+         (end-regex "[; \\t]*")
          (sep-regex "[ ,;\\t]+")
          (line-regex (concat "^" end-regex date-regex sep-regex name-regex sep-regex value-regex end-regex "$")))
     (with-temp-buffer
