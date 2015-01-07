@@ -135,6 +135,55 @@ sometimes if more than one Emacs has this set"
             (format-time-string (car org-time-stamp-formats)
                                 (seconds-to-time (+ curday 86400)))))
           (setq curday (- curday 86400))))))
+
+  (defun org-archive-handled-subtrees ()
+    "Regarding subtrees as timed appointments/deadlines/schedules/etc., archive
+    everything which is closed."
+    (interactive)
+    (let ((f (lambda ()
+               (let* ((element (org-element-at-point))
+                      (headline (org-element-property :title element))
+                      (get-time-of-named (lambda (named)
+                                           (let ((breakdown (car (cdr named))))
+                                             (org-time-string-to-seconds (plist-get breakdown :raw-value)))))
+                      (timestamp (if (org-element-property :scheduled element) ;; It's a scheduled item
+                                     (funcall get-time-of-named (org-element-property :scheduled element))
+                                   (if (org-element-property :deadline element) ;; It's a deadline item
+                                       (funcall get-time-of-named (org-element-property :deadline element))
+                                     ;; It's something else, see if it has a
+                                     ;; timestamp (look for second one in a
+                                     ;; possible date range by appending [^-])
+                                     (progn
+                                       (when (re-search-forward (concat (org-re-timestamp 'active) "\\($\\|[^-]\\)")
+                                                                (org-element-property :end element) t)
+                                         (let ((timestamp (match-string 1)))
+                                           ;; Check that we didn't go to a sub-element
+                                           (when (eq (org-element-property :contents-begin element)
+                                                     (org-element-property :begin (org-element-at-point)))
+                                             (org-time-string-to-seconds timestamp)))
+                                         ))
+                                     )))
+                      (do-archive (and ;; Ask for archiving when
+                                       ;; There is a timestamp
+                                       timestamp
+                                       ;; The timestamp is passed
+                                       (< timestamp (time-to-seconds (current-time)))
+                                       ;; The element is not marked TODO
+                                       (not (equal "TODO" (org-element-property :todo-keyword element)))
+                                       ;; The element is a still-open scheduled element
+                                       (or (not (org-element-property :scheduled element))
+                                           (equal "DONE" (org-element-property :todo-keyword element))
+                                           )
+                                       ))
+                      )
+                 (when (and do-archive
+                            (y-or-n-p (format "Move subtree '%s' to archive? " headline)))
+                   (org-archive-subtree-default))
+                 )))
+          )
+      (org-map-entries f nil 'tree))
+    )
+  
 )
 
 (add-hook 'org-mode-hook 'jsrn-org-mode-hook)
