@@ -321,7 +321,7 @@ those present in the database."
            (from (or (cdr (car (mu4e-message-field msg :from)))
                      (mu4e-warn "No message at point"))))
       (message "%s" from)
-      (mu4e~headers-search-execute (concat "from:" from) t) 
+      (mu4e~headers-search-execute (concat "from:" from " or to: " from) t) 
     ))
   (fill-keymaps (list mu4e-headers-mode-map
                       mu4e-view-mode-map)
