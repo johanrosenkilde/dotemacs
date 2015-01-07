@@ -6,22 +6,18 @@
   ;; 2) This means we have to bookkeep open Zathura processes ourselves: first
   ;; open a new pdf from the beginning, if it is not already open. Then call
   ;; Zathura again with the synctex directive.
-  ;; TODO: This currently doesn't work:
-  ;; - The pdf is correctly opened.
-  ;; - Zathura correctly updates it's position
-  ;; - But the Zathura window doesn't steal the focus (also not when called from
-  ;;   shell)
-  ;; Backward search is still completely untested, but the following argument to
-  ;; zathura should work
-  ;; -x \"emacsclient --eval '(progn (switch-to-buffer  (file-name-nondirectory \"'\"'\"%{input}\"'\"'\")) (goto-line %{line}))'\""
   (interactive)
-  (let* ((pdfname (concat (file-name-sans-extension (TeX-master-file))
+  (let* ((zathura-launch-buf (get-buffer-create "*Zathura Output*"))
+         (pdfname (concat (file-name-sans-extension (TeX-master-file))
                           ".pdf"))
          (zatentry (assoc pdfname zathura-procs))
          (zatproc (if (and zatentry (process-live-p (cdr zatentry)))
                       (cdr zatentry)
                     (progn
-                      (let ((proc (start-process "zathura" nil "zathura" "-s" pdfname)))
+                      (let ((proc (progn (message "Launching Zathura")
+                                         (start-process "zathura-launch"
+                                                        zathura-launch-buf "zathura"
+                                                         "-x" "emacsclient +%{line} %{input}" pdfname))))
                         (when zatentry
                           (setq zathura-procs (delq zatentry zathura-procs)))
                         (add-to-list 'zathura-procs (cons pdfname proc))
@@ -32,9 +28,10 @@
                           (TeX-current-line)
                           (TeX-current-file-name-master-relative)))
          )
-    ;;TODO: the monkey buffer is for debugging to check that Zathura doesn't
     ;;output an error
-    (start-process "zathura" (get-buffer-create "monkey") "zathura" "--synctex-forward" synctex pdfname)
+    (message "Calling Zathura on %s with synctex %s" pdfname synctex)
+    (start-process "zathura-synctex" zathura-launch-buf "zathura" "--synctex-forward" synctex pdfname)
+    (start-process "raise-zathura-wmctrl" zathura-launch-buf "wmctrl" "-a" pdfname)
     ))
 
 (defun search-in-math (regex)
@@ -43,6 +40,7 @@
   (setq search-in-math-last regex)
   (search-in-math-repeat)
   )
+
 (defun search-in-math-repeat ()
   "Search for the next occurence of an expression only in math mode.
 Uses last value searched for in math mode."
@@ -100,22 +98,10 @@ Uses last value searched for in math mode."
   (setq LaTeX-command-style '(("" "%(PDF)%(latex) -file-line-error %S%(PDFout)")))
   (TeX-source-correlate-mode)        ; activate forward/reverse search
   (TeX-PDF-mode)
-  ;; Make forward search work properly for Okular
-  (defun okular-make-url ()
-    (concat "file://"
-            (expand-file-name (funcall file (TeX-output-extension) t)
-                              (file-name-directory (TeX-master-file)))
-            "#src:"
-            (TeX-current-line)
-            default-directory
-            (TeX-current-file-name-master-relative)))
-  (add-to-list 'TeX-expand-list '("%u" okular-make-url)) ;; Expand %u to the result of above fun
-  (setq TeX-view-program-list '(("okular" "okular --unique %u")))
-  (setq TeX-view-program-selection (quote ((output-pdf "okular") (output-dvi "xdvi"))))
   ;; TODO: To open pdfs with Zathura, if zathura-forward-search can be made to work.
-  ;; (add-to-list 'TeX-view-program-list
-  ;;              '("zathura" zathura-forward-search))
-  ;; (setq TeX-view-program-selection (quote ((output-pdf "zathura") (output-dvi "xdvi"))))
+  (add-to-list 'TeX-view-program-list
+               '("zathura" zathura-forward-search))
+  (setq TeX-view-program-selection (quote ((output-pdf "zathura") (output-dvi "xdvi"))))
   (electric-pair-mode)               ; insert matching braces
   (define-key LaTeX-mode-map (kbd "$") 'self-insert-command) ; makes electric pairs work for $
 
