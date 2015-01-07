@@ -326,15 +326,19 @@ it appears in the minibuffer prompt."
 (defun call-function (fun &optional args)
   "Call the named function without arguments and put the results in a temporary buffer"
   (interactive
+   ;; (list (read-string "Enter function name: ")))
    (list (let ((smex-prompt-string "Enter function name: "))
             (smex-completing-read list-of-all-functions nil))))
   (with-output-to-temp-buffer (concat "Output of " fun)
-      (princ (format "%s" (funcall (intern fun) fun)))))
+      (princ (format "%s" (funcall (intern fun))))))
 
 (defun describe-key-all (key)
   "Print all functions and their key-maps in order of search which defines the
   key binding."
   (interactive "kDescribe key (or click or menu item): ")
+  ;;TODO: Should search through all the keymaps defined, e.g.
+  ;;emulation-mode-map-alists (a list of list of maps, includes evil-modes)
+  ;;See: http://www.gnu.org/software/emacs/manual/html_node/elisp/Searching-Keymaps.html#Searching-Keymaps
   (let ((local-key (local-key-binding key))
         (global-key (global-key-binding key))
         (minors (progn
@@ -349,19 +353,19 @@ it appears in the minibuffer prompt."
     (with-output-to-temp-buffer "*Describe all bindings to key*"
       (princ (format "ALL loaded key maps which define the key binding\n\t%s\n\n\n" (key-description key)))
       (when local-key
-        (princ (format "Local key map:\t\t`%s'\t\t*ACTIVE*\n\n" local-key))
+        (princ (format "Local key map:\t\t`%s'\t\t*DEFINED*\n\n" local-key))
         )
       (when minors
         (progn
           (princ "Minor key maps:\n")
           (dolist (minor minors)
             (princ (format "\t%s\t`%s'\t%s\n" (car minor) (cdr minor) 
-                           (if (find-first active (lambda (active) (eq active (car minor)))) "*ACTIVE*" ""))))
+                           (if (find-first active (lambda (active) (eq active (car minor)))) "*DEFINED*" ""))))
           (princ "\n")
           )
         )
       (when global-key
-        (princ (format "Global key map:\t\t`%s'\t\t*ACTIVE*\n\n" global-key))
+        (princ (format "Global key map:\t\t`%s'\t\t*DEFINED*\n\n" global-key))
         )
       )
     )) 
