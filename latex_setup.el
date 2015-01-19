@@ -8,8 +8,7 @@
   ;; Zathura again with the synctex directive.
   (interactive)
   (let* ((zathura-launch-buf (get-buffer-create "*Zathura Output*"))
-         (pdfname (concat (file-name-sans-extension (TeX-master-file))
-                          ".pdf"))
+         (pdfname (TeX-master-file "pdf"))
          (zatentry (assoc pdfname zathura-procs))
          (zatproc (if (and zatentry (process-live-p (cdr zatentry)))
                       (cdr zatentry)
