@@ -200,8 +200,18 @@ Uses last value searched for in math mode."
   (fill-keymap evil-normal-state-local-map
                (kbd "C-#") 'jsrn-goto-first-symbol-use
                )
+
+  (defun jsrn-reftex-select-bib-mode-hook ()
+    ;; e is set locally by stupid reftex, kill it
+    (local-unset-key "e")
+    ;; In bibtex-selection, set 'e' to previous
+    (fill-keymap reftex-select-bib-mode-map
+                 (kbd "e") 'reftex-select-previous)
+    )
+  (add-hook 'reftex-select-bib-mode-hook 'jsrn-reftex-select-bib-mode-hook)
   )
 (add-hook 'LaTeX-mode-hook 'jsrn-latex-mode-hook)
+
 
 (defun jsrn-bibtex-mode-hook ()
   (fill-keymap bibtex-mode-map
