@@ -1,7 +1,7 @@
 (setq jsrn-ledger-commodities (list "kr" "EUR"))
 (setq ledger-convert-commodity "kr")
 
-(setq ledger-run "ledger --strict -X kr -f %(ledger-file)")
+(setq ledger-run "./myledger")
 (defun jsrn-ledger-report (spec)
   (concat ledger-run " " spec))
 (setq ledger-reports (list 
@@ -47,7 +47,7 @@
   (let* ((target-buf (current-buffer))
          (date-regex "\\([-/.0-9]+\\)")
          (name-regex "\\(.*?\\)") ;; non-greedy all-match
-         (value-regex "\\(\\(-?[.,0-9]+\\)\\|\\(\"\\(-?[.,0-9]+\\)\"\\)\\)")
+         (value-regex "\\(\\(-?[0-9]+[,.][0-9]+\\)\\|\\(\"\\(-?[0-9]+[,.][0-9]+\\)\"\\)\\)")
          (end-regex "[; \\t]*")
          (sep-regex "[ ,;\\t]+")
          (line-regex (concat "^" end-regex date-regex sep-regex name-regex sep-regex value-regex end-regex "$")))
