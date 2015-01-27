@@ -74,6 +74,7 @@ set visualbell
 set defsearch=gg
 set focuscontent=true
 set editor='emacsclient -c'
+set urlseparator=\\|
 
 
 " Get the focus back from insisting pages
