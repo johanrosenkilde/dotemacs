@@ -1165,12 +1165,14 @@ the optional values set"
       )))
 (defun sage-restart ()
   (interactive)
-  (when (buffer-name (sage-refind-sage)) ; test if sage-buffer is defined and not killed
-    ;; get the sage process and unset its query flag
+  (let ((old-sage (sage-refind-sage)))
+    (when (and old-sage (buffer-name old-sage)) ; test if sage-buffer is defined and not killed
+      ;; get the sage process and unset its query flag
       (set-process-query-on-exit-flag (get-buffer-process sage-buffer) nil)
       (kill-buffer sage-buffer)
-      (setq sage-buffer nil))
-  (sage))
+      (setq sage-buffer nil)))
+  (let ((cmd (if sage-run-history (car sage-run-history) sage-command)))
+    (sage t cmd)))
 (fill-keymap sage-mode-map
              (kbd "C-c C") 'sage-send-class
              (kbd "C-c C-z") 'run-sage
