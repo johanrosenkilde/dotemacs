@@ -693,6 +693,26 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 (defun jsrn-delete-window-below ()
   (interactive)
   )
+
+(defun expand-window-vertically ()
+  "Expand current window vertically by deleting the window just below, or the
+one above if there are no windows below"
+  (interactive)
+  (setq is-lowest-window nil)
+  (condition-case err
+      (progn
+        (evil-window-down 1)
+        (when (string-match "Minibuf" (buffer-name))
+          (progn
+            (setq is-lowest-window t)
+            (evil-window-up 1))))
+    (error (setq is-lowest-window t)))
+  (when is-lowest-window
+      (evil-window-up 1))
+  (delete-window)
+  )
+
+(progn (evil-window-down 1) (message (buffer-name)))
 (fill-keymap evil-window-map
              ;; Moving (these exist for Qwerty)
              evil-left-key  'evil-window-left
@@ -719,7 +739,7 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
              evil-up-key    'evil-window-up
              evil-right-key 'evil-window-right
              (kbd "C-w")    'evil-window-prev
-             (kbd "v")    (lambda ()  (interactive) (evil-window-down 1) (delete-window))
+             (kbd "v")      'expand-window-vertically
              ;; override C-w C-o/n since it is easy to type when wanting C-w o/n
              (kbd "C-o")    'evil-window-right 
              (kbd "C-n")    'evil-window-down
