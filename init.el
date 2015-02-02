@@ -39,6 +39,8 @@
  '(menu ((t (:height 1 :family "Droid Sans Mono"))))
  '(table-cell ((t nil))))
 
+
+
 (defadvice isearch-exit (after jsrn-goto-match-beginning activate)
   "After a search ends by RET, go to beginning of match."
   (when (and isearch-forward isearch-other-end)
@@ -369,6 +371,14 @@ it appears in the minibuffer prompt."
         )
       )
     )) 
+
+(defun modify-font-height (modifier)
+  "Modify the font size by amount modifier"
+  (let ((old-face-attribute (face-attribute 'default :height)))
+    (set-face-attribute 'default nil :height (+ old-face-attribute modifier))))
+
+(global-set-key (kbd "C-x C-=") '(lambda () (interactive) (modify-font-height 10)))
+(global-set-key (kbd "C-x C--") '(lambda () (interactive) (modify-font-height -10)))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
