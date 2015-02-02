@@ -765,17 +765,14 @@ one above if there are no windows below"
   "Scroll down half a page and recenter"
   :type inclusive
   :jump t
-  (when (eq 1 (point))
-    (evil-scroll-down nil))
-  (evil-scroll-down nil)
+  (move-to-window-line (- (evil-num-visible-lines) 2))
   (recenter)
   )
 (evil-define-motion jsrn-scroll-up ()
   "Scroll up half a page and recenter"
   :type inclusive
   :jump t
-  (push-mark)
-  (evil-scroll-up nil)
+  (move-to-window-line 2)
   (recenter)
   )
 (fill-keymaps (list evil-motion-state-map evil-normal-state-map)
