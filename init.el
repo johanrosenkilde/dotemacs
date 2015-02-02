@@ -712,7 +712,6 @@ one above if there are no windows below"
   (delete-window)
   )
 
-(progn (evil-window-down 1) (message (buffer-name)))
 (fill-keymap evil-window-map
              ;; Moving (these exist for Qwerty)
              evil-left-key  'evil-window-left
