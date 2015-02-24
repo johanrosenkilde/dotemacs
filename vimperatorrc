@@ -47,7 +47,7 @@ inoremap <c-g> <Nop>
 cnoremap <c-g> <Nop>
 nnoremap <c-g> <Nop>
 " Shortcut for killing Find bar (since above doesn't work)
-nnoremap <c-g> :js gFindBar.close();<cr>
+nnoremap <c-g> :js gFindBar.close();<cr>:nohlsearch<cr>
 
 " Shortcut for dr body narrower
 nnoremap W :js dr_body_narrow.switchWidth()<cr>
