@@ -972,39 +972,7 @@ the optional values set"
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;       DIRED
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Dired displays less verbose information
-(require 'ls-lisp)
-(require 'dired)
-(setq ls-lisp-use-insert-directory-program nil)
-;; Dired does not open a million buffers
-(toggle-diredp-find-file-reuse-dir 1)
-(put 'dired-find-alternate-file 'disabled nil)
-;; When Dired does something to a file, requiring a target, it suggests other open dired buffer
-(setq dired-dwim-target 1)
-;; Dired doesn't show dot-files per default. Use C-u s <Ret> to change
-(setq dired-listing-switches "-l")
-
-(defun jsrn-dired-mode-hook ()
-  ;; Highlight current line
-  (hl-line-mode)
-  (defun jsrn-dired-up-directory ()
-    "Go up dir without opening new buffer"
-    (interactive)
-    (find-alternate-file ".."))
-  (evil-define-key 'normal dired-mode-map "^" 'jsrn-dired-up-directory)
-  (evil-define-key 'normal dired-mode-map "J" 'dired-goto-file)
-  (evil-define-key 'normal dired-mode-map "K" 'dired-do-kill-lines)
-  (evil-define-key 'normal dired-mode-map "e" 'diredp-previous-line)
-  (evil-define-key 'normal dired-mode-map "k" 'isearch-repeat-forward)
-  (evil-define-key 'normal dired-mode-map "r" 'dired-do-redisplay)
-  (fill-keymap evil-normal-state-local-map
-               (kbd "SPC") 'jsrn-scroll-down
-               (kbd "S-SPC") 'jsrn-scroll-up)
-  )
-(add-hook 'dired-mode-hook 'jsrn-dired-mode-hook)
-;; Load the advanced, not-touched-so-often stuff
-(load "dired_setup")
-
+(autoload 'dired "dired_setup.el" "Dired file browser" t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;       COMPILATION-MODE
