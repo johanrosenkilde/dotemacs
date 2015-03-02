@@ -4,11 +4,11 @@
 (require 'python-mode)
 
 ; use IPython
-(setq-default py-shell-name "ipython")
+(setq-default py-shell-name "ipython2")
 (setq-default py-which-bufname "IPython")
                                 ; use the wx backend, for both mayavi and matplotlib
 (setq py-python-command-args
-      '("--gui=wx" "--pylab=wx" "-colors" "Linux"))
+      '("--gui=wx" "--pylab=wx" "Linux"))
 (setq py-force-py-shell-name-p t)
 
                                 ; switch to the interpreter after executing code
@@ -46,7 +46,10 @@
                          ))
 (require 'pymacs)
 
-
+(setq ropemacs-enable-autoimport t)
+(fill-keymap ropemacs-local-keymap
+             (kbd "C-c #") 'rope-goto-definition 
+             )
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -57,6 +60,7 @@
   (pymacs-load "ropemacs" "rope-")
   (require 'pretty-lambdada) ;typeset word "lambda" as the symbol
   (pretty-lambda-mode 1)
+  (auto-complete-mode)
   )
 
 (add-hook 'python-mode-hook 'jsrn-python-mode-hook)

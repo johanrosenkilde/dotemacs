@@ -1,5 +1,4 @@
 (require 'magit)
-(global-set-key [(f12)] 'magit-status)
 (evil-set-initial-state 'magit-mode 'normal)
 (evil-set-initial-state 'magit-process-mode 'emacs)
 (fill-keymap magit-mode-map

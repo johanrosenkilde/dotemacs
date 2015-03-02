@@ -1126,6 +1126,7 @@ the optional values set"
 ;;       MAGIT & MONKY
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (autoload 'magit-status "magit_setup.el" "Git repository status using Magit" t )
+(global-set-key [(f12)] 'magit-status)
 (autoload 'monky-status "monky_setup.el" "Mercurial repository status using Monky" t )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
