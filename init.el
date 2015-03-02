@@ -55,6 +55,8 @@
 (add-to-list 'auto-mode-alist '("\\.scene\\'" . xml-mode))
 (add-to-list 'auto-mode-alist '("\\.pyx\\'" . python-mode))
 (add-to-list 'auto-mode-alist '("\\.sheet\\'" . sage-mode))
+(add-to-list 'auto-mode-alist '("\\.html\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.php\\'" . web-mode))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;       ELISP UTILS
@@ -466,7 +468,7 @@ using tramp/sudo, if the file is not writable by user."
 (require 'smex)
 (setq ido-everywhere t)
 (setq ido-enable-flex-matching t) ;match substr on what is written
-(setq ido-use-filename-at-point 'guess)
+(setq ido-use-filename-at-point nil)
 (setq ido-file-extensions-order '(".tex" ".sage" ".py" ".bib" ".txt"))
 (setq ido-auto-merge-work-directories-length -1) ; don't suggest stuff in other dirs
 (global-set-key "\M-x" 'smex) ;; awesome function chooser
@@ -805,10 +807,10 @@ one above if there are no windows below"
                    "H"   'evil-open-above
                    "Y"   'evil-window-top
                    "U"   'evil-yank-line
-                   "k"   'isearch-repeat-forward
-                   "K"   'isearch-repeat-backward
                    )
       (fill-keymaps (list evil-normal-state-map evil-visual-state-map)
+                    "k"   'isearch-repeat-forward
+                    "K"   'isearch-repeat-backward
                     "j"   'evil-yank)
                                         ;TODO: the above seems to be reverted by Evil once in a while
       (fill-keymap evil-visual-state-map
@@ -1273,8 +1275,8 @@ to OCaml buffer"
 ;;       HASKELL
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun jsrn-haskell-mode-hook ()
-  (turn-on-haskell-doc)
-  (setq evil-shift-width 2)
+  (turn-on-haskell-doc-mode "haskell-doc" nil t)
+  (turn-on-haskell-indentation)
   )
 (add-hook 'haskell-mode-hook 'jsrn-haskell-mode-hook)
 
@@ -1436,6 +1438,14 @@ fix it again."
 (define-key undo-tree-visualizer-mode-map (kbd "e") 'undo-tree-visualize-undo)
 (define-key undo-tree-visualizer-mode-map (kbd "y") 'undo-tree-visualize-switch-branch-left)
 (define-key undo-tree-visualizer-mode-map (kbd "o") 'undo-tree-visualize-switch-branch-right)
+
+;; Web mode (HTML, PHP)
+(defun jsrn-web-mode-hook ()
+  (define-key web-mode-map (kbd "C-c .") 'web-mode-mark-and-expand)
+  (setq web-mode-markup-indent-offset 2)
+  )
+(add-hook 'web-mode-hook 'jsrn-web-mode-hook)
+
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

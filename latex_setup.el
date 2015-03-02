@@ -64,8 +64,8 @@ Uses last value searched for in math mode."
 ;; Add some shortcuts in math mode
 ;; NOTE: Due to a shitty way this was written in auctex, changing this
 ;; doesn't take effect until reloading auctex (restarting emacs), or
-;; re-running line 4515 in `latex.el`.
-(setq LaTeX-math-list (list  '(?O "ldots" "Accents")
+;; re-evaluating `LaTeX-math-initialize' in `latex.el`.
+(setq LaTeX-math-list (list  '(? "ldots" nil)
                              '(?o "ell" nil)
                              '("v v" "vec" nil)
                              '(?9 "vec" nil)
