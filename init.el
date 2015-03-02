@@ -1082,41 +1082,12 @@ the optional values set"
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;       PYTHON
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(defun jsrn-python-mode-hook ()
-  (interactive)
-  (require 'pretty-lambdada) ;typeset word "lambda" as the symbol
-  (pretty-lambda-mode 1)
-  )
+;; (setq python-is-set-up nil)
+(defun setup-python-env ()
+  (require 'python_setup "python_setup.el"))
+(add-hook 'python-mode-hook 'setup-python-env)
 
-(add-hook 'python-mode-hook 'jsrn-python-mode-hook)
 (add-hook 'sage-mode-hook #'pretty-lambda-mode 1)
-
-;; Rope and ropemode
-(setq python-custom-libs (list "rope" "ropemode" "Pymacs" "ropemacs"))
-(setq pythonpath "")
-(cl-loop for lib in python-custom-libs
-         do (setq pythonpath (concat pythonpath (if (string-equal "" pythonpath)
-                                                    "" ":") "/home/jsrn/local/"
-                                                    lib "/build/lib/")))
-(setenv "PYTHONPATH" pythonpath)
-         
-;; Pymacs
-;; (add-to-list 'load-path "/home/jsrn/local/Pymacs/")
-;; (autoload 'pymacs-apply "pymacs")
-;; (autoload 'pymacs-call "pymacs")
-;; (autoload 'pymacs-eval "pymacs" nil t)
-;; (autoload 'pymacs-exec "pymacs" nil t)
-;; (autoload 'pymacs-load "pymacs" nil t)
-;; (autoload 'pymacs-autoload "pymacs")
-;; (setenv "PYMACS_PYTHON" "python2")
-;; (setq pymacs-load-path '("/home/jsrn/local/rope/build/lib/rope"
-;;                          "/home/jsrn/local/ropemacs/build/lib/ropemacs"
-;;                          "/home/jsrn/local/ropemode/build/lib/ropemode"
-;;                          ))
-;; (require 'pymacs)
-
-;; Load ropemacs
-;(pymacs-load "ropemacs" "rope-")
 
 
 
