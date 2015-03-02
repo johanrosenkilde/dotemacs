@@ -62,6 +62,10 @@
 (add-hook 'after-init-hook (lambda ()
   (message (format "Emacs initialized: took %f seconds." (float-time (time-subtract after-init-time before-init-time))))))
 
+;; Build and keep list of recent files
+(recentf-mode t)
+(setq recentf-save-file "~/.emacs.d/.recentf")
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;       ELISP UTILS
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -408,16 +412,6 @@ it appears in the minibuffer prompt."
 (require 'help+)
 (require 'help-fns+)
 (require 'help-mode+)
-
-;; Winner gives undo and redo of windows arrangements
-(require 'winner)
-(winner-mode 1)
-(global-set-key (kbd "M-S-<left>") 'winner-undo)
-(global-set-key (kbd "M-S-<right>") 'winner-redo)
-
-;; Build and keep list of recent files
-(recentf-mode t)
-(setq recentf-save-file "~/.emacs.d/.recentf")
 
 ;; sudo support and others
 (eval-after-load 'tramp '(setenv "SHELL" "/bin/bash"))

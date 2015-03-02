@@ -194,9 +194,6 @@ sometimes if more than one Emacs has this set"
                                                       (org-up-element))))
   ;; Let org mode override M-n
   (define-key evil-normal-state-local-map (kbd "M-n") 'org-metadown)
-  ;; Let winner keys overwrite org-mode
-  (define-key evil-normal-state-local-map (kbd "M-S-<left>") 'winner-undo) 
-  (define-key evil-normal-state-local-map (kbd "M-S-<right>") 'winner-redo)
   
 )
 (add-hook 'org-mode-hook 'jsrn-org-mode-hook)
