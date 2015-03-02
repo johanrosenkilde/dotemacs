@@ -1078,57 +1078,7 @@ the optional values set"
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;       OCAML
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; (setq opam-share (substring (shell-command-to-string "opam config var share") 0 -1))
-;; (add-to-list 'load-path (concat opam-share "/emacs/site-lisp"))
-;; ;TODO: Install merlin (require 'merlin)
-;; (add-hook 'tuareg-mode-hook 'merlin-mode)
-(defun jsrn-tuareg-mode-hook ()
-  (setq compilation-environment
-        (with-temp-buffer
-          (ignore-errors (call-process "opam" nil t nil "config" "-env"))
-          (goto-line 1)
-          (while (re-search-forward "\"\\(.*\\)\"; *export.*$" nil t)
-            (replace-match "\\1" nil nil))
-          (split-string (buffer-substring 1 (point-max)))
-          ))
-  (defun ocaml-send-current-block ()
-    "Find last blank line and next blank line, and send all in between
-to OCaml buffer"
-    (interactive)
-    (save-excursion
-      (evil-backward-paragraph)
-      (let ((beg (point)))
-        (evil-forward-paragraph)
-        (tuareg-eval-region beg (point))
-      ))
-    )
-  (defun ocaml-goto-shell()
-    "Find the OCaml shell and show it"
-    (interactive)
-    (switch-to-buffer
-     (find-first (buffer-list) (lambda (buf)
-                                 (string-match "ocaml-toplevel" (buffer-name buf))))))
-  (fill-keymap tuareg-mode-map
-               (kbd "C-<return>") 'ocaml-send-current-block
-               (kbd "M-RET")   'tuareg-eval-region
-               (kbd "C-c C-c") 'tuareg-eval-buffer
-               (kbd "C-SPC")   'completion-at-point
-               (kbd "C-c C-z") 'ocaml-goto-shell)
-  (fill-keymap merlin-mode-map
-               [(f2)]              'merlin-type-enclosing
-               (kbd "C-<up>")    'merlin-type-enclosing-go-up
-               (kbd "C-<down>")  'merlin-type-enclosing-go-down
-               (kbd "C-<right>") 'merlin-type-enclosing
-               [(f3)]             'merlin-locate
-               [(shift f3)]       'merlin-pop-stack
-               [(f7)]         'merlin-error-next
-               [(shift f7)]   'merlin-error-prev
-               [(f8)]          'merlin-switch-to-ml
-               [(shift f8)]    'merlin-switch-to-mli
-               (kbd "TAB")     'merlin-try-completion)
-  )
-(add-hook 'tuareg-mode-hook 'jsrn-tuareg-mode-hook)
-
+(autoload 'ocaml-mode "ocaml_setup.el" "Major mode for Ocaml" t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -1182,37 +1132,7 @@ to OCaml buffer"
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;       ANKI
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(define-derived-mode anki-mode nil "anki"
-  "Major mode writing Anki word lists"
-  (setq tab-stop-list '(30 60))
-  (setq-default indent-tabs-mode t)
-  (load "beolingus")
-  (load "sgml-mode")
-  (defun anki-prepare ()
-    "Clone this buffer, format it for anki importing it, and save it in homedir"
-    (interactive)
-    (let ((buf (current-buffer)))
-      (with-temp-buffer
-	(insert-buffer-substring buf)
-	(goto-char (point-min))
-	(while (re-search-forward " *\\(\t\\|   \\)[\t ]*" nil t)
-	  (replace-match ";"))
-	(write-file "~/anki_import.txt")
-	)))
-  ;; Some html bindings
-  (fill-keymaps (list evil-visual-state-local-map
-		      evil-insert-state-local-map)
-		(kbd "C-M-b") (lambda () (interactive) (sgml-tag "b"))
-		(kbd "C-<return>") (lambda () (interactive) (insert "<br/>"))
-		(kbd "C-M-i")   (lambda () (interactive) (sgml-tag "i"))
-		)
-  )
-(define-key anki-mode-map [(f2)] 'anki-prepare)
-(define-key anki-mode-map [(f5)] (lambda () (interactive)
-				    (beolingus-lookup (current-word))))
-
-
+(autoload 'anki-mode "anki_setup.el" "Major mode for writing Anki word lists" t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;       SMTPMAIL AND MU4E
