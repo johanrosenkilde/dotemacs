@@ -1,3 +1,13 @@
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;           OFFLINEIMAP
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;           MU4E
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (defun jsrn-smtpmail-setup (from-email)
   ;; tell message-mode how to send mail
   (setq send-mail-function 'smtpmail-send-it
@@ -58,6 +68,16 @@
       (list file type)))
   (mml-attach-file file type nil "attachment")
 )
+
+;; perl script delatt didn't work for some reason
+;; (defun jsrn-delete-attachments ()
+;;   "Delete all attachments of the current mail. If jsrn-delete-attacments-save is
+;;   set to some path, the attachments will be saved to this folder."
+;;   (interactive)
+;;   (let ((msg (mu4e-message-at-point)))
+;;     (shell-command-to-string "delatt
+;;         (message (mu4e-message-field msg :path)))
+;; )
 
 (defun jsrn-mailto-from-kill ()
   "Parse the contents of the top of the kill ring as a mailto-link and apply it"
