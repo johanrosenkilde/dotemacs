@@ -55,6 +55,7 @@
 (add-to-list 'auto-mode-alist '("\\.scene\\'" . xml-mode))
 (add-to-list 'auto-mode-alist '("\\.pyx\\'" . python-mode))
 (add-to-list 'auto-mode-alist '("\\.sheet\\'" . sage-mode))
+(add-to-list 'auto-mode-alist '("\\.sage\\'" . sage-mode))
 (add-to-list 'auto-mode-alist '("\\.html\\'" . web-mode))
 (add-to-list 'auto-mode-alist '("\\.php\\'" . web-mode))
 
@@ -1063,17 +1064,7 @@ the optional values set"
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;       SAGE
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(setq sage-mode-path "/home/jsrn/local/sage-mode/sage-mode-jsrn/emacs")
-(add-to-list 'load-path sage-mode-path)
-(setq sage-path "/home/jsrn/local/sage/sage-6.3")
-(require 'sage "sage")
-(require 'sage-view "sage-view")
-(defun setup-sage ()
-  (require 'sage_setup "sage_setup.el"))
-(add-hook 'sage-mode-hook 'setup-sage)
-(add-hook 'sage-startup-after-prompt-hook 'sage-view)
-(add-hook 'sage-mode-hook #'pretty-lambda-mode 1)
-
+(autoload 'sage-mode "sage_setup.el" "Major mode for Sage" t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;       OCAML
@@ -1089,8 +1080,6 @@ the optional values set"
   (turn-on-haskell-indentation)
   )
 (add-hook 'haskell-mode-hook 'jsrn-haskell-mode-hook)
-
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;       FSHARP F#

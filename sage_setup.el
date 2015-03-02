@@ -1,6 +1,11 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Setup Emacs-wide loads, vars etc.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(setq sage-mode-path "/home/jsrn/local/sage-mode/sage-mode-jsrn/emacs")
+(add-to-list 'load-path sage-mode-path)
+(setq sage-path "/home/jsrn/local/sage/sage-6.3")
+(require 'sage "sage")
+(require 'sage-view "sage-view")
 (require 'sage-blocks "sage-blocks")
 
 (setq sage-view-anti-aliasing-level 4
@@ -9,6 +14,9 @@
       sage-view-scale-factor 1)
 (setq sage-command (cl-concatenate 'string sage-path "/sage"))
 (evil-set-initial-state 'inferior-sage-mode 'normal)
+
+(add-hook 'sage-startup-after-prompt-hook 'sage-view)
+(add-hook 'sage-mode-hook #'pretty-lambda-mode 1)
 
 (define-key inferior-sage-mode-map (kbd "C-SPC") 'jsrn-scroll-up)
 (define-key inferior-sage-mode-map (kbd "M-C-SPC") 'jsrn-scroll-down)
