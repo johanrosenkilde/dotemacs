@@ -1,4 +1,7 @@
-;; My setup for Org mode and Agenda mode
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Setup Emacs-wide loads, vars etc.
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (setq org-startup-indented t
       org-deadline-warning-days 7
       )
@@ -75,23 +78,113 @@ sometimes if more than one Emacs has this set"
 )
 (add-hook 'administrative-mode-hook 'jsrn-administrative-org-mode-hook)
 
+
+(fill-keymaps (list org-mode-map)
+              (kbd (concat "M-" evil-left-key))  'org-metaleft
+              (kbd (concat "M-" evil-down-key))  'org-metadown
+              (kbd (concat "M-" evil-up-key))    'org-metaup
+              (kbd (concat "M-" evil-right-key)) 'org-metaright)
+(fill-keymap org-mode-map
+             (kbd (concat "M-" evil-left-key-uc))  'org-shiftmetaleft
+             (kbd (concat "M-" evil-down-key-uc))  'org-shiftmetadown
+             (kbd (concat "M-" evil-up-key-uc))    'org-shiftmetaup
+             (kbd (concat "M-" evil-right-key-uc)) 'org-shiftmetaright
+             (kbd (concat "C-M-" evil-up-key))    'org-backward-element
+             (kbd (concat "C-M-" evil-down-key)) 'org-forward-element
+             (kbd "C-c l") 'org-store-link ;; insert it with C-c C-l (org-insert-link)
+             (kbd "C-c a") 'org-agenda)
+
+
+
+;; Org Clock report by days
+(defun org-dblock-write:rangereport (params)
+  "Display day-by-day time reports."
+  (let* ((ts (plist-get params :tstart))
+         (te (plist-get params :tend))
+         (start (time-to-seconds
+                 (apply 'encode-time (org-parse-time-string ts))))
+         (end (time-to-seconds
+               (apply 'encode-time (org-parse-time-string te))))
+         (curday end)
+         day-numbers)
+    (setq params (plist-put params :tstart nil))
+    (setq params (plist-put params :end nil))
+    (while (>= curday start)
+      (save-excursion
+        (insert "\n\n"
+                (format-time-string "%A, %e. of %B"
+                                    (seconds-to-time curday))
+                "\n")
+        (org-dblock-write:clocktable
+         (plist-put
+          (plist-put
+           params
+           :tstart
+           (format-time-string (car org-time-stamp-formats)
+                               (seconds-to-time curday)))
+          :tend
+          (format-time-string (car org-time-stamp-formats)
+                              (seconds-to-time (+ curday 86400)))))
+        (setq curday (- curday 86400))))))
+
+(defun org-archive-handled-subtrees ()
+  "Regarding subtrees as timed appointments/deadlines/schedules/etc., archive
+  everything which is closed."
+  (interactive)
+  (let ((f (lambda ()
+             (let* ((element (org-element-at-point))
+                    (headline (org-element-property :title element))
+                    (get-time-of-named (lambda (named)
+                                         (let ((breakdown (car (cdr named))))
+                                           (org-time-string-to-seconds (plist-get breakdown :raw-value)))))
+                    (timestamp (if (org-element-property :scheduled element) ;; It's a scheduled item
+                                   (funcall get-time-of-named (org-element-property :scheduled element))
+                                 (if (org-element-property :deadline element) ;; It's a deadline item
+                                     (funcall get-time-of-named (org-element-property :deadline element))
+                                   ;; It's something else, see if it has a
+                                   ;; timestamp (look for second one in a
+                                   ;; possible date range by appending [^-])
+                                   (progn
+                                     (when (re-search-forward (concat (org-re-timestamp 'active) "\\($\\|[^-]\\)")
+                                                              (org-element-property :end element) t)
+                                       (let ((timestamp (match-string 1)))
+                                         ;; Check that we didn't go to a sub-element
+                                         (when (eq (org-element-property :contents-begin element)
+                                                   (org-element-property :begin (org-element-at-point)))
+                                           (org-time-string-to-seconds timestamp)))
+                                       ))
+                                   )))
+                    (do-archive (and ;; Ask for archiving when
+                                     ;; There is a timestamp
+                                     timestamp
+                                     ;; The timestamp is passed
+                                     (< timestamp (time-to-seconds (current-time)))
+                                     ;; The element is not marked TODO
+                                     (not (equal "TODO" (org-element-property :todo-keyword element)))
+                                     ;; The element is a still-open scheduled element
+                                     (or (not (org-element-property :scheduled element))
+                                         (equal "DONE" (org-element-property :todo-keyword element))
+                                         )
+                                     ))
+                    )
+               (when (and do-archive
+                          (y-or-n-p (format "Move subtree '%s' to archive? " headline)))
+                 (org-archive-subtree-default))
+               )))
+        )
+    (org-map-entries f nil 'tree))
+  )
+
+
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Function for setting up each buffer
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (defun jsrn-org-mode-hook ()
   (visual-line-mode t)
   (evil-declare-motion 'org-up-element)
-  (fill-keymaps (list org-mode-map)
-                (kbd (concat "M-" evil-left-key))  'org-metaleft
-                (kbd (concat "M-" evil-down-key))  'org-metadown
-                (kbd (concat "M-" evil-up-key))    'org-metaup
-                (kbd (concat "M-" evil-right-key)) 'org-metaright)
-  (fill-keymap org-mode-map
-               (kbd (concat "M-" evil-left-key-uc))  'org-shiftmetaleft
-               (kbd (concat "M-" evil-down-key-uc))  'org-shiftmetadown
-               (kbd (concat "M-" evil-up-key-uc))    'org-shiftmetaup
-               (kbd (concat "M-" evil-right-key-uc)) 'org-shiftmetaright
-               (kbd (concat "C-M-" evil-up-key))    'org-backward-element
-               (kbd (concat "C-M-" evil-down-key)) 'org-forward-element
-               (kbd "C-c l") 'org-store-link ;; insert it with C-c C-l (org-insert-link)
-               (kbd "C-c a") 'org-agenda)
   ;; to override evil binding for ~, we do it on the evil local maps
   (fill-keymaps (list evil-motion-state-local-map
                       evil-visual-state-local-map
@@ -104,94 +197,21 @@ sometimes if more than one Emacs has this set"
   ;; Let winner keys overwrite org-mode
   (define-key evil-normal-state-local-map (kbd "M-S-<left>") 'winner-undo) 
   (define-key evil-normal-state-local-map (kbd "M-S-<right>") 'winner-redo)
-
-  ;; Org Clock report by days
-  (defun org-dblock-write:rangereport (params)
-    "Display day-by-day time reports."
-    (let* ((ts (plist-get params :tstart))
-           (te (plist-get params :tend))
-           (start (time-to-seconds
-                   (apply 'encode-time (org-parse-time-string ts))))
-           (end (time-to-seconds
-                 (apply 'encode-time (org-parse-time-string te))))
-           (curday end)
-           day-numbers)
-      (setq params (plist-put params :tstart nil))
-      (setq params (plist-put params :end nil))
-      (while (>= curday start)
-        (save-excursion
-          (insert "\n\n"
-                  (format-time-string "%A, %e. of %B"
-                                      (seconds-to-time curday))
-                  "\n")
-          (org-dblock-write:clocktable
-           (plist-put
-            (plist-put
-             params
-             :tstart
-             (format-time-string (car org-time-stamp-formats)
-                                 (seconds-to-time curday)))
-            :tend
-            (format-time-string (car org-time-stamp-formats)
-                                (seconds-to-time (+ curday 86400)))))
-          (setq curday (- curday 86400))))))
-
-  (defun org-archive-handled-subtrees ()
-    "Regarding subtrees as timed appointments/deadlines/schedules/etc., archive
-    everything which is closed."
-    (interactive)
-    (let ((f (lambda ()
-               (let* ((element (org-element-at-point))
-                      (headline (org-element-property :title element))
-                      (get-time-of-named (lambda (named)
-                                           (let ((breakdown (car (cdr named))))
-                                             (org-time-string-to-seconds (plist-get breakdown :raw-value)))))
-                      (timestamp (if (org-element-property :scheduled element) ;; It's a scheduled item
-                                     (funcall get-time-of-named (org-element-property :scheduled element))
-                                   (if (org-element-property :deadline element) ;; It's a deadline item
-                                       (funcall get-time-of-named (org-element-property :deadline element))
-                                     ;; It's something else, see if it has a
-                                     ;; timestamp (look for second one in a
-                                     ;; possible date range by appending [^-])
-                                     (progn
-                                       (when (re-search-forward (concat (org-re-timestamp 'active) "\\($\\|[^-]\\)")
-                                                                (org-element-property :end element) t)
-                                         (let ((timestamp (match-string 1)))
-                                           ;; Check that we didn't go to a sub-element
-                                           (when (eq (org-element-property :contents-begin element)
-                                                     (org-element-property :begin (org-element-at-point)))
-                                             (org-time-string-to-seconds timestamp)))
-                                         ))
-                                     )))
-                      (do-archive (and ;; Ask for archiving when
-                                       ;; There is a timestamp
-                                       timestamp
-                                       ;; The timestamp is passed
-                                       (< timestamp (time-to-seconds (current-time)))
-                                       ;; The element is not marked TODO
-                                       (not (equal "TODO" (org-element-property :todo-keyword element)))
-                                       ;; The element is a still-open scheduled element
-                                       (or (not (org-element-property :scheduled element))
-                                           (equal "DONE" (org-element-property :todo-keyword element))
-                                           )
-                                       ))
-                      )
-                 (when (and do-archive
-                            (y-or-n-p (format "Move subtree '%s' to archive? " headline)))
-                   (org-archive-subtree-default))
-                 )))
-          )
-      (org-map-entries f nil 'tree))
-    )
   
 )
-
 (add-hook 'org-mode-hook 'jsrn-org-mode-hook)
+;; This file is excecuted when a python buffer is opened, so the above hook is
+;; not run for that file. Therefore, run the hook.
+(jsrn-org-mode-hook)
+
+
+
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Override a few Org functions so that org-clock-report includes also headings
-;; with no time in Search for JSRN to find the diff
+;; with no time in.
+;; Search for JSRN to find the diff
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (eval-after-load "org-clock"
   '(progn
@@ -397,3 +417,8 @@ TIME:      The sum of all time spend in this tree, in minutes.  This time
            (list file org-clock-file-total-minutes tbl))))
      
      ))
+
+
+
+(message "Loaded org_setup.el")
+(provide 'org_setup)
