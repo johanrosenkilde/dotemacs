@@ -1,3 +1,2 @@
-/auto-save-list/.saves-18181-jsrn-think~
-/auto-save-list/.saves-26168-jsrn-think~
-/auto-save-list/.saves-6972-jsrn-think~
+*.elc
+/auto-save-list/*

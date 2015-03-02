@@ -1,3 +1,5 @@
+(require 'ledger-mode)
+
 (setq jsrn-ledger-commodities (list "kr" "EUR"))
 (setq ledger-convert-commodity "kr")
 
@@ -155,3 +157,7 @@
                )
   )
 (add-hook 'ledger-mode-hook 'jsrn-ledger-mode)
+
+
+(message "Loaded ledger_setup.el")
+(provide 'ledger_setup)

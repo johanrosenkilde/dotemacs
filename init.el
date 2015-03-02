@@ -58,6 +58,10 @@
 (add-to-list 'auto-mode-alist '("\\.html\\'" . web-mode))
 (add-to-list 'auto-mode-alist '("\\.php\\'" . web-mode))
 
+;; Show startup-time after load
+(add-hook 'after-init-hook (lambda ()
+  (message (format "Emacs initialized: took %f seconds." (float-time (time-subtract after-init-time before-init-time))))))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;       ELISP UTILS
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -393,8 +397,6 @@ it appears in the minibuffer prompt."
                          ("melpa" . "http://melpa.milkbox.net/packages/")))
 
 ;; Other packages
-;; Fill sentence: reflows paragraph to have only linebreaks at sentence boundaries
-(load "fill-sentence.el")
 
 ;; minor mode Highlight parentheses which are around cursor
 (require 'highlight-parentheses)
@@ -1523,46 +1525,10 @@ complete card names"
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;       MAGIT
+;;       MAGIT & MONKY
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(require 'magit)
-(global-set-key [(f12)] 'magit-status)
-(evil-set-initial-state 'magit-mode 'normal)
-(evil-set-initial-state 'magit-process-mode 'emacs)
-(fill-keymap magit-mode-map
-	     (kbd "<return>") (lambda () (interactive) (magit-visit-item t))
-	     (kbd "S-SPC")    'magit-show-item-or-scroll-down
-             evil-down-key 'magit-goto-next-section
-             evil-up-key   'magit-goto-previous-section
-	     )
-(defun jsrn-magit-mode-hook ()
-  (interactive)
-  (visual-line-mode)
-  (fill-keymap evil-motion-state-local-map
-               (kbd (concat "C-" evil-down-key)) 'evil-next-line
-               (kbd (concat "C-" evil-up-key))   'evil-previous-line
-               ))
-(add-hook 'magit-mode-hook 'jsrn-magit-mode-hook)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;       MONKY
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(require 'monky)
-(evil-set-initial-state 'monky-mode 'emacs)
-(fill-keymap monky-mode-map
-	     (kbd "<return>") (lambda () (interactive) (monky-visit-item t))
-	     (kbd "S-SPC")    'monky-show-item-or-scroll-down
-             evil-down-key 'monky-goto-next-section
-             evil-up-key   'monky-goto-previous-section
-	     )
-(defun jsrn-monky-mode-hook ()
-  (interactive)
-  (fill-keymap evil-motion-state-local-map
-               (kbd (concat "C-" evil-down-key)) 'evil-next-line
-               (kbd (concat "C-" evil-up-key))   'evil-previous-line
-               ))
-(add-hook 'monky-mode-hook 'jsrn-monky-mode-hook)
-
+(autoload 'magit-status "magit_setup.el" "Git repository status using Magit" t )
+(autoload 'monky-status "monky_setup.el" "Mercurial repository status using Monky" t )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;       ASYMPTOTE
@@ -1586,9 +1552,11 @@ complete card names"
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;       LEDGER
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(require 'ledger-mode)
+;; (defun setup-ledger ()
+;;   (require 'ledger_setup "ledger_setup.el"))
+;; (add-hook 'ledger-mode-hook 'setup-ledger)
+(autoload 'ledger-mode "ledger_setup.el" "Load ledger setup")
 (add-to-list 'auto-mode-alist '("\\.ledger$" . ledger-mode))
-(load "ledger.el")
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

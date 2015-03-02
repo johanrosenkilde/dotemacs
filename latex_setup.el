@@ -111,6 +111,9 @@ This is a modified version of reftex-goto-label from 24.3.1"
   (evil-set-jump)
   (evil-set-jump))
 
+;; Fill sentence: reflows paragraph to have only linebreaks at sentence boundaries
+(load "fill-sentence.el")
+
 (setq TeX-auto-save t)
 (setq TeX-parse-self t)
 (setq-default TeX-parse-self nil)
