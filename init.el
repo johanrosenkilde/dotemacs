@@ -1319,8 +1319,9 @@ fix it again."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;       SMTPMAIL AND MU4E
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(load "mail_setup")
-(add-hook 'administrative-mode-hook 'jsrn-mu4e-setup)
+(defun setup-mail ()
+  (require 'mail_setup "mail_setup.el"))
+(add-hook 'administrative-mode-hook 'setup-mail)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
