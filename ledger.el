@@ -9,6 +9,7 @@
         (list "reg"     (jsrn-ledger-report "reg"))
         (list "payee"   (jsrn-ledger-report "reg @%(payee)"))
         (list "account" (jsrn-ledger-report "reg %(account)"))
+        (list "valutatab" (jsrn-ledger-report "--daily reg ^Expenses:ValutaTab"))
         ))
 
 (defun jsrn-ledger-find-accounts-in-buffer ()
@@ -47,10 +48,13 @@
   (let* ((target-buf (current-buffer))
          (date-regex "\\([-/.0-9]+\\)")
          (name-regex "\\(.*?\\)") ;; non-greedy all-match
-         (value-regex "\\(\\(-?[0-9]+[,.][0-9]+\\)\\|\\(\"\\(-?[0-9]+[,.][0-9]+\\)\"\\)\\)")
-         (end-regex "[; \\t]*")
-         (sep-regex "[ ,;\\t]+")
-         (line-regex (concat "^" end-regex date-regex sep-regex name-regex sep-regex value-regex end-regex "$")))
+         (value-regex
+            (let ((number "+?\\(-?[0-9.,]+[,.][0-9]+\\)"))
+              (concat "\\(" number "\\|\\(\"" number "\"\\)\\)")))
+         (currency-regex " ?\\(EUR\\|kr\\)?")
+         (end-regex "[; \t]*")
+         (sep-regex "[ ,;\t]+")
+         (line-regex (concat "^" end-regex date-regex sep-regex name-regex sep-regex value-regex currency-regex end-regex "$")))
     (with-temp-buffer
       (let ((source-buf (current-buffer)))
         (insert-file-contents file-name)
