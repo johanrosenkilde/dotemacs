@@ -435,6 +435,11 @@ using tramp/sudo, if the file is not writable by user."
 (require 'ace-jump-mode)
 (setq ace-jump-mode-scope 'window)
 
+;; Load diminish (though diminish of usual suspects is done at the end)
+(require 'diminish)
+
+
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;       AUTO-COMPLETE
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -962,7 +967,9 @@ the optional values set"
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;       LATEX
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(load "latex_setup")
+(defun setup-latex ()
+  (require 'latex_setup "latex_setup.el"))
+(add-hook 'LaTeX-mode-hook 'setup-latex)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;       DIRED
@@ -1083,9 +1090,9 @@ the optional values set"
 ;;       PYTHON
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; (setq python-is-set-up nil)
-(defun setup-python-env ()
+(defun setup-python ()
   (require 'python_setup "python_setup.el"))
-(add-hook 'python-mode-hook 'setup-python-env)
+(add-hook 'python-mode-hook 'setup-python)
 
 (add-hook 'sage-mode-hook #'pretty-lambda-mode 1)
 
@@ -1666,20 +1673,6 @@ complete card names"
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;       DIMINISH (Cleaning up mode line)
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(require 'diminish)
-(cl-loop for minor-mode in '(undo-tree-mode
-                          auto-fill-function
-                          visual-line-mode
-                          highlight-parentheses-mode
-                          flyspell-mode
-                          reftex-mode)
-      do (diminish minor-mode))
-(add-hook 'LaTeX-mode-hook (lambda () (diminish 'outline-minor-mode)))
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;       PRINTING
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'printing)		; load printing package
@@ -1701,3 +1694,14 @@ complete card names"
   (pr-update-menus t)		; update now printer and utility menus
 )
 (jsrn-pr-set-printers)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;       DIMINISH USUAL SUSPECTS (Cleaning up mode line)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(cl-loop for minor-mode in '(undo-tree-mode
+                          auto-fill-function
+                          visual-line-mode
+                          highlight-parentheses-mode
+                          flyspell-mode)
+      do (diminish minor-mode))
