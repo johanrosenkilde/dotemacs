@@ -1,4 +1,6 @@
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Setup Emacs-wide loads, vars etc.
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'python-mode)
 
 ; use IPython
@@ -46,9 +48,10 @@
 
 
 
-(provide 'python_setup)
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Function for setting up each buffer
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun jsrn-python-mode-hook ()
   (interactive)
   (pymacs-load "ropemacs" "rope-")
@@ -61,3 +64,8 @@
 ;; This file is excecuted when a python buffer is opened, so the above hook is
 ;; not run for that file. Therefore, run the hook.
 (jsrn-python-mode-hook)
+
+
+
+(message "Loaded python_setup.el")
+(provide 'python_setup)

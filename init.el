@@ -1096,104 +1096,20 @@ the optional values set"
   (require 'python_setup "python_setup.el"))
 (add-hook 'python-mode-hook 'setup-python)
 
-(add-hook 'sage-mode-hook #'pretty-lambda-mode 1)
-
-
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;       SAGE
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;(add-to-list 'auto-mode-alist '("\\.sage\\'" . sage-mode))
-(setq sage-path "/home/jsrn/local/sage/sage-6.3")
-;;(setq sage-mode-path (cl-concatenate 'string sage-path "/local/share/emacs"))
 (setq sage-mode-path "/home/jsrn/local/sage-mode/sage-mode-jsrn/emacs")
 (add-to-list 'load-path sage-mode-path)
+(setq sage-path "/home/jsrn/local/sage/sage-6.3")
 (require 'sage "sage")
 (require 'sage-view "sage-view")
-(require 'sage-blocks "sage-blocks")
-(setq sage-view-anti-aliasing-level 4
-      sage-view-scale 1.0
-      sage-view-default-commands t
-      sage-view-scale-factor 1)
+(defun setup-sage ()
+  (require 'sage_setup "sage_setup.el"))
+(add-hook 'sage-mode-hook 'setup-sage)
 (add-hook 'sage-startup-after-prompt-hook 'sage-view)
-;; (setq sage-view-default-commands nil) ;; 23/10 2014: Workaround bug in sage-mode
-;; (setq sage-startup-before-prompt-command nil) ;; 23/10 2014: Workaround bug in sage-mode
-(setq sage-command (cl-concatenate 'string sage-path "/sage"))
-(evil-set-initial-state 'inferior-sage-mode 'normal)
-(defun jsrn-sage-mode-hook ()
-  (interactive)
-  (electric-pair-mode)
-  (evil-declare-motion 'sage-forward-block)
-  (evil-declare-motion 'sage-backward-block)
-  (fill-keymap sage-mode-map
-               (kbd "C-<return>") 'sage-send-current-block
-               (kbd "M-{")      'sage-backward-block
-               (kbd "M-}")      'sage-forward-block)
-  (define-key inferior-sage-mode-map (kbd "C-<return>") 'sage-pull-next-block)
-  )
-(add-hook 'sage-mode-hook 'jsrn-sage-mode-hook)
+(add-hook 'sage-mode-hook #'pretty-lambda-mode 1)
 
-(defun jsrn-inferior-sage-mode-hook ()
-  (interactive)
-  (fill-keymap evil-insert-state-local-map
-               (kbd "<return>") 'comint-send-input)
-  )
-(define-key inferior-sage-mode-map (kbd "C-SPC") 'jsrn-scroll-up)
-(define-key inferior-sage-mode-map (kbd "M-C-SPC") 'jsrn-scroll-down)
-(define-key sage-mode-map (kbd "C-c C-h") 'sage-pcomplete-or-help)
-(defun sage-refind-sage ()
-  "Ensure that the local buffer's sage points to a running process. Otherwise,
-  find a running sage process for it, or return nil"
-  (interactive)
-  (if (and sage-buffer (buffer-name sage-buffer))
-      sage-buffer
-    (progn
-      (let ((buf (find-first (buffer-list) (lambda (buf)
-                                             (string-match "Sage-main"
-                                                           (buffer-name buf))))
-                 ))
-        (when buf
-          (setq sage-buffer buf))
-        buf))
-  ))
-(defadvice sage-send-buffer (before sage-send-region-refind-sage activate)
-  (sage-refind-sage))
-(defadvice sage-send-region (before sage-send-region-refind-sage activate)
-  (sage-refind-sage))
-(defun sage-send-class ()
-  (interactive)
-  (save-excursion
-    (search-backward-regexp "^class ") ; find a class line or error
-    (let ((begin (point)))
-      (push-mark) ; for history jumping
-      (next-line)
-      (when (search-forward-regexp "^[^ \\t\n]" nil 1) ; find first non-indented line
-        (backward-char)) ; go to right before if we are not at file end
-      (sage-send-region begin (point))
-      )))
-(defun sage-restart ()
-  (interactive)
-  (let ((old-sage (sage-refind-sage)))
-    (when (and old-sage (buffer-name old-sage)) ; test if sage-buffer is defined and not killed
-      ;; get the sage process and unset its query flag
-      (set-process-query-on-exit-flag (get-buffer-process sage-buffer) nil)
-      (kill-buffer sage-buffer)
-      (setq sage-buffer nil)))
-  (let ((cmd (if sage-run-history (car sage-run-history) sage-command)))
-    (sage t cmd)))
-(fill-keymap sage-mode-map
-             (kbd "C-c C") 'sage-send-class
-             (kbd "C-c C-z") 'run-sage
-             )
-(defun sage-fix-preview ()
-  "This is a workaround for a bug in sage-mode preview, where opening a tex file
-  in the Emacs process will break further sage-view functionality.
-  AUCTeX sets a variable TEXINPUTS to make latex look for its version of
-  preview.sty, but it seems that this version does not work with sage-mode."
-  (interactive)
-  (setenv "TEXINPUTS" "")
-  )
-(add-hook 'inferior-sage-mode-hook 'jsrn-inferior-sage-mode-hook)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;       OCAML
