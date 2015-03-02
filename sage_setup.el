@@ -91,7 +91,7 @@
 
 (defun jsrn-sage-mode-hook ()
   (interactive)
-  (electric-pair-mode)
+  ;; Nothing yet
   )
 (add-hook 'sage-mode-hook 'jsrn-sage-mode-hook)
 

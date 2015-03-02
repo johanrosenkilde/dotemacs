@@ -1179,7 +1179,6 @@ to OCaml buffer"
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun jsrn-fsharp-mode-hook ()
   (setq evil-shift-width 2)
-  (electric-pair-mode)
   (column-number-mode)
   (defun fsharp-send-current-block ()
     "Find last blank line and next blank line, and send all in between
