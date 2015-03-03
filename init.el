@@ -498,11 +498,12 @@ using tramp/sudo, if the file is not writable by user."
 ;;       ADMINISTRATIVE MODE
 ;; My own created meta mode for loading various stuff for the emacs
 ;; window which will do email and agenda.
+;; Non-reversibly changes the current window's behaviour
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (setq administrative-mode-hook ())
 (defun administrative-mode ()
   (interactive)
-  (global-set-key [(f10)] 'org-agenda-list)
+  (require 'administrative_setup "administrative_setup.el")
   (run-hooks 'administrative-mode-hook))
 
 
@@ -1128,6 +1129,7 @@ the optional values set"
 (autoload 'magit-status "magit_setup.el" "Git repository status using Magit" t )
 (global-set-key [(f12)] 'magit-status)
 (autoload 'monky-status "monky_setup.el" "Mercurial repository status using Monky" t )
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;       ASYMPTOTE
