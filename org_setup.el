@@ -2,8 +2,7 @@
 ;; Setup Emacs-wide loads, vars etc.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(setq org-startup-indented t
-      org-deadline-warning-days 7
+(setq org-deadline-warning-days 7
       )
 
 (fill-keymaps (list org-mode-map)
@@ -30,6 +29,7 @@
 
 (defun jsrn-org-mode-hook ()
   (visual-line-mode t)
+  (org-indent-mode)
   (evil-declare-motion 'org-up-element)
   ;; to override evil binding for ~, we do it on the evil local maps
   (fill-keymaps (list evil-motion-state-local-map
