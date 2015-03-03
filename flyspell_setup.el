@@ -29,7 +29,7 @@
 
 (setq ispell-silently-savep t)
 
-(diminish flyspell-mode)
+(diminish 'flyspell-mode)
 
 
 (message "Loaded flyspell_setup.el")
