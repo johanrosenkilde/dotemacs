@@ -974,7 +974,7 @@ the optional values set"
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;       DIRED
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(autoload 'dired "dired_setup.el" "Dired file browser" t)
+(require 'dired_setup)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;       COMPILATION-MODE
@@ -1031,7 +1031,7 @@ the optional values set"
 ;; (setq python-is-set-up nil)
 (defun setup-python ()
   (require 'python_setup "python_setup.el"))
-(add-hook 'python-mode-hook 'setup-python)
+;; (add-hook 'python-mode-hook 'setup-python)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;       SAGE
@@ -1062,7 +1062,11 @@ the optional values set"
 ;;       C/C++ AND GDB
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (add-to-list 'auto-mode-alist '("\\.h\\'" . c++-mode))
-(autoload 'c++-mode "cpp_setup.el" "C++ mode" t)
+(defun cpp-setup-hook ()
+  ; Cannot use autoload since c++-mode is born in Emacs
+  (require 'cpp_setup "cpp_setup.el")
+  )
+(add-hook 'c++-mode-hook 'cpp-setup-hook)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;       ANKI

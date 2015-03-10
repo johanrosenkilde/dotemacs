@@ -1,4 +1,3 @@
-(add-to-list 'auto-mode-alist '("\\.h\\'" . c++-mode))
 (c-add-style "jsrn"
              '("stroustrup"
                (c-offsets-alist
@@ -25,3 +24,6 @@
   (define-key evil-normal-state-local-map (kbd "C-p") 'gud-print)
   )
 (add-hook 'gdb-frames-mode-hook 'jsrn-gdb-mode-hook)
+
+(message "Loaded cpp_setup")
+(provide 'cpp_setup)

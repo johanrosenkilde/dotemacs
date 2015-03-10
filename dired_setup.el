@@ -147,7 +147,13 @@ using C-u s."
 
 
 
-
+(fill-keymap dired-mode-map
+             "^" 'jsrn-dired-up-directory
+             "J" 'dired-goto-file
+             "K" 'dired-do-kill-lines
+             "e" 'diredp-previous-line
+             "k" 'isearch-repeat-forward
+             "r" 'dired-do-redisplay)
 
 (defun jsrn-dired-mode-hook ()
   ;; Highlight current line
@@ -156,12 +162,6 @@ using C-u s."
     "Go up dir without opening new buffer"
     (interactive)
     (find-alternate-file ".."))
-  (evil-define-key 'normal dired-mode-map "^" 'jsrn-dired-up-directory)
-  (evil-define-key 'normal dired-mode-map "J" 'dired-goto-file)
-  (evil-define-key 'normal dired-mode-map "K" 'dired-do-kill-lines)
-  (evil-define-key 'normal dired-mode-map "e" 'diredp-previous-line)
-  (evil-define-key 'normal dired-mode-map "k" 'isearch-repeat-forward)
-  (evil-define-key 'normal dired-mode-map "r" 'dired-do-redisplay)
   (fill-keymap evil-normal-state-local-map
                (kbd "SPC") 'jsrn-scroll-down
                (kbd "S-SPC") 'jsrn-scroll-up)

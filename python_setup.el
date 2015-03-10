@@ -47,9 +47,9 @@
 (require 'pymacs)
 
 (setq ropemacs-enable-autoimport t)
-(fill-keymap ropemacs-local-keymap
-             (kbd "C-c #") 'rope-goto-definition 
-             )
+;; (fill-keymap ropemacs-local-keymap
+;;              (kbd "C-c #") 'rope-goto-definition 
+;;              )
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
