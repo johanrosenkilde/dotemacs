@@ -19,48 +19,57 @@
                                 ; try to automagically figure out indentation
 (setq py-smart-indentation t)
 
-(add-to-list 'load-path "/home/jsrn/local/Pymacs/")
-(autoload 'pymacs-apply "pymacs")
-(autoload 'pymacs-call "pymacs")
-(autoload 'pymacs-eval "pymacs" nil t)
-(autoload 'pymacs-exec "pymacs" nil t)
-(autoload 'pymacs-load "pymacs" nil t)
-(autoload 'pymacs-autoload "pymacs")
-(setq pymacs-python-command "python2")
-;; The following is to add custom Pymacs code which is run by Python
-;;(eval-after-load "pymacs"
-;;  '(add-to-list 'pymacs-load-path YOUR-PYMACS-DIRECTORY"))
 
-;; Setup environment for when running Pymacs and python
-(setq python-custom-libs (list "Pymacs" "rope" "ropemode" "ropemacs"))
-(setq pythonpath "")
-(cl-loop for lib in python-custom-libs
-         do (setq pythonpath (concat pythonpath (if (string-equal "" pythonpath)
-                                                    "" ":") "/home/jsrn/local/"
-                                                    lib "/build/lib/")))
-(setenv "PYTHONPATH" pythonpath)
-(setenv "PYMACS_PYTHON" "python2")
-(setq pymacs-load-path '("/home/jsrn/local/rope/build/lib/rope"
-                         "/home/jsrn/local/ropemacs/build/lib/ropemacs"
-                         "/home/jsrn/local/ropemode/build/lib/ropemode"
-                         ))
-(require 'pymacs)
+(setq rope-active nil)
+(defun rope-activate ()
+  (interactive)
+  (setq rope-active t)
 
-(setq ropemacs-enable-autoimport t)
-;; (fill-keymap ropemacs-local-keymap
-;;              (kbd "C-c #") 'rope-goto-definition 
-;;              )
+  (add-to-list 'load-path "/home/jsrn/local/Pymacs/")
+  (autoload 'pymacs-apply "pymacs")
+  (autoload 'pymacs-call "pymacs")
+  (autoload 'pymacs-eval "pymacs" nil t)
+  (autoload 'pymacs-exec "pymacs" nil t)
+  (autoload 'pymacs-load "pymacs" nil t)
+  (autoload 'pymacs-autoload "pymacs")
+  (setq pymacs-python-command "python2")
+  ;; The following is to add custom Pymacs code which is run by Python
+  ;;(eval-after-load "pymacs"
+  ;;  '(add-to-list 'pymacs-load-path YOUR-PYMACS-DIRECTORY"))
 
+  ;; Setup environment for when running Pymacs and python
+  (setq python-custom-libs (list "Pymacs" "rope" "ropemode" "ropemacs"))
+  (setq pythonpath "")
+  (cl-loop for lib in python-custom-libs
+           do (setq pythonpath (concat pythonpath (if (string-equal "" pythonpath)
+                                                      "" ":") "/home/jsrn/local/"
+                                                      lib "/build/lib/")))
+  (setenv "PYTHONPATH" pythonpath)
+  (setenv "PYMACS_PYTHON" "python2")
+  (setq pymacs-load-path '("/home/jsrn/local/rope/build/lib/rope"
+                           "/home/jsrn/local/ropemacs/build/lib/ropemacs"
+                           "/home/jsrn/local/ropemode/build/lib/ropemode"
+                           ))
+  (require 'pymacs)
+
+  (setq ropemacs-enable-autoimport t)
+  ;; (fill-keymap ropemacs-local-keymap
+  ;;              (kbd "C-c #") 'rope-goto-definition 
+  ;;              )
+  )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Function for setting up each buffer
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun jsrn-python-mode-hook ()
   (interactive)
-  (pymacs-load "ropemacs" "rope-")
+  (if rope-active
+      (progn
+        (pymacs-load "ropemacs" "rope-")
+        (auto-complete-mode))
+    )
   (require 'pretty-lambdada) ;typeset word "lambda" as the symbol
   (pretty-lambda-mode 1)
-  (auto-complete-mode)
   )
 
 (add-hook 'python-mode-hook 'jsrn-python-mode-hook)
