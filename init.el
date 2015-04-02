@@ -803,24 +803,26 @@ one above if there are no windows below"
 	      )
 
 ;; Workman fixes 
-(if workman
-    (progn
-      (fill-keymap evil-normal-state-map
-                   "h"   'evil-open-below
-                   "H"   'evil-open-above
-                   "Y"   'evil-window-top
-                   "U"   'evil-yank-line
-                   )
-      (fill-keymaps (list evil-normal-state-map evil-visual-state-map)
-                    "k"   'isearch-repeat-forward
-                    "K"   'isearch-repeat-backward
-                    "j"   'evil-yank)
-                                        ;TODO: the above seems to be reverted by Evil once in a while
-      (fill-keymap evil-visual-state-map
-                   "o"   'evil-forward-char
-                   "l"   'exchange-point-and-mark)
-    )
+(defun fix-evil-workman ()
+  "Fix Evil layout problems due to Workman"
+  (interactive)
+  (fill-keymap evil-normal-state-map
+               "h"   'evil-open-below
+               "H"   'evil-open-above
+               "Y"   'evil-window-top
+               "U"   'evil-yank-line
+               )
+  (fill-keymaps (list evil-normal-state-map evil-visual-state-map evil-normal-state-local-map)
+                "k"   'isearch-repeat-forward
+                "K"   'isearch-repeat-backward
+                "j"   'evil-yank)
+                                    ;TODO: the above seems to be reverted by Evil once in a while
+  (fill-keymap evil-visual-state-map
+               "o"   'evil-forward-char
+               "l"   'exchange-point-and-mark)
 )
+
+(if workman (fix-evil-workman))
 
 ;; Evil-numbers (Vim-like increment and decrement)
 (require 'evil-numbers)
