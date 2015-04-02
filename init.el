@@ -752,7 +752,7 @@ one above if there are no windows below"
              evil-down-key  'evil-window-down
              evil-up-key    'evil-window-up
              evil-right-key 'evil-window-right
-             (kbd "C-w")    'evil-window-prev
+             (kbd "C-w")    'evil-window-mru  ;; go to last accessed (swap back/forth)
              (kbd "v")      'expand-window-vertically
              ;; override C-w C-o/n since it is easy to type when wanting C-w o/n
              (kbd "C-o")    'evil-window-right 
