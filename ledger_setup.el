@@ -27,7 +27,6 @@
            (setq accounts (cons (match-string-no-properties 2) accounts))))
        accounts)))))
   
-
 (defun ledger-convert-date (date)
   (if (string-match
   "\\([0-9][0-9]\\).\\([0-9][0-9]\\).\\([0-9][0-9][0-9][0-9]\\)"
@@ -38,6 +37,34 @@
     (error (concat  "Date doesn't conform to spec: " date))
       )
   )
+
+(defun ledger-align ()
+  "Align values of expenses in a region of a Ledger file."
+  (interactive)
+  (save-excursion
+    (let ((endp (region-end)))
+      (goto-char (region-beginning))
+      (forward-line 0) ; mv to beginning of line
+      (unless (looking-at "$")
+        (backward-paragraph))
+      (while (< (point) endp)
+        (forward-line 2)
+        (message "Doit %s" (point))
+        (while (not (looking-at "$"))
+          (if (looking-at "[ \t]*\\([[:alnum:]: /-]*\\)[ \t]\\{2,\\}\\(=?+?-?[0-9]+.?[0-9]*.?[0-9]*\\) \\(\\w*\\)$")
+              (let* ((payee (match-string 1))
+                     (amount (match-string 2))
+                     (currency (match-string 3))
+                     (begin (concat "    " payee))
+                     (spaces (max 0 (- 90 (+ (length begin) (length amount))))))
+                (kill-line)
+                (insert begin (make-string spaces ? ) amount " " currency)
+                )
+            (forward-line))
+          )
+        )
+    ))
+)
 
 (defun ledger-import-csv (file-name)
   "Import a CSV file into the current (ledger) buffer.
