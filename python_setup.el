@@ -19,7 +19,6 @@
                                 ; try to automagically figure out indentation
 (setq py-smart-indentation t)
 
-
 (setq rope-active nil)
 (defun rope-activate ()
   (interactive)
@@ -52,6 +51,9 @@
                            ))
   (require 'pymacs)
 
+  (global-set-key
+               (kbd "M-?")             'hippie-expand
+               )
   (setq ropemacs-enable-autoimport t)
   ;; (fill-keymap ropemacs-local-keymap
   ;;              (kbd "C-c #") 'rope-goto-definition 
@@ -68,6 +70,9 @@
         (pymacs-load "ropemacs" "rope-")
         (auto-complete-mode))
     )
+  (fill-keymap python-mode-map
+               (kbd "C-<backspace>")     'backward-kill-word
+               )
   (require 'pretty-lambdada) ;typeset word "lambda" as the symbol
   (pretty-lambda-mode 1)
   )
