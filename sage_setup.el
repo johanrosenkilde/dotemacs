@@ -85,7 +85,9 @@
 
 (evil-declare-motion 'sage-forward-block)
 (evil-declare-motion 'sage-backward-block)
-
+(defadvice sage-send-current-block (before send-current-block-save-point activate)
+  "Before sending the current block, save point in jump list"
+  (evil-set-jump))
 (fill-keymap sage-mode-map
              (kbd "C-<return>") 'sage-send-current-block
              (kbd "M-{")        'sage-backward-block
