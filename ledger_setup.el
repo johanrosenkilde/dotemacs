@@ -105,10 +105,11 @@
                        (accounts-copy accounts)
                        (debit (ido-completing-read
                                (format "Transaction: %s,   amount %s\t(Press C-j for ignore transaction)\nDebit account: " text val)
-                               accounts-copy)))
+                               accounts-copy))
+                       (nspace (- 90 (+ 4 (length credit) (length raw-val)))))
                   (unless (string-equal "" debit)
                     (set-buffer target-buf)
-                    (insert (concat date " " text "\n    " credit "\t\t\t" val "\n    " debit "\n\n"))
+                    (insert date " " text "\n" "    " credit (make-string nspace ? ) val "\n    " debit "\n\n")
                     (set-buffer source-buf))
                   (forward-line))
               (error "Line %d not well-formatted" (line-number-at-pos))
@@ -139,45 +140,10 @@
     ))
 
 
-;; (let ((url (concat
-;;             "http://dict.tu-chemnitz.de/dings.cgi?lang=en&service=deen&opterrors=0&optpro=0&query="
-;;             word "&iservice=&comment=&email="))
-;;       (htmlfile (concat temporary-file-directory "beo_" word ".html"))
-;;       (outbuffer "*beolingus*"))
-;;   (if (not (file-exists-p htmlfile))
-;;       (url-copy-file  url htmlfile))
-;;   (shell-command (concat "vilistextum -w 10000 -u " htmlfile " -") outbuffer)
-;;   (save-excursion
-;;     (set-buffer outbuffer)
-;;     (goto-char (point-min))
-;;                                         ; Cut the beginning cruft
-;;     (search-forward-regexp "[:digit:]* \\(similar \\)?results? for")
-;;     (previous-line)
-;;     (delete-region (point-min) (point))
-;;                                         ; Kill link remainders and trim line beginnings
-;;     (while (re-search-forward "\\[[^][]*\\]\\|\\[\\[[^[]*\\]\\]\\|^ +" nil t)
-;;       (replace-match ""))
-;;                                         ; Kill empty lines
-;;     (goto-char (point-min))
-;;     (delete-blank-lines)
-;;     (while (not (eq (point) (point-max)))
-;;       (forward-line)
-;;       (delete-blank-lines))
-;;     (goto-char (point-min))
-;;     ;;Kill some cruft
-;;     (forward-line)
-;;     (kill-line) (kill-line) (kill-line) (kill-line)
-;;                                         ;Find some end
-;;     (let ((begin (point))
-;;           (end (progn (forward-line 20) (point))))
-;;       (table-capture begin end "   " "\n" "l" "40")
-;;       )
-;;     )
-;;   )
-
 (defun jsrn-ledger-mode ()
   (make-local-variable 'block-delimiter)
   (setq block-delimiter ";;;;")
+  (setq tab-width 4)
   (fill-keymap ledger-mode-map
                (kbd "M-[") 'backward-block
                (kbd "M-]") 'forward-block
