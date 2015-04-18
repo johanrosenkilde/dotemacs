@@ -8,7 +8,8 @@
 ;; Other global nice options
 (setq inhibit-splash-screen t)
 (setq initial-scratch-message "")
-(setq-default major-mode 'text-mode)
+(setq initial-major-mode 'text-mode) ; set *scratch* buffer mode
+(setq-default major-mode 'text-mode) ; set new buffers' major mode
 (scroll-bar-mode -1) ;; Emacs gurus don't need no stinking scroll bars
 (menu-bar-mode 0)    ;; or menu bars
 (tool-bar-mode -1)
