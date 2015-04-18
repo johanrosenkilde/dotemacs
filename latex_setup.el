@@ -202,7 +202,6 @@ This is a modified version of reftex-goto-label from 24.3.1"
   (LaTeX-math-mode t)                ; always turn on math mode
   (flyspell-mode t)                  ; always turn on flyspell
   (turn-on-reftex)                   ; always turn on reftex
-  (electric-pair-mode)               ; insert matching braces
   (define-key LaTeX-mode-map (kbd "$") 'self-insert-command) ; makes electric pairs work for $
 
   ;;When inserting a label, just use cref and don't ask
