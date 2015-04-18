@@ -145,14 +145,11 @@ using C-u s."
     ))
 
 
-
-
 (fill-keymap dired-mode-map
              "^" 'jsrn-dired-up-directory
              "J" 'dired-goto-file
              "K" 'dired-do-kill-lines
              "e" 'diredp-previous-line
-             "k" 'isearch-repeat-forward
              "r" 'dired-do-redisplay)
 
 (defun jsrn-dired-mode-hook ()
@@ -167,6 +164,10 @@ using C-u s."
                (kbd "S-SPC") 'jsrn-scroll-up)
   )
 (add-hook 'dired-mode-hook 'jsrn-dired-mode-hook)
+(eval-after-load 'dired
+  '(fix-evil-workman))
+(eval-after-load 'wdired
+  '(fix-evil-workman))
 
 
 
