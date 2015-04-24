@@ -28,7 +28,7 @@
        '("t" "ticket" entry (file+headline "~/orgs/home.org" "Reminders")
         "* Ticket for %:subject (%:from) \n%^t\n%U\n%a\n\n")
        '("h" "handle" entry (file+headline "~/orgs/home.org" "Reminders")
-        "* Handle %:subject from %:from \nSCHEDULED: %(jsrn-read-date-prob-two-weeks)\n%U\n%a\n\n")
+        "* Handle %:subject from %:from \nDEADLINE: %(jsrn-read-date-prob-two-weeks)\n%U\n%a\n\n")
        '("e" "event" entry (file+headline "~/orgs/home.org" "Reminders")
         "* Event %:subject from %:from \n%^t\n%U\n%a\n\n")
       ))
