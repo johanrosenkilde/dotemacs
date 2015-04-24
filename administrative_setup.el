@@ -171,6 +171,11 @@
              (kbd "C-c a") 'org-agenda
              )
 (global-set-key [(f10)] 'org-agenda-list)
+(global-set-key [(shift f10)] '(lambda ()
+  (interactive)
+  (org-agenda-list nil
+                   (concat (format-time-string "%m") "-01")
+                   'month)))
 (global-set-key "\C-cc" 'org-capture)
 (global-set-key (kbd "C-,") 'cycle-agenda-files-or-goto-org)
 
