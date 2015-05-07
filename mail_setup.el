@@ -51,9 +51,9 @@
       (setq
        smtpmail-smtp-server "web12.meebox.net"
        smtpmail-smtp-user "atuin@atuin.dk"
-       smtpmail-smtp-service 465
+       smtpmail-smtp-service 587
        smtpmail-local-domain "atuin.dk"
-       smtpmail-stream-type 'ssl
+       smtpmail-stream-type 'starttls
        )
       (message "Using Meebox SMTP")))
      ))
