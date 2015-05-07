@@ -1201,9 +1201,9 @@ the optional values set"
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'printing)		; load printing package
 (setq jsrn-pr-printer-alist
-      '((chimera "lpr"     nil "chimera")   ;; Ulm University
+      '((et2-006 "lpr"     nil "et2-color-konica-006")   ;; Ulm University
         ))
-(setq jsrn-current-printer 'chimera)
+(setq jsrn-current-printer 'et2-006)
 (defun jsrn-pr-set-printers ()
   (interactive)
   (setq pr-path-alist
