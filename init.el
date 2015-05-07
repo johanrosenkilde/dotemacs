@@ -235,6 +235,28 @@ and trailing. Assumes one is in visual mode\n"
   (evil-backward-char) ; corner-case: normal mode with cursor at eol
   )
 
+(defun search-region (forward)
+  "Search for the text in the region. Search forward iff FORWARD is `t`"
+  (interactive)
+  (let ((text (buffer-substring evil-visual-beginning evil-visual-end))
+        (begin (if forward (+ (point) 1) (- (point) 1))))
+    (evil-push-search-history text forward)
+    (evil-search text forward nil begin)
+    (evil-visual-select (point) (+ (point) (- (length text) 1)))
+    )
+  )
+
+(defun search-region-backward ()
+  "Search backward for the text in the region"
+  (interactive)
+  (search-region nil)
+  )
+(defun search-region-forward ()
+  "Search forward for the text in the region"
+  (interactive)
+  (search-region t)
+  )
+
 ;;TODO: delete-visual-line to replace S-d
 
 ;;Function for reloading the .emacs file
@@ -628,7 +650,10 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
              "v" 'mark-current-line-smart
              ;; Provide a visual-time shorcut to commenting
              "z" 'comment-region
-             "Z" 'uncomment-region)
+             "Z" 'uncomment-region
+             "#" 'search-region-backward
+             "*" 'search-region-forward
+             )
 
 ; Remenber positions when searching so they can be found in jump-point-ring
 (defadvice isearch-forward (before marker activate)
