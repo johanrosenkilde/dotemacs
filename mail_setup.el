@@ -207,12 +207,13 @@ those present in the database."
           ("/inria/Archive"       . ?A)
           ("/atuin/INBOX.To Use". ?u)
           ("/atuin/INBOX.Drafts". ?d)
+          ("/gmail/[Gmail].All Mail".        ?n)
           ("/trash"             . ?w)
           ))
 
 ;; View the contents of all inboxes or sent with 'bi' or 'bs'
 (add-to-list 'mu4e-bookmarks
-   '("maildir:/atuin/INBOX or maildir:/inria/INBOX or maildir:/dtu/INBOX or maildir:/gmail/INBOX"  "Inboxes"  ?i))
+   '("maildir:/atuin/INBOX or maildir:/inria/INBOX or maildir:/dtu/INBOX"  "Inboxes"  ?i))
 (add-to-list 'mu4e-bookmarks
    '("maildir:/atuin/INBOX.Sent or maildir:/inria/Sent" "Sent" ?s))
 
