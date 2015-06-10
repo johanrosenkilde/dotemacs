@@ -118,7 +118,8 @@ those present in the database."
              (format "%s <%s>" name address)
            address)))
      (remove-if (lambda (string) (= 0 (length string)))
-                (split-string (shell-command-to-string "mu cfind --format=csv")
+                ;; cfind with --personal: Only addresses from mail sent to me directly should go in auto-completions
+                (split-string (shell-command-to-string "mu cfind --personal --format=csv")
                               "\n"))))))
 
 
@@ -236,9 +237,6 @@ those present in the database."
                                       ;; '(("j.s.r.nielsen@mat.dtu.dk" . "/dtu/Sent")
                                       ;;   ("jsrn@dtu.dk" . "/dtu/Sent"))
       jsrn-mu4e-mailbox-default "/atuin/INBOX.Sent")
-
-;; Only addresses from mail sent to me directly should go in auto-completions
-(setq mu4e-compose-complete-only-personal nil)
 
 ;; Switch my from address to the next possible from address
 (defun next-from-address ()
