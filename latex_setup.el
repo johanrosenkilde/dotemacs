@@ -195,6 +195,7 @@ This is a modified version of reftex-goto-label from 24.3.1"
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun jsrn-latex-mode-hook ()
+  (interactive)
   (local-set-key (kbd "M-q") 'fill-sentence)  ; hard sentence wrap
   (setq fill-column 9999)            ; with hard senctence wrap, we don't want hard lines
   (visual-line-mode t)               ; but we do want visual word wrap
