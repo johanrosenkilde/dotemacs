@@ -211,6 +211,13 @@ those present in the database."
           ("/trash"             . ?w)
           ))
 
+;; Set up the Header fields (only thread-subject differs from standard)
+(setq mu4e-headers-fields
+      '((:human-date . 12) (:flags . 6) (:mailing-list . 10) (:from . 22)
+      (:thread-subject))
+      )
+
+
 ;; View the contents of all inboxes or sent with 'bi' or 'bs'
 (add-to-list 'mu4e-bookmarks
    '("maildir:/atuin/INBOX or maildir:/inria/INBOX or maildir:/dtu/INBOX"  "Inboxes"  ?i))
