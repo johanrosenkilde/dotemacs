@@ -237,7 +237,9 @@ those present in the database."
 ;; Check mail using offlineimap every 5 min
 (setq mu4e-get-mail-command "getmail"
       mu4e-update-interval 30
-      mail-user-agent 'mu4e-user-agent)
+      mu4e-headers-auto-update nil
+      mail-user-agent 'mu4e-user-agent
+      )
 
 ;; Messages should be replied from the recipient if it was one of the
 ;; registered email addresses
