@@ -275,15 +275,17 @@ those present in the database."
   (setq user-mail-address
         (let ((msg mu4e-compose-parent-message))
           (if msg
+              ;; Take the destination addr of msg. Match whether it was a Google
+              ;; group mail, or a mail to one of my email addresses.
               (let ((toaddr (cdr (car (mu4e-message-part-field msg :to)))))
-                (if (and (not (eq toaddr nil)) (member (downcase toaddr) mu4e-user-mail-address-list))
-                    (downcase toaddr)
-                  jsrn-user-mail-address))
+                (if (eq toaddr nil)
+                    jsrn-user-mail-address
+                  (if (string-match ".*@googlegroups.com" toaddr)
+                      "santaphile@gmail.com"
+                    (if (member (downcase toaddr) mu4e-user-mail-address-list)
+                        (downcase toaddr)
+                      jsrn-user-mail-address))))
             jsrn-user-mail-address)))
-  (let ((folder (cdr (assoc user-mail-address jsrn-mu4e-email-to-sent-folder))))
-    (if (eq folder nil)
-        (setq jsrn-mu4e-sent-folder jsrn-mu4e-mailbox-default)
-      (setq jsrn-mu4e-sent-folder folder)))
   )
 (add-hook 'mu4e-compose-pre-hook 'jsrn-set-from-address)
 
