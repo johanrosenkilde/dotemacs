@@ -371,6 +371,8 @@ those present in the database."
               (kbd "S-<SPC>") 'jsrn-scroll-up
               (kbd "<SPC>") 'jsrn-scroll-down
               (kbd ",") 'jsrn-view-message-expand-links
+              (kbd "]") 'mu4e-headers-next-unread
+              (kbd "[") '(lambda () (interactive) (mu4e-headers-next-unread t))
               )
 
 ;; Workman fixes
