@@ -55,7 +55,7 @@
        smtpmail-local-domain nil
        smtpmail-stream-type 'starttls
        )
-      (message "Using uni-ulm SMTP")))
+      (message "Using Gmail SMTP")))
    (t
     (progn
       (setq
@@ -193,7 +193,7 @@ those present in the database."
                              (cond ((string-equal mailbox "atuin") "/atuin/INBOX.Sent")
                                    ((string-equal mailbox "jsrn") "/atuin/INBOX.Sent")
                                    ((string-equal mailbox "inria")   "/inria/Sent")
-                                   ((string-equal mailbox "gmail")   "/atuin/INBOX.Sent")))))
+                                   ((string-equal mailbox "gmail") "/gmail/[Gmail].Sent Mail")))))
       mu4e-drafts-folder "/atuin/INBOX.Drafts"
       mu4e-trash-folder "/trash"
       mu4e-refile-folder (lambda (msg)
@@ -201,7 +201,7 @@ those present in the database."
                              (cond ((string-equal mailbox "atuin") "/atuin/INBOX.Archives.2013")
                                    ((string-equal mailbox "jsrn") "/atuin/INBOX.Archives.2013")
                                    ((string-equal mailbox "inria") "/inria/Archive")
-                                   ((string-equal mailbox "gmail") "/atuin/INBOX.Archives.2013")
+                                   ((string-equal mailbox "gmail") "/gmail/[Gmail].All Mail")
                                    ((string-equal mailbox "dtu")   "/dtu/Archives.2013"))))
       )
 (setq mu4e-attachment-dir "~/downloads")
@@ -254,10 +254,6 @@ those present in the database."
                                     "johan@atuin.dk"
                                     "webmaster@atuin.dk"
                                     ))
-(setq jsrn-mu4e-email-to-sent-folder nil
-                                      ;; '(("j.s.r.nielsen@mat.dtu.dk" . "/dtu/Sent")
-                                      ;;   ("jsrn@dtu.dk" . "/dtu/Sent"))
-      jsrn-mu4e-mailbox-default "/atuin/INBOX.Sent")
 
 ;; Switch my from address to the next possible from address
 (defun next-from-address ()
