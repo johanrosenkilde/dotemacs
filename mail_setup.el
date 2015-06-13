@@ -46,6 +46,16 @@
        smtpmail-stream-type 'starttls
        )
       (message "Using uni-ulm SMTP")))
+   ((string-match ".*gmail.com" from-email)
+    (progn
+      (setq
+       smtpmail-smtp-server "smtp.gmail.com"
+       smtpmail-smtp-user "santaphile@gmail.com"
+       smtpmail-smtp-service 587
+       smtpmail-local-domain nil
+       smtpmail-stream-type 'starttls
+       )
+      (message "Using uni-ulm SMTP")))
    (t
     (progn
       (setq
@@ -207,7 +217,7 @@ those present in the database."
           ("/inria/Archive"       . ?A)
           ("/atuin/INBOX.To Use". ?u)
           ("/atuin/INBOX.Drafts". ?d)
-          ("/gmail/[Gmail].All Mail".        ?n)
+          ("/gmail/INBOX".        ?n)
           ("/trash"             . ?w)
           ))
 
@@ -234,13 +244,14 @@ those present in the database."
 (setq mu4e-user-mail-address-list '("atuin@atuin.dk"
                                     "jsrn@jsrn.dk"
                                     "johan.nielsen@inria.fr"
+                                    "santaphile@gmail.com"
                                     "johan.nielsen@uni-ulm.de"
                                     ;; "jsrn@dtu.dk"
                                     "spammy@atuin.dk"
                                     "jsrn@atuin.dk"
                                     "johan@atuin.dk"
                                     "webmaster@atuin.dk"
-                                    "santaphile@gmail.dk"))
+                                    ))
 (setq jsrn-mu4e-email-to-sent-folder nil
                                       ;; '(("j.s.r.nielsen@mat.dtu.dk" . "/dtu/Sent")
                                       ;;   ("jsrn@dtu.dk" . "/dtu/Sent"))
