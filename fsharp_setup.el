@@ -41,7 +41,7 @@ last main file"
                (kbd "C-<return>") 'fsharp-send-current-block
                (kbd "M-RET")   'fsharp-eval-region
                (kbd "C-SPC")   'completion-at-point
-               (kbd "C-c k")   'fsharp-goto-block-up
+               (kbd "C-c e")   'fsharp-goto-block-up
                [(f5)]          'jsrn-fsharp-reload-project-libs
                [(shift f5)]    'jsrn-fsharp-reload-project-entire
                (kbd "C-c C-z") '(lambda () (interactive)
@@ -69,7 +69,30 @@ fix it again."
 
 
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Redefine some fsharp functions
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defun fsharp-ac/load-project (prefix)
+  "Load the specified fsproj FILE as a project."
+  (interactive "P")
+  ;; Prompt user for an fsproj, searching for a default.
+  (let* ((found-proj (fsharp-mode/find-fsproj buffer-file-name))
+         (proj (if (or prefix (not found-proj))
+                   (read-file-name "Path to project: " nil found-proj t)
+                 found-proj))
+         )
+    (when (fsharp-ac--valid-project-p proj)
+      (setq fsharp-ac-intellisense-enabled t)
+      (when (not (fsharp-ac--process-live-p))
+        (fsharp-ac/start-process))
+      ;; Load given project.
+      (when (fsharp-ac--process-live-p)
+        (log-psendstr fsharp-ac-completion-process
+                      (format "project \"%s\"\n" (file-truename proj))))
+      proj)
+    (message "Project %s loaded" proj)))
 
 
 (message "Loaded fsharp_setup.el")
 (provide 'fsharp_setup)
+
