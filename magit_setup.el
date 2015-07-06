@@ -13,8 +13,10 @@
                (kbd (concat "C-" evil-up-key))   'evil-previous-line
                )
   (fill-keymap magit-mode-map
-               evil-up-key   'previous-line
-               evil-down-key 'next-line
+               evil-up-key     'magit-section-up
+               evil-down-key   'magit-section-forward
+               evil-up-key-uc    'previous-line
+               evil-down-key-uc  'next-line
     ))
 (add-hook 'magit-mode-hook 'jsrn-magit-mode-hook)
 

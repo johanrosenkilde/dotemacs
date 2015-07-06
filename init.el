@@ -693,6 +693,7 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
                               (Info-mode . normal)
                               (woman-mode . normal)
                               (compilation-mode . normal)
+                              (git-commit-mode . normal)
                               )
       do (evil-set-initial-state mode state))
 
