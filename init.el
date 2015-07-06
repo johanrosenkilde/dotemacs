@@ -400,6 +400,7 @@ it appears in the minibuffer prompt."
 ;;       GLOBAL ACTIVATION OF UBIQUITOUS PACKAGES
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Modern list functionality + more
+(eval-after-load "dash" '(dash-enable-font-lock))
 (require 'dash)
 
 ;; minor mode Highlight parentheses which are around cursor
