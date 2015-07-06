@@ -4,8 +4,6 @@
 (fill-keymap magit-mode-map
 	     (kbd "<return>") (lambda () (interactive) (magit-visit-item t))
 	     (kbd "S-SPC")    'magit-show-item-or-scroll-down
-             evil-down-key 'magit-goto-next-section
-             evil-up-key   'magit-goto-previous-section
 	     )
 (defun jsrn-magit-mode-hook ()
   (interactive)
@@ -13,7 +11,11 @@
   (fill-keymap evil-motion-state-local-map
                (kbd (concat "C-" evil-down-key)) 'evil-next-line
                (kbd (concat "C-" evil-up-key))   'evil-previous-line
-               ))
+               )
+  (fill-keymap magit-mode-map
+               evil-up-key   'previous-line
+               evil-down-key 'next-line
+    ))
 (add-hook 'magit-mode-hook 'jsrn-magit-mode-hook)
 
 
