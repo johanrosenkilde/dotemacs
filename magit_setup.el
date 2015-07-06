@@ -2,7 +2,6 @@
 (evil-set-initial-state 'magit-mode 'normal)
 (evil-set-initial-state 'magit-process-mode 'emacs)
 (fill-keymap magit-mode-map
-	     (kbd "<return>") (lambda () (interactive) (magit-visit-item t))
 	     (kbd "S-SPC")    'magit-show-item-or-scroll-down
 	     )
 (defun jsrn-magit-mode-hook ()
@@ -13,7 +12,7 @@
                (kbd (concat "C-" evil-up-key))   'evil-previous-line
                )
   (fill-keymap magit-mode-map
-               evil-up-key     'magit-section-up
+               evil-up-key     'magit-section-backward
                evil-down-key   'magit-section-forward
                evil-up-key-uc    'previous-line
                evil-down-key-uc  'next-line
