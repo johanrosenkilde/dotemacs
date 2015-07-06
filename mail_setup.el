@@ -129,8 +129,9 @@ those present in the database."
            address)))
      (remove-if (lambda (string) (= 0 (length string)))
                 ;; cfind with --personal: Only addresses from mail sent to me directly should go in auto-completions
-                (split-string (shell-command-to-string "mu cfind --personal --format=csv")
-                              "\n"))))))
+                (split-string (shell-command-to-string "mu cfind --format=csv")
+                ;(split-string (shell-command-to-string "mu cfind --personal --format=csv")
+                                            "\n"))))))
 
 
 ;; Setup smtp mail information
