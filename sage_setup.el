@@ -31,10 +31,8 @@
   (if (and sage-buffer (buffer-name sage-buffer))
       sage-buffer
     (progn
-      (let ((buf (find-first (buffer-list) (lambda (buf)
-                                             (string-match "Sage-main"
-                                                           (buffer-name buf))))
-                 ))
+      (let ((buf (-first  (lambda (buf) (string-match "Sage-main" (buffer-name buf)))
+                          (buffer-list))))
         (when buf
           (setq sage-buffer buf))
         buf))

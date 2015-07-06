@@ -26,9 +26,7 @@ complete card names"
                    (match-string 1 card-counted)
                  card-counted))
          (motl-buffer
-          (find-first (buffer-list)
-                      (lambda (buf)
-                        (string-match ".*motl.*" (buffer-name buf))))))
+          (-first (lambda (buf) (string-match ".*motl.*" (buffer-name buf))) (buffer-list))))
     (pop-to-buffer motl-buffer)
     (goto-char (point-min))
     (search-forward card)

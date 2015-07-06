@@ -29,8 +29,8 @@ to OCaml buffer"
     "Find the OCaml shell and show it"
     (interactive)
     (switch-to-buffer
-     (find-first (buffer-list) (lambda (buf)
-                                 (string-match "ocaml-toplevel" (buffer-name buf))))))
+     (-first  (lambda (buf) (string-match "ocaml-toplevel" (buffer-name buf)))
+                  (buffer-list))))
   (fill-keymap tuareg-mode-map
                (kbd "C-<return>") 'ocaml-send-current-block
                (kbd "M-RET")   'tuareg-eval-region

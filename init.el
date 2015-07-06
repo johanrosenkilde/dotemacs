@@ -68,51 +68,32 @@
 (recentf-mode t)
 (setq recentf-save-file "~/.emacs.d/.recentf")
 
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;       PACKAGE MANAGER / MELPA
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(require 'package)
+(package-initialize)
+(setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
+                         ("marmalade" . "http://marmalade-repo.org/packages/")
+                         ("melpa" . "http://melpa.milkbox.net/packages/")))
+
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;       ELISP UTILS
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(defun def-assoc (key alist default)
+
+(defun lookup (key alist default)
   "Return cdr of `KEY' in `ALIST' or `DEFAULT' if key is no car in alist."
   (let ((match (assoc key alist)))
     (if match
         (cdr match)
       default)))  
 
-(defun take (n lst)
-  "Return atmost the first `N' items of `LST'."
-  (let (acc '())
-    (while (and lst (> n 0))
-      (setq n (1- n))
-      (push (car lst) acc)
-      (setq lst (cdr lst)))
-    (nreverse acc)))
-
-(defun find-first (lst pred)
-  "Return first element of list matching predicate or nil.
-Note: there is no way of discerning between a success of a 'nil' element and a failure."
-  (setq running t)
-  (setq res nil)
-  (while (and running lst)
-    (if (funcall pred (car lst))
-      (progn
-       (setq running nil)
-       (setq res (car lst)))
-      (setq lst (cdr lst))
-    ))
-  res)
-
-(defun group (lst n)
-  "Group `LST' into portions of `N'."
-  (let (groups)
-    (while lst
-      (push (take n lst) groups)
-      (setq lst (nthcdr n lst)))
-    (nreverse groups)))
-
 (defun pour-mappings-to (map mappings)
   "Calls `define-key' with `map' on every key-fun pair in `MAPPINGS'.
 `MAPPINGS' is a list of string-fun pairs, with a define-key-understandable string and a interactive-fun."
-  (dolist (mapping (group mappings 2))
+  (dolist (mapping (-partition 2 mappings))
     (define-key map (car mapping) (cadr mapping)))
   map)
 
@@ -396,7 +377,7 @@ it appears in the minibuffer prompt."
           (princ "Minor key maps:\n")
           (dolist (minor minors)
             (princ (format "\t%s\t`%s'\t%s\n" (car minor) (cdr minor) 
-                           (if (find-first active (lambda (active) (eq active (car minor)))) "*DEFINED*" ""))))
+                           (if (-find-index (lambda (active) (eq active (car minor))) active) "*DEFINED*" ""))))
           (princ "\n")
           )
         )
@@ -416,15 +397,10 @@ it appears in the minibuffer prompt."
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;       PACKAGE-INSTALL
+;;       GLOBAL ACTIVATION OF UBIQUITOUS PACKAGES
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(require 'package)
-(package-initialize)
-(setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
-                         ("marmalade" . "http://marmalade-repo.org/packages/")
-                         ("melpa" . "http://melpa.milkbox.net/packages/")))
-
-;; Other packages
+;; Modern list functionality + more
+(require 'dash)
 
 ;; minor mode Highlight parentheses which are around cursor
 (require 'highlight-parentheses)
@@ -726,8 +702,8 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
         (cursor-default 'bar)
         (cursors '((visual . hollow)
                    (normal . box))))
-    (setq cursor-type (def-assoc evil-state cursors cursor-default))
-    (set-cursor-color (def-assoc evil-state cursors color-default))))
+    (setq cursor-type (lookup evil-state cursors cursor-default))
+    (set-cursor-color (lookup evil-state cursors color-default))))
 (setq evil-default-cursor #'cofi/evil-cursor)
  
 
