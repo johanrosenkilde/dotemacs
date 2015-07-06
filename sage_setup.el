@@ -8,6 +8,7 @@
 (require 'sage-view "sage-view")
 (require 'sage-blocks "sage-blocks")
 
+(require 'hideshow)
 (setq sage-view-anti-aliasing-level 4
       sage-view-scale 1.0
       sage-view-default-commands t
@@ -93,7 +94,9 @@
              (kbd "M-{")        'sage-backward-block
              (kbd "M-}")        'sage-forward-block)
 
-(define-key inferior-sage-mode-map (kbd "C-<return>") 'sage-pull-next-block)
+(fill-keymap inferior-sage-mode-map
+              (kbd "C-<return>") 'sage-pull-next-block
+              (kbd "<f5>")       '(lambda () (interactive) (hs-hide-all) (recenter-top-bottom)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Function for setting up each buffer
