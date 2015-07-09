@@ -4,6 +4,8 @@
 (fill-keymap magit-mode-map
 	     (kbd "S-SPC")    'magit-show-item-or-scroll-down
 	     )
+(setq git-commit-summary-max-length 100)
+(setq magit-restore-window-configuration nil) ;; don't attempt stupid restore of look before magit
 (defun jsrn-magit-mode-hook ()
   (interactive)
   (visual-line-mode)
