@@ -101,7 +101,7 @@ fix it again."
   (interactive "P")
   ;; Prompt user for an fsproj, searching for a default.
   (let* ((found-proj (fsharp-mode/find-fsproj buffer-file-name))
-         (proj (if (or prefix (not found-proj))
+         (proj (if (not found-proj)
                    (read-file-name "Path to project: " nil found-proj t)
                  found-proj))
          )
