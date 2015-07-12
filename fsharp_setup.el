@@ -5,9 +5,9 @@
 (defun fsharp-toggle-configuration ()
   "Toggle between Debug and Release build configurations"
   (interactive)
-  (let ((config (if jsrn-fsharp-is-debug-config "Release" "Debug")))
+  (setq jsrn-fsharp-is-debug-config (not jsrn-fsharp-is-debug-config))
+  (let ((config (if jsrn-fsharp-is-debug-config "Debug" "Release")))
     (setq fsharp-build-command (list "xbuild" (concat "/p:Configuration=" config)))
-    (setq jsrn-fsharp-is-debug-config (not jsrn-fsharp-is-debug-config))
     (-each (buffer-list)
       (lambda (buf)
         (let ((file (buffer-file-name buf)))
@@ -139,6 +139,45 @@ fix it again."
      ((equal ext "fsy") (combine-and-quote-strings (list "fsyacc" file)))
      (t                 compile-command))))
 
+
+;; This is redefined to pipe output from the exe into a new buffer
+;; And to run the configuration which has been built
+(defun fsharp-run-executable-file ()
+  "Execute a file with specified arguments. If a project is
+currently loaded and the output is a .exe file (stored in
+FSHARP-AC--OUTPUT-FILE), then this will be used as a default. If
+the current system is not Windows then the command string will be
+passed to `mono'."
+  (interactive)
+  (let*  ((config (if jsrn-fsharp-is-debug-config "Debug" "Release"))
+         (project (gethash (fsharp-ac--buffer-truename) fsharp-ac--project-files))
+         (projdata (when project (gethash project fsharp-ac--project-data)))
+         (outputfile (if projdata
+                         (replace-regexp-in-string "\\(Release\\|Debug\\)"
+                                                   config (gethash "Output"
+                                                                   projdata))
+                       (error "No project data")))
+         ;; (default (if (and outputfile
+         ;;                   (s-equals? "exe"
+         ;;                              (downcase (file-name-extension outputfile))))
+         ;;              (if fsharp-ac-using-mono
+         ;;                  (s-concat "mono " outputfile)
+         ;;                outputfile)
+         ;;            ""))
+         ;; (cmd (read-from-minibuffer "Run: "
+         ;;                            default
+         ;;                            nil
+         ;;                            nil
+         ;;                            'fsharp-run-executable-file-history))
+         (bufname "*F# output*")
+         )
+    (when (get-buffer bufname)
+        (kill-buffer bufname))
+    (start-process "fsharp-process" bufname "mono" outputfile)
+    ;; (start-process-shell-command cmd bufname)
+    (show-buffer (next-window) bufname)
+    (with-current-buffer bufname (compilation-mode))
+    ))
 
 
 (message "Loaded fsharp_setup.el")
