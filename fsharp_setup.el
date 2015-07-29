@@ -64,6 +64,8 @@ last main file"
                [(shift f2)]    'fsharp-toggle-configuration
                [(f5)]          'jsrn-fsharp-reload-project-libs
                [(shift f5)]    'jsrn-fsharp-reload-project-entire
+               (kbd "C-.")     'next-error
+               (kbd "C-,")     'previous-error
                (kbd "C-c C-z") '(lambda () (interactive)
                                   (fsharp-show-subshell) (other-window 1)))
 )
