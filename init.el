@@ -78,7 +78,6 @@
                          ("marmalade" . "http://marmalade-repo.org/packages/")
                          ("melpa" . "http://melpa.milkbox.net/packages/")))
 
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;       ELISP UTILS
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -164,6 +163,7 @@ element of ls if obj is not in ls or is the last."
       (compile)
     )))
 (global-set-key [(f2)] 'jsrn-recompile)
+(global-set-key [(f3)] nil)
 (global-set-key [(f4)] 'ffap) ;; look-up file at point
 (global-set-key (kbd "M-?") 'hippie-expand)
 (global-set-key (kbd "C-x m") 'ffap) ;; Find file at point (and override compose-mail)
