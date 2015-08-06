@@ -1,6 +1,10 @@
+(add-to-list 'load-path "~/local/emacs-fsharp-mode/")
 (require 'fsharp-mode)
 
 (setq fsharp-build-command (list "xbuild"))
+(setq fsharp-ac-executable "/home/jsrn/local/FsAutoComplete/FSharp.AutoComplete/bin/Debug/fsautocomplete.exe")
+(setq fsharp-ac-complete-command (list "mono" fsharp-ac-executable))
+
 (setq jsrn-fsharp-is-debug-config nil)
 (defun fsharp-toggle-configuration ()
   "Toggle between Debug and Release build configurations"
