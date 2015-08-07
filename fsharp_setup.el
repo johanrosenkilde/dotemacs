@@ -5,6 +5,9 @@
 (setq fsharp-ac-executable "/home/jsrn/local/FsAutoComplete/FSharp.AutoComplete/bin/Debug/fsautocomplete.exe")
 (setq fsharp-ac-complete-command (list "mono" fsharp-ac-executable))
 
+;; arguments when running executable
+(setq jsrn-fsharp-command-args "json")
+
 (setq jsrn-fsharp-is-debug-config nil)
 (defun fsharp-toggle-configuration ()
   "Toggle between Debug and Release build configurations"
@@ -158,6 +161,7 @@ passed to `mono'."
   (let*  ((config (if jsrn-fsharp-is-debug-config "Debug" "Release"))
          (project (gethash (fsharp-ac--buffer-truename) fsharp-ac--project-files))
          (projdata (when project (gethash project fsharp-ac--project-data)))
+         (args jsrn-fsharp-command-args)
          (outputfile (if projdata
                          (replace-regexp-in-string "\\(Release\\|Debug\\)"
                                                    config (gethash "Output"
@@ -179,7 +183,7 @@ passed to `mono'."
          )
     (when (get-buffer bufname)
         (kill-buffer bufname))
-    (start-process "fsharp-process" bufname "mono" outputfile)
+    (start-process "fsharp-process" bufname "mono" outputfile args)
     ;; (start-process-shell-command cmd bufname)
     (show-buffer (next-window) bufname)
     (with-current-buffer bufname (compilation-mode))
