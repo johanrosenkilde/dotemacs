@@ -6,7 +6,7 @@
 (setq fsharp-ac-complete-command (list "mono" fsharp-ac-executable))
 
 ;; arguments when running executable
-(setq jsrn-fsharp-command-args "json")
+(setq jsrn-fsharp-command-args (list ""))
 
 (setq jsrn-fsharp-is-debug-config nil)
 (defun fsharp-toggle-configuration ()
@@ -183,7 +183,8 @@ passed to `mono'."
          )
     (when (get-buffer bufname)
         (kill-buffer bufname))
-    (start-process "fsharp-process" bufname "mono" outputfile args)
+    (apply 'start-process
+           (append (list "fsharp-process" bufname "mono" outputfile) args))
     ;; (start-process-shell-command cmd bufname)
     (show-buffer (next-window) bufname)
     (with-current-buffer bufname (compilation-mode))
