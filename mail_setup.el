@@ -103,7 +103,7 @@
   (interactive)
   ;; Add the -k flag to vilistextum and reread the message
   (setq old-command mu4e-html2text-command)
-  (setq mu4e-html2text-command "vilistextum -k -y\"iso-8859-1\" - -")
+  (setq mu4e-html2text-command "vilistextum -u -k -y\"iso-8859-1\" - -")
   (mu4e~view-in-headers-context (mu4e-headers-view-message))
   (sleep-for 0.2) ; avoid funny race condition
   (setq mu4e-html2text-command old-command)
@@ -143,8 +143,8 @@ those present in the database."
 
 (setq mu4e-compose-signature "")
 ;; Handling html messages
-(setq jsrn-html2text-commands (list "vilistextum -y\"iso-8859-1\" - -"
-                                     "html2text_py --escape-all"
+(setq jsrn-html2text-commands (list "vilistextum -u -y\"iso-8859-1\" - -"
+                                     "html2text --escape-all"
                                     ))
 (defun jsrn-switch-html2text ()
   (interactive)
