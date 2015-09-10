@@ -16,16 +16,16 @@
         smtpmail-debug-info t ; only to debug problems
         )
   (cond
-   ;; ((string-match ".*dtu.dk" from-email)
-   ;;  (progn
-   ;;     (setq
-   ;;      smtpmail-smtp-server "smtpauth.imm.dtu.dk"
-   ;;      smtpmail-smtp-user "jsrn"
-   ;;      smtpmail-smtp-service 465
-   ;;      smtpmail-local-domain nil
-   ;;      smtpmail-stream-type 'ssl
-   ;;      )
-   ;;     (message "Using DTU SMTP")))
+   ((string-match ".*dtu.dk" from-email)
+    (progn
+       (setq
+        smtpmail-smtp-server "smtpauth.compute.dtu.dk"
+        smtpmail-smtp-user "jsrn"
+        smtpmail-smtp-service 587
+        smtpmail-local-domain nil
+        smtpmail-stream-type 'starttls
+        )
+       (message "Using DTU SMTP")))
    ((string-match ".*inria.fr" from-email)
     (progn
        (setq
@@ -194,17 +194,18 @@ those present in the database."
                            (let ((mailbox (jsrn-mu4e-mailbox msg)))
                              (cond ((string-equal mailbox "atuin") "/atuin/INBOX.Sent")
                                    ((string-equal mailbox "jsrn") "/atuin/INBOX.Sent")
+                                   ((string-equal mailbox "dtu") "/dtu/Sent")
                                    ((string-equal mailbox "inria")   "/inria/Sent")
                                    ((string-equal mailbox "gmail") "/gmail/[Gmail].Sent Mail")))))
       mu4e-drafts-folder "/atuin/INBOX.Drafts"
       mu4e-trash-folder "/trash"
       mu4e-refile-folder (lambda (msg)
                            (let ((mailbox (jsrn-mu4e-mailbox msg)))
-                             (cond ((string-equal mailbox "atuin") "/atuin/INBOX.Archives.2013")
-                                   ((string-equal mailbox "jsrn") "/atuin/INBOX.Archives.2013")
+                             (cond ((string-equal mailbox "atuin") "/atuin/INBOX.Archives.2015")
+                                   ((string-equal mailbox "jsrn") "/atuin/INBOX.Archives.2015")
                                    ((string-equal mailbox "inria") "/inria/Archive")
                                    ((string-equal mailbox "gmail") "/gmail/[Gmail].All Mail")
-                                   ((string-equal mailbox "dtu")   "/dtu/Archives.2013"))))
+                                   ((string-equal mailbox "dtu")   "/dtu/Archives.2015"))))
       )
 (setq mu4e-attachment-dir "~/downloads")
 
@@ -213,10 +214,10 @@ those present in the database."
         '(("/atuin/INBOX"       . ?i)
           ("/atuin/INBOX.Sent"  . ?s)
           ("/atuin/INBOX.To Use". ?u)
-          ("/atuin/INBOX.Archives.2013". ?a)
-          ("/inria/INBOX"         . ?I)
-          ("/inria/Sent"          . ?S)
-          ("/inria/Archive"       . ?A)
+          ("/atuin/INBOX.Archives.2015". ?a)
+          ("/dtu/INBOX"         . ?I)
+          ("/dtu/Sent"          . ?S)
+          ("/dtu/Archives.2015" . ?A)
           ("/atuin/INBOX.To Use". ?u)
           ("/atuin/INBOX.Drafts". ?d)
           ("/gmail/INBOX".        ?n)
@@ -238,7 +239,7 @@ those present in the database."
 
 ;; Check mail using offlineimap every 5 min
 (setq mu4e-get-mail-command "getmail"
-      mu4e-update-interval 30
+      mu4e-update-interval 300
       mu4e-headers-auto-update nil
       mail-user-agent 'mu4e-user-agent
       )
@@ -247,10 +248,10 @@ those present in the database."
 ;; registered email addresses
 (setq mu4e-user-mail-address-list '("atuin@atuin.dk"
                                     "jsrn@jsrn.dk"
+                                    "jsrn@dtu.dk"
                                     "johan.nielsen@inria.fr"
                                     "santaphile@gmail.com"
-                                    "johan.nielsen@uni-ulm.de"
-                                    ;; "jsrn@dtu.dk"
+                                    ;; "johan.nielsen@uni-ulm.de"
                                     "spammy@atuin.dk"
                                     "jsrn@atuin.dk"
                                     "johan@atuin.dk"
