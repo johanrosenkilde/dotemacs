@@ -13,7 +13,7 @@
 (scroll-bar-mode -1) ;; Emacs gurus don't need no stinking scroll bars
 (menu-bar-mode 0)    ;; or menu bars
 (tool-bar-mode -1)
-(add-to-list 'default-frame-alist '(font . "Droid Sans Mono-8"))
+(add-to-list 'default-frame-alist '(font . "Bitstream Vera Sans Mono-8"))
 (add-to-list 'default-frame-alist '(left-fringe . 0))
 (add-to-list 'default-frame-alist '(right-fringe . 0))
 (setq-default indent-tabs-mode nil) ; never insert tabs, do spaces
@@ -28,16 +28,20 @@
       )
 (setq-default fill-column 80)
 
+;; Environment
+(setenv "PATH" (concat (getenv "PATH") ":/home/jsrn/local/bin:/home/jsrn/code/scripts"))
+
+
 
 ;; Some font settings, extracted from Custom
 (custom-set-faces
  '(default ((t (:inherit nil :stipple nil :background "white" :foreground
                          "black" :inverse-video nil :box nil :strike-through nil
                          :overline nil :underline nil :slant normal :weight
-                         normal :height 80 :width normal :foundry "unknown"
-                         :family "DejaVu Sans Mono"))))
+                         normal :height 90 :width normal :foundry "unknown"
+                         :family "Monospace"))))
  '(flyspell-incorrect ((t (:foreground "OrangeRed" :underline t))))
- '(menu ((t (:height 1 :family "Droid Sans Mono"))))
+ '(menu ((t (:height 1 :family "Monospace"))))
  '(table-cell ((t nil))))
 
 
