@@ -176,6 +176,9 @@ element of ls if obj is not in ls or is the last."
 (global-unset-key (kbd "C-h p")) ;; show the package Finder buffer
 (global-unset-key (kbd "C-z")) ;; minimise Emacs
 (global-unset-key (kbd "C-h C-f")) ;; show the FAQ
+(global-unset-key (kbd "C-x n d")) ;; narrow to defun
+(global-unset-key (kbd "C-x n p")) ;; narrow to page
+(global-unset-key (kbd "C-x n n")) ;; narrow to region
 
 
 (defun kill-line-backwards ()
