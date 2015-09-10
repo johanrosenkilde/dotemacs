@@ -8,7 +8,8 @@
 (setq org-agenda-files (directory-files "~/orgs" t "^[^#]*org$" t))
 
 ;; Various agenda setup
-(setq org-agenda-repeating-timestamp-show-all nil) ; don't show repititions in agenda
+(setq org-todo-keywords '((sequence "TODO" "DONE")))
+(setq org-agenda-repeating-timestamp-show-all (list "MEET")) ; only show repetitions for MEET in agenda
 
 
 
