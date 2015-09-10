@@ -5,8 +5,20 @@
 (setq fsharp-ac-executable "/home/jsrn/local/FsAutoComplete/FSharp.AutoComplete/bin/Debug/fsautocomplete.exe")
 (setq fsharp-ac-complete-command (list "mono" fsharp-ac-executable))
 
+;; TODO: THIS IS STUPID!
+;; Used by the function for getting all project files
+(setq jsrn-fsharp-current-project "/home/jsrn/code/icfp/2015/icfp2015/icfp2015.fsproj")
+
 ;; arguments when running executable
 (setq jsrn-fsharp-command-args (list ""))
+
+;; NOTE: It seems that Auto Complete suffers from some mis-configuration: when
+;; typing '.' after nothing, fsharp-ac/electric-dot is correctly invoked and
+;; triggers auto complete. However, if typing quickly, it seems that we are
+;; actually in some sort of auto complete sub-mode, and the '.' does *not*
+;; trigger fsharp-ac/electric-dot, and so no auto complete suggestions are
+;; presented.
+;; Use C-c C-. to invoke auto-complete manually.
 
 (setq jsrn-fsharp-is-debug-config nil)
 (defun fsharp-toggle-configuration ()
@@ -53,14 +65,17 @@ to Fsharp buffer"
 last main file"
     (interactive)
     (save-some-buffers)
-    (jsrn-fsharp-load-files fsharp-ac-project-files)
+    (jsrn-fsharp-load-files fsharp-ac--project-files)
     (fsharp-show-subshell)
     )
   (defun jsrn-fsharp-reload-project-libs ()
     "Reload all but the last file of the project into the inferior buffer"
     (interactive)
     (save-some-buffers)
-    (jsrn-fsharp-load-files (butlast fsharp-ac-project-files))
+    (require 'subr-x)
+    (let ((files (gethash "Files" (gethash jsrn-fsharp-current-project fsharp-ac--project-data))))
+      (jsrn-fsharp-load-files (butlast files))
+      )
     (fsharp-show-subshell)
   )
   (fill-keymap fsharp-mode-map
