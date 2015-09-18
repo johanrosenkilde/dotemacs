@@ -656,6 +656,7 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 ;; Some motions
 (evil-declare-motion 'backward-block)
 (evil-declare-motion 'forward-block)
+(evil-declare-motion 'ace-jump-mode)
 ; Enable//Disable Evil in certain modes
 (cl-loop for (mode . state) in '(
                               (eassist-mode . emacs)
