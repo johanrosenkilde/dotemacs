@@ -19,7 +19,11 @@
                evil-down-key   'magit-section-forward
                evil-up-key-uc    'previous-line
                evil-down-key-uc  'next-line
-    ))
+               )
+  (fill-keymap magit-revision-mode-map
+               (kbd "C-RET") 'magit-diff-visit-file-worktree
+               )
+  )
 (add-hook 'magit-mode-hook 'jsrn-magit-mode-hook)
 
 
