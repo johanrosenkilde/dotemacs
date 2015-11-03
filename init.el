@@ -43,7 +43,8 @@
                          :family "Monospace"))))
  '(flyspell-incorrect ((t (:foreground "OrangeRed" :underline t))))
  '(menu ((t (:height 1 :family "Monospace"))))
- '(table-cell ((t nil))))
+ '(table-cell ((t nil)))
+)
 
 
 
@@ -1052,6 +1053,11 @@ the optional values set"
 ;;       SAGE
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (autoload 'sage-mode "sage_setup.el" "Major mode for Sage" t)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;       IPYTHON
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(autoload 'ipython-notebook "ipython_setup.el" "Browse and open an IPython notebook" t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;       OCAML
