@@ -2,7 +2,7 @@
 (setq flyspell-issue-message-flag nil)
 (setq ispell-dictionary "british")
 ;; Cycle through dictionaries. First make the language ring
-(let ((langs '("british" "dansk" "french")))
+(let ((langs '("dansk" "british")))
   (setq lang-ring (make-ring (length langs)))
   (dolist (elem langs) (ring-insert lang-ring elem)))
 (defun jsrn-cycle-dictionary ()
