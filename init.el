@@ -475,33 +475,7 @@ using tramp/sudo, if the file is not writable by user."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;       IDO MORE STUFF
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(require 'ido)
-(require 'smex)
-(setq ido-everywhere t)
-(setq ido-enable-flex-matching t) ;match substr on what is written
-(setq ido-use-filename-at-point nil)
-(setq ido-file-extensions-order '(".tex" ".sage" ".py" ".bib" ".txt"))
-(setq ido-auto-merge-work-directories-length -1) ; don't suggest stuff in other dirs
-(global-set-key "\M-x" 'smex) ;; awesome function chooser
-(add-to-list 'ido-ignore-buffers "*terminal")
-(ido-mode t)
-
-;; Use smex for C-h f
-(defun  smex-describe-function (fun &optional commandp)
-  "As `describe-function' but use smex completion."
-  (interactive
-   (list (let* ((fn (or (and (fboundp 'symbol-nearest-point)
-                             (symbol-nearest-point))
-                        (function-called-at-point)))
-                (smex-prompt-string "Describe function: "))
-           (smex-completing-read (if fn (cons (symbol-name fn) list-of-all-functions) list-of-all-functions) nil))))
-  (describe-function (intern fun))
-  )
-(global-set-key (kbd "C-h f") 'smex-describe-function)
-
-(load "ido_goto_symbol")
-
-
+(require 'ido_setup "ido_setup.el")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;       ADMINISTRATIVE MODE
