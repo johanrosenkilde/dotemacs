@@ -220,22 +220,23 @@ those present in the database."
           ("/dtu/Archives.2015" . ?A)
           ("/atuin/INBOX.To Use". ?u)
           ("/atuin/INBOX.Drafts". ?d)
-          ("/gmail/INBOX".        ?n)
           ("/trash"             . ?w)
           ))
+
+;; Setup bookmarks
+;; View the contents of all inboxes or sent with 'bi' or 'bs'
+(add-to-list 'mu4e-bookmarks
+   '("maildir:/atuin/INBOX or maildir:/inria/INBOX or maildir:/dtu/INBOX"  "Inboxes"  ?i))
+(add-to-list 'mu4e-bookmarks
+   '("maildir:/atuin/INBOX.Sent or maildir:/inria/Sent" "Sent" ?s))
+(add-to-list 'mu4e-bookmarks
+   '("maildir:/gmail/INBOX and date:1M.."  "GMail"  ?n))
 
 ;; Set up the Header fields (only thread-subject differs from standard)
 (setq mu4e-headers-fields
       '((:human-date . 12) (:flags . 6) (:mailing-list . 10) (:from . 22)
       (:thread-subject))
       )
-
-
-;; View the contents of all inboxes or sent with 'bi' or 'bs'
-(add-to-list 'mu4e-bookmarks
-   '("maildir:/atuin/INBOX or maildir:/inria/INBOX or maildir:/dtu/INBOX"  "Inboxes"  ?i))
-(add-to-list 'mu4e-bookmarks
-   '("maildir:/atuin/INBOX.Sent or maildir:/inria/Sent" "Sent" ?s))
 
 ;; Check mail using offlineimap every 5 min
 (setq mu4e-get-mail-command "getmail"
