@@ -307,7 +307,7 @@ those present in the database."
 ;; Setup email writing
 (defun jsrn-mu4e-compose-setup ()
   (flyspell-mode t)
-  (setq ispell-dictionary "dansk")
+  (setq ispell-local-dictionary "british")
   ;; Add footnote and bibtex/footnote support
   (footnote-mode t)
   (setq reftex-default-bibliography '("~/mat/tex/bibtex.bib"))

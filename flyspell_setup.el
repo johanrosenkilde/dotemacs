@@ -13,7 +13,7 @@
          (new (ring-next lang-ring cur)))
     (progn
       (ispell-change-dictionary new)
-      (message "Changed dictionary to %s" new)
+      (message "Changed dictionary to %s (was %s)" new cur)
       )))
 (defun jsrn-spell-goto-next-and-suggest ()
   (interactive)
