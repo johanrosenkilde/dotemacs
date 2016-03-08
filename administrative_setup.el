@@ -22,15 +22,23 @@
 
 (setq org-capture-templates
       (list
-       '("a" "Do (no capture)" entry (file+headline "~/orgs/home.org" "Reminders")
-         "* TODO Do %^{Description}\n%^t\n%U\n\n")
+       '("a" "No capture" entry (file+headline "~/orgs/home.org" "Reminders")
+         "* %^{Description}\n%^t\n%U\n\n")
+       '("A" "No capture (work)" entry (file+headline "~/orgs/work.org" "Work Reminders")
+         "* %^{Description}\n%^t\n%U\n\n")
        '("r" "respond" entry (file+headline "~/orgs/home.org" "Reminders")
-         "* TODO Besvar %:from on %:subject\nSCHEDULED: %(jsrn-read-date-prob-two-weeks)\n%U\n%a\n\n")
+         "* Besvar %:from on %:subject\nSCHEDULED: %(jsrn-read-date-prob-two-weeks)\n%U\n%a\n\n")
+       '("R" "respond (w0rk)" entry (file+headline "~/orgs/work.org" "Work Reminders")
+         "* Besvar %:from on %:subject\nSCHEDULED: %(jsrn-read-date-prob-two-weeks)\n%U\n%a\n\n")
        '("t" "ticket" entry (file+headline "~/orgs/home.org" "Reminders")
         "* Ticket for %:subject (%:from) \n%^t\n%U\n%a\n\n")
        '("h" "handle" entry (file+headline "~/orgs/home.org" "Reminders")
         "* Handle %:subject from %:from \nDEADLINE: %(jsrn-read-date-prob-two-weeks)\n%U\n%a\n\n")
+       '("H" "handle (work)" entry (file+headline "~/orgs/work.org" "Work Reminders")
+        "* Handle %:subject from %:from \nDEADLINE: %(jsrn-read-date-prob-two-weeks)\n%U\n%a\n\n")
        '("e" "event" entry (file+headline "~/orgs/home.org" "Reminders")
+        "* Event %:subject from %:from \n%^t\n%U\n MONKEY %a MONKEY\n\n")
+       '("E" "event (work)" entry (file+headline "~/orgs/work.org" "Work Reminders")
         "* Event %:subject from %:from \n%^t\n%U\n%a\n\n")
       ))
 
