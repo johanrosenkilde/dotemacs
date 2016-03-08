@@ -59,7 +59,7 @@
    (t
     (progn
       (setq
-       smtpmail-smtp-server "web12.meebox.net"
+       smtpmail-smtp-server "web69.meebox.net"
        smtpmail-smtp-user "atuin@atuin.dk"
        smtpmail-smtp-service 587
        smtpmail-local-domain "atuin.dk"
