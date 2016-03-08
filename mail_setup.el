@@ -201,11 +201,11 @@ those present in the database."
       mu4e-trash-folder "/trash"
       mu4e-refile-folder (lambda (msg)
                            (let ((mailbox (jsrn-mu4e-mailbox msg)))
-                             (cond ((string-equal mailbox "atuin") "/atuin/INBOX.Archives.2015")
-                                   ((string-equal mailbox "jsrn") "/atuin/INBOX.Archives.2015")
+                             (cond ((string-equal mailbox "atuin") "/atuin/INBOX.Archives.2016")
+                                   ((string-equal mailbox "jsrn") "/atuin/INBOX.Archives.2016")
                                    ((string-equal mailbox "inria") "/inria/Archive")
                                    ((string-equal mailbox "gmail") "/gmail/[Gmail].All Mail")
-                                   ((string-equal mailbox "dtu")   "/dtu/Archives.2015"))))
+                                   ((string-equal mailbox "dtu")   "/dtu/Archives.2016"))))
       )
 (setq mu4e-attachment-dir "~/downloads")
 
@@ -214,10 +214,10 @@ those present in the database."
         '(("/atuin/INBOX"       . ?i)
           ("/atuin/INBOX.Sent"  . ?s)
           ("/atuin/INBOX.To Use". ?u)
-          ("/atuin/INBOX.Archives.2015". ?a)
+          ("/atuin/INBOX.Archives.2016". ?a)
           ("/dtu/INBOX"         . ?I)
           ("/dtu/Sent"          . ?S)
-          ("/dtu/Archives.2015" . ?A)
+          ("/dtu/Archives.2016" . ?A)
           ("/atuin/INBOX.To Use". ?u)
           ("/atuin/INBOX.Drafts". ?d)
           ("/trash"             . ?w)
@@ -250,12 +250,10 @@ those present in the database."
 (setq mu4e-user-mail-address-list '("atuin@atuin.dk"
                                     "jsrn@jsrn.dk"
                                     "jsrn@dtu.dk"
-                                    "johan.nielsen@inria.fr"
+                                    "bank@atuin.dk"
                                     "santaphile@gmail.com"
                                     ;; "johan.nielsen@uni-ulm.de"
                                     "spammy@atuin.dk"
-                                    "jsrn@atuin.dk"
-                                    "johan@atuin.dk"
                                     "webmaster@atuin.dk"
                                     ))
 
