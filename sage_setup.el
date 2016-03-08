@@ -15,6 +15,8 @@
       sage-view-scale-factor 1)
 (setq sage-command (cl-concatenate 'string sage-path "/sage"))
 (evil-set-initial-state 'inferior-sage-mode 'normal)
+(setq python-guess-indent nil)
+(setq python-indent-offset 4)
 
 (add-hook 'sage-startup-after-prompt-hook 'sage-view)
 (add-hook 'sage-mode-hook #'pretty-lambda-mode 1)
