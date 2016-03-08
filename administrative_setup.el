@@ -193,7 +193,7 @@
 (global-set-key [(shift f10)] '(lambda ()
   (interactive)
   (org-agenda-list nil
-                   (concat (format-time-string "%m") "-01")
+                   (concat (format-time-string "%Y-%m") "-01")
                    'month)))
 (global-set-key "\C-cc" 'org-capture)
 (global-set-key (kbd "C-,") 'cycle-agenda-files-or-goto-org)
