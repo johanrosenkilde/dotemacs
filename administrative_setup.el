@@ -40,6 +40,8 @@
         "* Event %:subject from %:from \n%^t\n%U\n MONKEY %a MONKEY\n\n")
        '("E" "event (work)" entry (file+headline "~/orgs/work.org" "Work Reminders")
         "* Event %:subject from %:from \n%^t\n%U\n%a\n\n")
+       '("Q" "Review " entry (file+headline "~/orgs/work.org" "Reviews")
+        "* Review: %:subject \nDEADLINE: %^t\n%U\n%a\n\n")
       ))
 
 (setq org-finalize-agenda-hook ())
