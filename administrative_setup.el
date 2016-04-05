@@ -44,15 +44,20 @@
         "* Review: %:subject \nDEADLINE: %^t\n%U\n%a\n\n")
       ))
 
-(setq org-finalize-agenda-hook ())
+
 ;; Colourise appointments by file
+(setq org-finalize-agenda-hook ())
 (add-hook 'org-finalize-agenda-hook
     (lambda ()
       (save-excursion
         (goto-char (point-min))
         (while (re-search-forward "work:" nil t) 
+          (add-text-properties (match-beginning 0) (point-at-eol)
+                               '(face (:background "#cbf2bd"))))
+        (goto-char (point-min))
+        (while (re-search-forward "home:" nil t) 
            (add-text-properties (match-beginning 0) (point-at-eol)
-                                '(face (:background "#cbf2bd")))))))
+                                '(face (:background "#ffdfd2")))))))
 
 
 
