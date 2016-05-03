@@ -330,6 +330,9 @@ those present in the database."
 ;; Don't ask on exiting
 (setq mu4e-confirm-quit nil)
 
+;; Close emails after sending them
+(setq message-kill-buffer-on-exit t)
+
 ;; backspace should clear mark like in dired
 (define-key mu4e-headers-mode-map (kbd "<backspace>")
   (lambda () (interactive)
