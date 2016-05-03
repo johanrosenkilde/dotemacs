@@ -144,6 +144,7 @@ those present in the database."
 (setq mu4e-compose-signature "")
 ;; Handling html messages
 (setq jsrn-html2text-commands (list "vilistextum -c -r - -  | iconv -f \"iso-8859-1\" -t\"utf-8\" - -"
+                                     "html2text"
                                      "html2text --escape-all"
                                     ))
 (defun jsrn-switch-html2text ()
@@ -151,11 +152,12 @@ those present in the database."
   (setq mu4e-html2text-command
         (next-in-list jsrn-html2text-commands
                       mu4e-html2text-command))
-  (message "Switched html2text to: '%s'" mu4e-html2text-command)
   ;; refresh
   (with-current-buffer mu4e~view-headers-buffer
     (mu4e-headers-view-message)
-    ))
+    )
+  (message "Switched html2text to: '%s'" mu4e-html2text-command)
+  )
 (define-key mu4e-view-mode-map [(f5)] 'jsrn-switch-html2text)
 (setq mu4e-view-prefer-html nil)
 
