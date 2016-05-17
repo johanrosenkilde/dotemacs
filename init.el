@@ -532,6 +532,10 @@ using tramp/sudo, if the file is not writable by user."
 ;;       EVIL
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'evil)
+
+;; Jump like in the good ol' Evil days
+(require 'jsrn_jumps)
+
 (setq-default evil-symbol-word-search t)
 (setq evil-find-skip-newlines t
       evil-move-cursor-back nil
@@ -574,7 +578,8 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
                     evil-visual-state-map
                     evil-insert-state-map)
               ;; TAB is overtaken by Emacs (which is ok), so map jump-forward to C-Esc
-              (kbd "C-<escape>") 'evil-jump-forward
+              (kbd "C-<escape>") 'jsrn-evil-jump-forward
+              (kbd "C-o")        'jsrn-evil-jump-backward ;; override new Evil jumper
               (kbd "C-e")        'end-of-visual-line
               (kbd "C-a")        'beginning-of-visual-line-smart)
 ;; Key-bindings in normal mode
@@ -618,16 +623,16 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 ; Remenber positions when searching so they can be found in jump-point-ring
 (defadvice isearch-forward (before marker activate)
   "Store current position in jump list"
-  (evil-set-jump))
+  (jsrn-evil-set-jump))
 (defadvice isearch-repeat-forward (before marker activate)
   "Store current position in jump list"
-  (evil-set-jump))
+  (jsrn-evil-set-jump))
 (defadvice isearch-backward (before marker activate)
   "Store current position in jump list"
-  (evil-set-jump))
+  (jsrn-evil-set-jump))
 (defadvice isearch-repeat-backward (before marker activate)
   "Store current position in jump list"
-  (evil-set-jump))
+  (jsrn-evil-set-jump))
 
 ;; Some motions
 (evil-declare-motion 'backward-block)
@@ -757,14 +762,14 @@ one above if there are no windows below"
 (evil-define-motion jsrn-scroll-down ()
   "Scroll down half a page and recenter"
   :type inclusive
-  :jump t
+  (jsrn-evil-set-jump)
   (move-to-window-line (- (evil-num-visible-lines) 2))
   (recenter)
   )
 (evil-define-motion jsrn-scroll-up ()
   "Scroll up half a page and recenter"
   :type inclusive
-  :jump t
+  (jsrn-evil-set-jump)
   (move-to-window-line 2)
   (recenter)
   )
