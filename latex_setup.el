@@ -16,7 +16,7 @@
          (synctex (format "%s:0:%s"
                           (TeX-current-line)
                           (TeX-current-file-name-master-relative))))
-    (start-process "zathura-synctex" zathura-launch-buf "zathura" "--synctex-forward" synctex pdfname)
+    (start-process "zathura-synctex" zathura-launch-buf "zathura" "-x" "emacsclient +%{line} %{input}" "--synctex-forward" synctex pdfname)
     (start-process "raise-zathura-wmctrl" zathura-launch-buf "wmctrl" "-a"
                    pdfname)
   ))
