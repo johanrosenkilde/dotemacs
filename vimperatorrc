@@ -25,6 +25,9 @@ nnoremap k n
 " go back (insert mode), override Open (which I never use)
 inoremap <c-o> <Esc><c-o>
 
+" Alternative external editor command
+inoremap <f6> <C-i>
+
 " Yank marked text
 vnoremap j <c-c>
 " Yank current url
