@@ -73,8 +73,8 @@
   (fill-keymap python-mode-map
                (kbd "C-<backspace>")     'backward-kill-word
                )
-  (require 'pretty-lambdada) ;typeset word "lambda" as the symbol
-  (pretty-lambda-mode 1)
+  ;; (require 'pretty-lambdada) ;typeset word "lambda" as the symbol
+  ;; (pretty-lambda-mode 1)
   )
 
 (add-hook 'python-mode-hook 'jsrn-python-mode-hook)
