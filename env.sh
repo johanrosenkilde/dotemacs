@@ -20,3 +20,7 @@ export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/ssh-agent.socket"
 
 # Workaround some weird GTK bus error (seen when launching zathura from term)
 export NO_AT_BRIDGE=1
+
+# Set Pager
+export PAGER="most"
+export LEDGER_PAGER="most"
