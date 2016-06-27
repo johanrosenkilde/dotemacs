@@ -654,6 +654,7 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
                               ;; Disable
                               (completion-list-mode . normal)
                               ;; Disable strange motion state
+                              (Buffer-menu-mode . normal)
                               (help-mode . normal)
                               (apropos-mode . normal)
                               (Info-mode . normal)
@@ -662,6 +663,9 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
                               (git-commit-mode . normal)
                               )
       do (evil-set-initial-state mode state))
+
+;; Remove some key bindings which seem to take precedence over Evil
+(define-key Buffer-menu-mode-map "e" nil)
 
 (evil-mode 1)
 ;; Remove certain keybindings
