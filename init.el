@@ -2,7 +2,7 @@
 (setq workman t)
 
 ;; About me
-(setq user-full-name "Johan S. R. Nielsen"
+(setq user-full-name "Johan S. H. Rosenkilde"
       jsrn-user-mail-address "jsrn@jsrn.dk") ;; Std email; I will overwrite user-mail-address
 
 ;; Other global nice options
