@@ -34,17 +34,19 @@
 
 
 
-;; Some font settings, extracted from Custom
+;; Some font settings
 (custom-set-faces
  '(default ((t (:inherit nil :stipple nil :background "white" :foreground
                          "black" :inverse-video nil :box nil :strike-through nil
                          :overline nil :underline nil :slant normal :weight
-                         normal :height 90 :width normal :foundry "unknown"
+                         normal :height 80 :width normal :foundry "unknown"
                          :family "Monospace"))))
  '(flyspell-incorrect ((t (:foreground "OrangeRed" :underline t))))
  '(menu ((t (:height 1 :family "Monospace"))))
  '(table-cell ((t nil)))
 )
+(setq default-font-height 80)
+(set-face-attribute 'default nil :height default-font-height)
 
 
 
@@ -403,6 +405,7 @@ it appears in the minibuffer prompt."
 
 (global-set-key (kbd "C-x C-=") '(lambda () (interactive) (modify-font-height 10)))
 (global-set-key (kbd "C-x C--") '(lambda () (interactive) (modify-font-height -10)))
+(global-set-key (kbd "C-x C-0") '(lambda () (interactive) (set-face-attribute 'default nil :height default-font-height)))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
