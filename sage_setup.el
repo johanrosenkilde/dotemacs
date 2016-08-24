@@ -19,11 +19,12 @@
 (setq python-indent-offset 4)
 
 (add-hook 'sage-startup-after-prompt-hook 'sage-view)
-(add-hook 'sage-mode-hook #'pretty-lambda-mode 1)
 
 (define-key inferior-sage-mode-map (kbd "C-SPC") 'jsrn-scroll-up)
 (define-key inferior-sage-mode-map (kbd "M-C-SPC") 'jsrn-scroll-down)
 (define-key sage-mode-map (kbd "C-c C-h") 'sage-pcomplete-or-help)
+
+(define-key python-mode-map (kbd "C-<backspace>") 'backward-kill-word)
 
 ;; Since Sage is constatly restarted, add functionality to find it again
 (defun sage-refind-sage ()
