@@ -19,6 +19,12 @@
 
 (setq mdesktop-current nil)
 
+(defun mdesktop-current-desktop ()
+  "Return the name of the current desktop"
+  (interactive)
+  (message "Current desktop: %s" mdesktop-current)
+  mdesktop-current)
+
 (defun mdesktop-save-current ()
   "Saves the current desktop"
   (interactive)
