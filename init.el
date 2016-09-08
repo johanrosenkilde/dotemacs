@@ -684,6 +684,7 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 (evil-declare-key 'motion finder-mode-map (kbd "<return>") 'finder-select)
 (evil-declare-key 'motion completion-list-mode-map (kbd "<return>") 'choose-completion)
 (evil-declare-key 'insert shell-mode-map (kbd "<return>") 'comint-send-input)
+(evil-declare-key 'insert sage-shell-mode-map (kbd "<return>") 'sage-shell:send-input)
 ;; Same for quit q
 (evil-declare-key 'normal woman-mode-map "q" 'Man-quit)
 (evil-declare-key 'normal reftex-toc-mode-map "q" 'reftex-toc-quit)
@@ -830,6 +831,7 @@ one above if there are no windows below"
 (require 'evil-numbers)
 (define-key evil-normal-state-map (kbd "C-c +") 'evil-numbers/inc-at-pt)
 (define-key evil-normal-state-map (kbd "C-c -") 'evil-numbers/dec-at-pt)
+
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
