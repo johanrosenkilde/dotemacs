@@ -1,13 +1,12 @@
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Setup Emacs-wide loads, vars etc.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (setq sage-shell-mode-path "/home/jsrn/local/sage-shell-mode")
 (add-to-list 'load-path sage-shell-mode-path)
 (require 'sage-shell-mode)
-(require 'sage-shell-blocks "sage-shell-blocks")
 
-(setq sage-shell:sage-root  "/home/jsrn/local/sage/sage_stable")
-;; (setq sage-shell:use-prompt-toolkit t)
+(setq sage-shell:sage-root  "/home/jsrn/local/sage/sage_devel")
+(setq sage-shell:use-prompt-toolkit t)
 
 ;; Turn on eldoc-mode
 (add-hook 'sage-shell-mode-hook #'eldoc-mode)
@@ -21,32 +20,7 @@
 (define-key sage-shell-mode-map (kbd "C-SPC") 'jsrn-scroll-up)
 (define-key sage-shell-mode-map (kbd "M-C-SPC") 'jsrn-scroll-down)
 
-(defun sage-restart (cmd)
-  (interactive (list (sage-shell:read-command)))
-  (with-current-buffer sage-shell:process-buffer
-    (end-of-buffer)
-    (ignore-errors
-      (progn
-        (comint-delchar-or-maybe-eof nil)
-        (sleep-for 3)))
-    (sage-shell:run cmd nil)
-  ))
-
-
 ;; (define-key python-mode-map (kbd "C-<backspace>") 'backward-kill-word)
-
-;; TODO: Fix this for sage-shell-mode. Add make pull request to add it
-(defun sage-restart ()
-  (interactive)
-  (let ((old-sage (sage-refind-sage)))
-    (when (and old-sage (buffer-name old-sage)) ; test if sage-buffer is defined and not killed
-      ;; get the sage process and unset its query flag
-      (set-process-query-on-exit-flag (get-buffer-process sage-buffer) nil)
-      (kill-buffer sage-buffer)
-      (setq sage-buffer nil)))
-  (let ((cmd (if sage-run-history (car sage-run-history) sage-command)))
-    (sage t cmd)))
-
 
 ;; TODO: Fix this for sage-shell-mode. Add make pull request to add it
 (defun sage-send-class ()
@@ -76,7 +50,10 @@
 (fill-keymap sage-shell:sage-mode-map
              (kbd "C-<return>") 'sage-shell-blocks:send-current
              (kbd "M-{")        'sage-shell-blocks:backward
-             (kbd "M-}")        'sage-shell-blocks:forward)
+             (kbd "M-}")        'sage-shell-blocks:forward
+             (kbd "C-<backspace>")     'backward-kill-word
+               )
+
 
 (fill-keymap sage-shell-mode-map
               (kbd "C-<return>") 'sage-shell-blocks:pull-next

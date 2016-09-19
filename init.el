@@ -63,8 +63,8 @@
 (add-to-list 'auto-mode-alist '("\\.env\\'" . xml-mode))
 (add-to-list 'auto-mode-alist '("\\.scene\\'" . xml-mode))
 (add-to-list 'auto-mode-alist '("\\.pyx\\'" . python-mode))
-(add-to-list 'auto-mode-alist '("\\.sheet\\'" . sage-mode))
-(add-to-list 'auto-mode-alist '("\\.sage\\'" . sage-mode))
+(add-to-list 'auto-mode-alist '("\\.sheet\\'" . sage-shell:sage-mode))
+(add-to-list 'auto-mode-alist '("\\.sage\\'" . sage-shell:sage-mode))
 (add-to-list 'auto-mode-alist '("\\.html\\'" . web-mode))
 (add-to-list 'auto-mode-alist '("\\.php\\'" . web-mode))
 
@@ -1082,7 +1082,7 @@ the optional values set"
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;       SAGE
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(autoload 'sage-mode "sage_setup.el" "Major mode for Sage" t)
+(autoload 'sage-shell:sage-mode "sage_setup.el" "Major mode for Sage" t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;       IPYTHON
