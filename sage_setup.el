@@ -4,7 +4,10 @@
 (setq sage-shell-mode-path "/home/jsrn/local/sage-shell-mode")
 (add-to-list 'load-path sage-shell-mode-path)
 (require 'sage-shell-mode)
+(require 'sage-shell-blocks)
 
+;; (setq sage-shell:sage-root  "/home/jsrn/local/sage/sage_stable")
+;; (setq sage-shell:use-prompt-toolkit nil)
 (setq sage-shell:sage-root  "/home/jsrn/local/sage/sage_devel")
 (setq sage-shell:use-prompt-toolkit t)
 
@@ -52,12 +55,17 @@
              (kbd "M-{")        'sage-shell-blocks:backward
              (kbd "M-}")        'sage-shell-blocks:forward
              (kbd "C-<backspace>")     'backward-kill-word
+             (kbd "C-c C-j")    'sage-shell:send-doctest
                )
 
 
 (fill-keymap sage-shell-mode-map
               (kbd "C-<return>") 'sage-shell-blocks:pull-next
               (kbd "<f5>")       '(lambda () (interactive) (hs-hide-all) (recenter-top-bottom)))
+
+
+
+
 
 
 ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -171,7 +179,7 @@
 
 ;; (setq ansi-color-drop-regexp
 ;;       " \\[\\([ABCDsuK]\\|[12][JK]\\|=[0-9]+[hI]\\|[0-9;]*[HfDnC]\\|\\?[0-9]+[hl]\\|J\\)")
- 
+
 ;; (defun ansi-color-filter-apply (string)
 ;;   "Filter out all ANSI control sequences from STRING.
 
