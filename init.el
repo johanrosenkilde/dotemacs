@@ -29,10 +29,10 @@
 (setq-default fill-column 80)
 (setq tab-width 4)
 
+(setq safe-local-variable-values '(encoding . utf-8))
+
 ;; Environment
 (setenv "PATH" (concat (getenv "PATH") ":/home/jsrn/local/bin:/home/jsrn/code/scripts"))
-
-
 
 ;; Some font settings
 (custom-set-faces
