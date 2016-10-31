@@ -265,6 +265,13 @@ and trailing. Assumes one is in visual mode\n"
 
     (delete-process (get-process pname))))
 
+(defun stop-process-interactive ()
+  (interactive)
+  (let ((pname (ido-completing-read "Process Name: "
+                    (mapcar 'process-name (process-list)))))
+
+    (stop-process (get-process pname))))
+
 ;; Block movement
 (setq block-delimiter "[:blank:]*$")
 (defun backward-block ()
