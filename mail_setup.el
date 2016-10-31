@@ -196,6 +196,7 @@ those present in the database."
                            (let ((mailbox (jsrn-mu4e-mailbox msg)))
                              (cond ((string-equal mailbox "atuin") "/atuin/INBOX.Sent")
                                    ((string-equal mailbox "jsrn") "/atuin/INBOX.Sent")
+                                   ((string-equal mailbox "maillist") "/maillist/INBOX.Sent")
                                    ((string-equal mailbox "dtu") "/dtu/Sent")
                                    ((string-equal mailbox "inria")   "/inria/Sent")
                                    ((string-equal mailbox "gmail") "/gmail/[Gmail].Sent Mail")))))
@@ -205,7 +206,7 @@ those present in the database."
                            (let ((mailbox (jsrn-mu4e-mailbox msg)))
                              (cond ((string-equal mailbox "atuin") "/atuin/INBOX.Archives.2016")
                                    ((string-equal mailbox "jsrn") "/atuin/INBOX.Archives.2016")
-                                   ((string-equal mailbox "inria") "/inria/Archive")
+                                   ((string-equal mailbox "maillist") "/maillist/INBOX.Archive")
                                    ((string-equal mailbox "gmail") "/gmail/[Gmail].All Mail")
                                    ((string-equal mailbox "dtu")   "/dtu/Archives.2016"))))
       )
@@ -228,11 +229,11 @@ those present in the database."
 ;; Setup bookmarks
 ;; View the contents of all inboxes or sent with 'bi' or 'bs'
 (add-to-list 'mu4e-bookmarks
-   '("maildir:/atuin/INBOX or maildir:/inria/INBOX or maildir:/dtu/INBOX"  "Inboxes"  ?i))
+   '("maildir:/atuin/INBOX or maildir:/inria/INBOX or maildir:/dtu/INBOX or maildir:/gmail/INBOX"  "Inboxes"  ?i))
 (add-to-list 'mu4e-bookmarks
    '("maildir:/atuin/INBOX.Sent or maildir:/inria/Sent" "Sent" ?s))
 (add-to-list 'mu4e-bookmarks
-   '("maildir:/gmail/INBOX and date:1M.."  "GMail"  ?n))
+   '("maildir:/maillist/INBOX and date:1M.."  "Maillist"  ?n))
 
 ;; Set up the Header fields (only thread-subject differs from standard)
 (setq mu4e-headers-fields
@@ -253,8 +254,9 @@ those present in the database."
                                     "jsrn@jsrn.dk"
                                     "jsrn@dtu.dk"
                                     "bank@atuin.dk"
+                                    "maillist@atuin.com"
+                                    "johan@julehjertedesign.dk"
                                     "santaphile@gmail.com"
-                                    ;; "johan.nielsen@uni-ulm.de"
                                     "spammy@atuin.dk"
                                     "webmaster@atuin.dk"
                                     ))
