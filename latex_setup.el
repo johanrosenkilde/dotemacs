@@ -17,9 +17,9 @@
                           (TeX-current-line)
                           (TeX-current-file-name-master-relative))))
     (start-process "zathura-synctex" zathura-launch-buf "zathura" "-x" "emacsclient +%{line} %{input}" "--synctex-forward" synctex pdfname)
-    (start-process "raise-zathura-wmctrl" zathura-launch-buf "wmctrl" "-a"
-                   pdfname)
-  ))
+    ;; (start-process "raise-zathura-wmctrl" zathura-launch-buf "wmctrl" "-a"
+    ;;               pdfname)
+    ))
 
 ;; Search functions
 (defun search-in-math (regex)
@@ -177,7 +177,7 @@ This is a modified version of reftex-goto-label from 24.3.1"
   (interactive)
   (setq tab-width 2)
   (setq evil-shift-width 2)
-  (local-set-key (kbd "M-q") 'fill-sentence)  ; hard sentence wrap
+  ;; (local-set-key (kbd "M-q") 'fill-sentence)  ; hard sentence wrap
   (setq fill-column 9999)            ; with hard senctence wrap, we don't want hard lines
   (visual-line-mode t)               ; but we do want visual word wrap
   (adaptive-wrap-prefix-mode t)      ; with adaptive indenting
@@ -185,6 +185,7 @@ This is a modified version of reftex-goto-label from 24.3.1"
   (flyspell-mode t)                  ; always turn on flyspell
   (turn-on-reftex)                   ; always turn on reftex
   (define-key LaTeX-mode-map (kbd "$") 'self-insert-command) ; makes electric pairs work for $
+  (setq show-trailing-whitespace t)
 
   ;;When inserting a label, just use cref and don't ask
   (local-set-key (kbd "C-c 0")
@@ -206,7 +207,8 @@ This is a modified version of reftex-goto-label from 24.3.1"
   (define-key evil-normal-state-map (kbd "C-c - ") '(lambda () (interactive) t))
 
   ;; Let M-q fill entire entries and not just single items
-  (setq fill-paragraph-function (lambda (&optional args) (bibtex-fill-entry)))
+  ;; TODO: Why is this bibtex thing inside LaTeX mode?
+  ;; (setq fill-paragraph-function (lambda (&optional args) (bibtex-fill-entry)))
 
   ;; Other key bindings
   (fill-keymap evil-normal-state-local-map
@@ -231,6 +233,27 @@ This is a modified version of reftex-goto-label from 24.3.1"
                )
   )
 (add-hook 'bibtex-mode-hook 'jsrn-bibtex-mode-hook)
+
+
+(defadvice LaTeX-fill-region-as-paragraph (around LaTeX-sentence-filling)
+  "Start each sentence on a new line."
+  (let ((from (ad-get-arg 0))
+        (to-marker (set-marker (make-marker) (ad-get-arg 1)))
+        tmp-end)
+    (while (< from (marker-position to-marker))
+      (forward-sentence)
+      ;; might have gone beyond to-marker --- use whichever is smaller:
+      (ad-set-arg 1 (setq tmp-end (min (point) (marker-position to-marker))))
+      ad-do-it
+      (ad-set-arg 0 (setq from (point)))
+      (unless (or
+               (bolp)
+               (looking-at "\\s *$"))
+        (progn
+          (delete-char -1)
+          (LaTeX-newline))))
+    (set-marker to-marker nil)))
+(ad-activate 'LaTeX-fill-region-as-paragraph)
 
 (message "Loaded latex_setup.el")
 (provide 'latex_setup)
