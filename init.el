@@ -839,6 +839,23 @@ one above if there are no windows below"
 (define-key evil-normal-state-map (kbd "C-c +") 'evil-numbers/inc-at-pt)
 (define-key evil-normal-state-map (kbd "C-c -") 'evil-numbers/dec-at-pt)
 
+;; Redefine evil-visual-update-x-selection so that visuals are copied to X's
+;; PRIMARY cliboard
+;; see https://bitbucket.org/lyro/evil/issues/532/evil-uses-the-clipboard-instead-of-the
+(defun evil-visual-update-x-selection (&optional buffer)
+  "Update the X selection with the current visual region."
+  (with-current-buffer (or buffer (current-buffer))
+    (when (and (evil-visual-state-p)
+               (fboundp 'x-set-selection)
+               (or (not (boundp 'ns-initialized))
+                   (with-no-warnings ns-initialized))
+               (not (eq evil-visual-selection 'block)))
+      (let ((text (buffer-substring-no-properties
+                                 evil-visual-beginning
+                                 evil-visual-end)))
+        (x-set-selection 'PRIMARY text)
+        (setq x-last-selected-text-primary text)))))
+
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
