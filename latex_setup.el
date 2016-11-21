@@ -7,7 +7,6 @@
 (diminish 'reftex-mode)
 (diminish 'outline-minor-mode)
 
-
 ;; Setup Zathura
 (defun zathura-forward-search ()
   (interactive)
@@ -15,8 +14,10 @@
          (pdfname (TeX-master-file "pdf"))
          (synctex (format "%s:0:%s"
                           (TeX-current-line)
-                          (TeX-current-file-name-master-relative))))
-    (start-process "zathura-synctex" zathura-launch-buf "zathura" "-x" "emacsclient +%{line} %{input}" "--synctex-forward" synctex pdfname)
+                          (TeX-current-file-name-master-relative)))
+         (emacsline (concat "emacsclient +%{line} %{input} --socket-name=" server-name)))
+    (start-process "zathura-synctex" zathura-launch-buf "zathura" "-x"
+                   emacsline "--synctex-forward" synctex pdfname)
     ;; (start-process "raise-zathura-wmctrl" zathura-launch-buf "wmctrl" "-a"
     ;;               pdfname)
     ))
