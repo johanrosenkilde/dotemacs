@@ -81,7 +81,7 @@ set urlseparator=\\|
 
 
 " Get the focus back from insisting pages
-autocmd PageLoad .*(youtube|groups.google|amazon)\\.* :normal <Esc>
+" DISABLED: autocmd PageLoad .*(youtube|groups.google|amazon)\\.* :normal <Esc>
 
 " Make Firefox run faster by using JIT
 " set! javascript.options.jit.chrome=true
