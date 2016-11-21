@@ -2,6 +2,8 @@
 ;;           OFFLINEIMAP
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;; To delete trash email, use the following one-liner
+;; $ find ~/mail/trash/cur -mtime +30 -type f -delete
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -287,7 +289,7 @@ those present in the database."
                 (if (eq toaddr nil)
                     jsrn-user-mail-address
                   (if (string-match ".*@googlegroups.com" toaddr)
-                      "santaphile@gmail.com"
+                      "maillist@atuin.dk"
                     (if (member (downcase toaddr) mu4e-user-mail-address-list)
                         (downcase toaddr)
                       jsrn-user-mail-address))))
