@@ -28,26 +28,16 @@
         smtpmail-stream-type 'starttls
         )
        (message "Using DTU SMTP")))
-   ((string-match ".*inria.fr" from-email)
-    (progn
-       (setq
-        smtpmail-smtp-server "smtp.inria.fr"
-        smtpmail-smtp-user "jnielsen"
-        smtpmail-smtp-service 587
-        smtpmail-local-domain nil
-        smtpmail-stream-type 'starttls
-        )
-       (message "Using Inria SMTP")))
-   ((string-match ".*uni-ulm.de" from-email)
+   ((string-match ".*julehjertedesign.dk" from-email)
     (progn
       (setq
-       smtpmail-smtp-server "mail.uni-ulm.de"
-       smtpmail-smtp-user "akz36"
+       smtpmail-smtp-server "asmtp.unoeuro.com"
+       smtpmail-smtp-user "johan@julehjertedesign.dk"
        smtpmail-smtp-service 587
-       smtpmail-local-domain nil
+       smtpmail-local-domain "julehjertedesign.dk"
        smtpmail-stream-type 'starttls
        )
-      (message "Using uni-ulm SMTP")))
+      (message "Using UnoEuro (JulehjerteDesign) SMTP")))
    ((string-match ".*gmail.com" from-email)
     (progn
       (setq
@@ -61,13 +51,13 @@
    (t
     (progn
       (setq
-       smtpmail-smtp-server "web69.meebox.net"
+       smtpmail-smtp-server "asmtp.unoeuro.com"
        smtpmail-smtp-user "atuin@atuin.dk"
        smtpmail-smtp-service 587
        smtpmail-local-domain "atuin.dk"
        smtpmail-stream-type 'starttls
        )
-      (message "Using Meebox SMTP")))
+      (message "Using UnoEuro (Atuin) SMTP")))
      ))
 (jsrn-smtpmail-setup "jsrn")
 
@@ -143,7 +133,7 @@ those present in the database."
 (add-to-list 'load-path"/usr/local/share/emacs/site-lisp/mu4e")
 (require 'mu4e)
 
-(setq mu4e-compose-signature "")
+(setq mu4e-compose-signature nil)
 ;; Handling html messages
 (setq jsrn-html2text-commands (list "vilistextum -c -r - -  | iconv -f \"iso-8859-1\" -t\"utf-8\" - -"
                                      "html2text"
@@ -160,6 +150,7 @@ those present in the database."
     )
   (message "Switched html2text to: '%s'" mu4e-html2text-command)
   )
+(jsrn-switch-html2text)
 (define-key mu4e-view-mode-map [(f5)] 'jsrn-switch-html2text)
 (setq mu4e-view-prefer-html nil)
 
@@ -198,6 +189,7 @@ those present in the database."
                            (let ((mailbox (jsrn-mu4e-mailbox msg)))
                              (cond ((string-equal mailbox "atuin") "/atuin/INBOX.Sent")
                                    ((string-equal mailbox "jsrn") "/atuin/INBOX.Sent")
+                                   ((string-equal mailbox "julehjertedesign") "/julehjertedesign/Sent")
                                    ((string-equal mailbox "maillist") "/maillist/INBOX.Sent")
                                    ((string-equal mailbox "dtu") "/dtu/Sent")
                                    ((string-equal mailbox "inria")   "/inria/Sent")
@@ -206,11 +198,12 @@ those present in the database."
       mu4e-trash-folder "/trash"
       mu4e-refile-folder (lambda (msg)
                            (let ((mailbox (jsrn-mu4e-mailbox msg)))
-                             (cond ((string-equal mailbox "atuin") "/atuin/INBOX.Archives.2016")
-                                   ((string-equal mailbox "jsrn") "/atuin/INBOX.Archives.2016")
+                             (cond ((string-equal mailbox "atuin") "/atuin/INBOX.Archives.2017")
+                                   ((string-equal mailbox "jsrn") "/atuin/INBOX.Archives.2017")
+                                   ((string-equal mailbox "julehjertedesign") "/julehjertedesign/Archives")
                                    ((string-equal mailbox "maillist") "/maillist/INBOX.Archive")
                                    ((string-equal mailbox "gmail") "/gmail/[Gmail].All Mail")
-                                   ((string-equal mailbox "dtu")   "/dtu/Archives.2016"))))
+                                   ((string-equal mailbox "dtu")   "/dtu/Archives.2017"))))
       )
 (setq mu4e-attachment-dir "~/downloads")
 
@@ -231,11 +224,11 @@ those present in the database."
 ;; Setup bookmarks
 ;; View the contents of all inboxes or sent with 'bi' or 'bs'
 (add-to-list 'mu4e-bookmarks
-   '("maildir:/atuin/INBOX or maildir:/inria/INBOX or maildir:/dtu/INBOX or maildir:/gmail/INBOX"  "Inboxes"  ?i))
+   '("maildir:/atuin/INBOX or maildir:/julehjertedesign/INBOX or maildir:/dtu/INBOX or maildir:/gmail/INBOX"  "Inboxes"  ?i))
 (add-to-list 'mu4e-bookmarks
-   '("maildir:/atuin/INBOX.Sent or maildir:/inria/Sent" "Sent" ?s))
-(add-to-list 'mu4e-bookmarks
-   '("maildir:/maillist/INBOX and date:1M.."  "Maillist"  ?n))
+   '("maildir:/atuin/INBOX.Sent or maildir:/julehjertedesign/Sent or maildir:/dtu/Sent or maildir:/maillist/Sent or maildir:/gmail/[Gmail].Sent Mail" "Sent" ?s))
+;; (add-to-list 'mu4e-bookmarks
+;;    '("maildir:/maillist/INBOX and date:1M.."  "Maillist"  ?n))
 
 ;; Set up the Header fields (only thread-subject differs from standard)
 (setq mu4e-headers-fields
@@ -252,15 +245,14 @@ those present in the database."
 
 ;; Messages should be replied from the recipient if it was one of the
 ;; registered email addresses
-(setq mu4e-user-mail-address-list '("atuin@atuin.dk"
-                                    "jsrn@jsrn.dk"
+(setq mu4e-user-mail-address-list '("jsrn@jsrn.dk"
                                     "jsrn@dtu.dk"
-                                    "bank@atuin.dk"
-                                    "maillist@atuin.com"
                                     "johan@julehjertedesign.dk"
+                                    "maillist@atuin.dk"
+                                    "bank@atuin.dk"
                                     "santaphile@gmail.com"
+                                    "atuin@atuin.dk"
                                     "spammy@atuin.dk"
-                                    "webmaster@atuin.dk"
                                     ))
 
 ;; Switch my from address to the next possible from address
