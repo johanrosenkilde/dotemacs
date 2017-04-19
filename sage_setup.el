@@ -6,10 +6,11 @@
 (require 'sage-shell-mode)
 (require 'sage-shell-blocks)
 
-;; (setq sage-shell:sage-root  "/home/jsrn/local/sage/sage_stable")
 ;; (setq sage-shell:use-prompt-toolkit nil)
 (setq sage-shell:sage-root  "/home/jsrn/local/sage/sage_devel")
+(setq sage-shell:sage-root  "/home/jsrn/local/sage/sage_stable")
 (setq sage-shell:use-prompt-toolkit t)
+
 
 ;; Turn on eldoc-mode
 (add-hook 'sage-shell-mode-hook #'eldoc-mode)

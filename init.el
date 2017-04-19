@@ -990,6 +990,7 @@ the optional values set"
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'hideshow)
 (setq hs-isearch-open t) ; search in both code and comments
+(setq py-hide-show-minor-mode-p t) 
 
 ;; Highlight folded regions better, and add number of lines folded
 (defun hs-overlay-style (ov)
