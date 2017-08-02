@@ -28,16 +28,16 @@
         smtpmail-stream-type 'starttls
         )
        (message "Using DTU SMTP")))
-   ((string-match ".*julehjertedesign.dk" from-email)
+   ((string-match ".*johansjulehjerter.dk" from-email)
     (progn
       (setq
        smtpmail-smtp-server "asmtp.unoeuro.com"
-       smtpmail-smtp-user "johan@julehjertedesign.dk"
+       smtpmail-smtp-user "johan@johansjulehjerter.dk"
        smtpmail-smtp-service 587
-       smtpmail-local-domain "julehjertedesign.dk"
+       smtpmail-local-domain "johansjulehjerter.dk"
        smtpmail-stream-type 'starttls
        )
-      (message "Using UnoEuro (JulehjerteDesign) SMTP")))
+      (message "Using UnoEuro (Johansjulehjerter) SMTP")))
    ((string-match ".*gmail.com" from-email)
     (progn
       (setq
@@ -150,7 +150,7 @@ those present in the database."
     )
   (message "Switched html2text to: '%s'" mu4e-html2text-command)
   )
-(jsrn-switch-html2text)
+;;(jsrn-switch-html2text)
 (define-key mu4e-view-mode-map [(f5)] 'jsrn-switch-html2text)
 (setq mu4e-view-prefer-html nil)
 
@@ -189,18 +189,19 @@ those present in the database."
                            (let ((mailbox (jsrn-mu4e-mailbox msg)))
                              (cond ((string-equal mailbox "atuin") "/atuin/INBOX.Sent")
                                    ((string-equal mailbox "jsrn") "/atuin/INBOX.Sent")
-                                   ((string-equal mailbox "julehjertedesign") "/julehjertedesign/Sent")
+                                   ((string-equal mailbox "johansjulehjerter") "/johansjulehjerter/Sent")
                                    ((string-equal mailbox "maillist") "/maillist/INBOX.Sent")
                                    ((string-equal mailbox "dtu") "/dtu/Sent")
                                    ((string-equal mailbox "inria")   "/inria/Sent")
-                                   ((string-equal mailbox "gmail") "/gmail/[Gmail].Sent Mail")))))
+                                   ((string-equal mailbox "gmail") "/gmail/[Gmail].Sent Mail")
+                                   (t jsrn-mu4e-sent-folder)))))
       mu4e-drafts-folder "/atuin/INBOX.Drafts"
       mu4e-trash-folder "/trash"
       mu4e-refile-folder (lambda (msg)
                            (let ((mailbox (jsrn-mu4e-mailbox msg)))
                              (cond ((string-equal mailbox "atuin") "/atuin/INBOX.Archives.2017")
                                    ((string-equal mailbox "jsrn") "/atuin/INBOX.Archives.2017")
-                                   ((string-equal mailbox "julehjertedesign") "/julehjertedesign/Archives")
+                                   ((string-equal mailbox "johansjulehjerter") "/johansjulehjerter/Archives")
                                    ((string-equal mailbox "maillist") "/maillist/INBOX.Archive")
                                    ((string-equal mailbox "gmail") "/gmail/[Gmail].All Mail")
                                    ((string-equal mailbox "dtu")   "/dtu/Archives.2017"))))
@@ -224,9 +225,9 @@ those present in the database."
 ;; Setup bookmarks
 ;; View the contents of all inboxes or sent with 'bi' or 'bs'
 (add-to-list 'mu4e-bookmarks
-   '("maildir:/atuin/INBOX or maildir:/julehjertedesign/INBOX or maildir:/dtu/INBOX or maildir:/gmail/INBOX"  "Inboxes"  ?i))
+   '("maildir:/atuin/INBOX or maildir:/johansjulehjerter/INBOX or maildir:/dtu/INBOX or maildir:/gmail/INBOX"  "Inboxes"  ?i))
 (add-to-list 'mu4e-bookmarks
-   '("maildir:/atuin/INBOX.Sent or maildir:/julehjertedesign/Sent or maildir:/dtu/Sent or maildir:/maillist/Sent or maildir:/gmail/[Gmail].Sent Mail" "Sent" ?s))
+   '("maildir:/atuin/INBOX.Sent or maildir:/johansjulehjerter/Sent or maildir:/dtu/Sent or maildir:/maillist/Sent or maildir:/gmail/[Gmail].Sent Mail" "Sent" ?s))
 ;; (add-to-list 'mu4e-bookmarks
 ;;    '("maildir:/maillist/INBOX and date:1M.."  "Maillist"  ?n))
 
@@ -247,7 +248,7 @@ those present in the database."
 ;; registered email addresses
 (setq mu4e-user-mail-address-list '("jsrn@jsrn.dk"
                                     "jsrn@dtu.dk"
-                                    "johan@julehjertedesign.dk"
+                                    "johan@johansjulehjerter.dk"
                                     "maillist@atuin.dk"
                                     "bank@atuin.dk"
                                     "santaphile@gmail.com"
