@@ -7,21 +7,6 @@
 (diminish 'reftex-mode)
 (diminish 'outline-minor-mode)
 
-;; Setup Zathura
-(defun zathura-forward-search ()
-  (interactive)
-  (let* ((zathura-launch-buf (get-buffer-create "*Zathura Output*"))
-         (pdfname (TeX-master-file "pdf"))
-         (synctex (format "%s:0:%s"
-                          (TeX-current-line)
-                          (TeX-current-file-name-master-relative)))
-         (emacsline (concat "emacsclient +%{line} %{input} --socket-name=" server-name)))
-    (start-process "zathura-synctex" zathura-launch-buf "zathura" "-x"
-                   emacsline "--synctex-forward" synctex pdfname)
-    ;; (start-process "raise-zathura-wmctrl" zathura-launch-buf "wmctrl" "-a"
-    ;;               pdfname)
-    ))
-
 ;; Search functions
 (defun search-in-math (regex)
   "Search for a given regular expression only in math mode."
@@ -128,9 +113,7 @@ This is a modified version of reftex-goto-label from 24.3.1"
 (setq LaTeX-command-style '(("" "%(PDF)%(latex) -file-line-error %S%(PDFout)")))
 (TeX-source-correlate-mode)        ; activate forward/reverse search
 (TeX-PDF-mode)
-(add-to-list 'TeX-view-program-list
-             '("zathura" zathura-forward-search))
-(setq TeX-view-program-selection (quote ((output-pdf "zathura") (output-dvi "xdvi"))))
+(setq TeX-view-program-selection (quote ((output-pdf "Zathura") (output-dvi "xdvi"))))
 
 ;; Don't prompt for ref style, just insert cref always
 (setq reftex-ref-macro-prompt nil)
