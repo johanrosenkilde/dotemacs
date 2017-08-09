@@ -1,19 +1,29 @@
-;;TODO: I believe ocaml-mode was deinstalled at some point due to
-;;inconsistencies, and since I didn't much care. So this will fail
-(require 'ocaml-mode)
-;; (setq opam-share (substring (shell-command-to-string "opam config var share") 0 -1))
-;; (add-to-list 'load-path (concat opam-share "/emacs/site-lisp"))
-;; ;TODO: Install merlin (require 'merlin)
-;; (add-hook 'tuareg-mode-hook 'merlin-mode)
+(require 'tuareg)
+
+;; Activate OPAM, the Ocaml package manager
+(setq opam-share (ignore-errors (car (process-lines "opam" "config" "var" "share"))))
+(add-to-list `load-path  (expand-file-name "emacs/site-lisp" opam-share))
+
+;; Activate Merlin for command completion and type lookup etc.
+(autoload 'merlin-mode "merlin" nil t nil)
+(add-hook 'caml-mode-hook 'merlin-mode)
+(setq merlin-command 'opam)
+(setq merlin-ac-setup 'easy)
+
 (defun jsrn-tuareg-mode-hook ()
-  (setq compilation-environment
-        (with-temp-buffer
-          (ignore-errors (call-process "opam" nil t nil "config" "-env"))
-          (goto-line 1)
-          (while (re-search-forward "\"\\(.*\\)\"; *export.*$" nil t)
-            (replace-match "\\1" nil nil))
-          (split-string (buffer-substring 1 (point-max)))
-          ))
+  (setq tab-width 2)
+  (setq tuareg-indent-align-with-first-arg nil)
+  (setq tuareg-match-patterns-aligned t)
+  (electric-indent-mode 0)
+  (merlin-mode)
+  ;; (setq compilation-environment
+  ;;       (with-temp-buffer
+  ;;         (ignore-errors (call-process "opam" nil t nil "config" "-env"))
+  ;;         (goto-line 1)
+  ;;         (while (re-search-forward "\"\\(.*\\)\"; *export.*$" nil t)
+  ;;           (replace-match "\\1" nil nil))
+  ;;         (split-string (buffer-substring 1 (point-max)))
+  ;;         ))
   (defun ocaml-send-current-block ()
     "Find last blank line and next blank line, and send all in between
 to OCaml buffer"
@@ -47,8 +57,7 @@ to OCaml buffer"
                [(f7)]         'merlin-error-next
                [(shift f7)]   'merlin-error-prev
                [(f8)]          'merlin-switch-to-ml
-               [(shift f8)]    'merlin-switch-to-mli
-               (kbd "TAB")     'merlin-try-completion)
+               [(shift f8)]    'merlin-switch-to-mli)
   )
 (add-hook 'tuareg-mode-hook 'jsrn-tuareg-mode-hook)
 
