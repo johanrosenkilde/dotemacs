@@ -464,28 +464,12 @@ using tramp/sudo, if the file is not writable by user."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;       AUTO-COMPLETE
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(require 'auto-complete)
-(require 'auto-complete-config)
-(ac-config-default)
+(global-company-mode)
 (require 'pos-tip)
-(defun jsj-ac-show-help () ; stolen on the net
-  "show docs for symbol at point or at beginning of list if not on a symbol"
-  (interactive)
-  (let ((s (save-excursion
-             (or (symbol-at-point)
-                 (progn (backward-up-list)
-                        (forward-char)
-                        (symbol-at-point))))))
-    (pos-tip-show (if (equal major-mode 'emacs-lisp-mode)
-                      (ac-symbol-documentation s)
-                    (ac-slime-documentation (symbol-name s)))
-                  'popup-tip-face
-                  ;; 'alt-tooltip
-                  (point)
-                  nil
-                  -1)))
-(define-key ac-mode-map (kbd "M-/") 'auto-complete)
-(define-key lisp-mode-shared-map (kbd "C-c C-h") 'jsj-ac-show-help)
+
+(define-key company-mode-map (kbd "C-/") 'hippie-expand)
+(define-key company-mode-map (kbd "M-/") 'company-complete)
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;       IDO MORE STUFF
@@ -624,7 +608,9 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 (fill-keymap evil-insert-state-map
              (kbd "<return>") 'newline-and-indent
              (kbd "C-y") 'yank
-             (kbd "C-p") 'evil-paste-pop)
+             ;; (kbd "C-p") 'evil-complete-previous
+             ;; (kbd "C-k") 'evil-complete-previous
+             )
 ;; Key-bindings in visual mode
 (fill-keymap evil-visual-state-map
              "v" 'mark-current-line-smart
@@ -1075,7 +1061,24 @@ the optional values set"
     "S" 'backward-sexp
     "Q" (lambda () (interactive) (up-list -1))
     )
-  )
+  (defun jsj-ac-show-help () ; stolen on the net
+    "show docs for symbol at point or at beginning of list if not on a symbol"
+    (interactive)
+    (let ((s (save-excursion
+              (or (symbol-at-point)
+                  (progn (backward-up-list)
+                          (forward-char)
+                          (symbol-at-point))))))
+      (pos-tip-show (if (equal major-mode 'emacs-lisp-mode)
+                        (ac-symbol-documentation s)
+                      (ac-slime-documentation (symbol-name s)))
+                    'popup-tip-face
+                    ;; 'alt-tooltip
+                    (point)
+                    nil
+                    -1)))
+  (define-key lisp-mode-shared-map (kbd "C-c C-h") 'jsj-ac-show-help)
+)
 (add-hook 'emacs-lisp-mode-hook 'jsrn-emacs-lisp-mode-hook)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1175,6 +1178,7 @@ the optional values set"
 (define-key undo-tree-visualizer-mode-map (kbd "e") 'undo-tree-visualize-undo)
 (define-key undo-tree-visualizer-mode-map (kbd "y") 'undo-tree-visualize-switch-branch-left)
 (define-key undo-tree-visualizer-mode-map (kbd "o") 'undo-tree-visualize-switch-branch-right)
+(define-key undo-tree-map (kbd "C-/") nil)
 
 ;; Web mode (HTML, PHP)
 (defun jsrn-web-mode-hook ()

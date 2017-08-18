@@ -65,10 +65,11 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun jsrn-python-mode-hook ()
   (interactive)
+  (add-to-list 'company-backends 'company-jedi)
   (if rope-active
       (progn
         (pymacs-load "ropemacs" "rope-")
-        (auto-complete-mode))
+        )
     )
   (fill-keymap python-mode-map
                (kbd "C-<backspace>")     'backward-kill-word
