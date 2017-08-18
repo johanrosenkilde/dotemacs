@@ -29,7 +29,7 @@
 (setq-default fill-column 80)
 (setq tab-width 4)
 
-(setq safe-local-variable-values '(encoding . utf-8))
+(setq safe-local-variable-values nil)
 
 ;; Environment
 (setenv "PATH" (concat (getenv "PATH") ":/home/jsrn/local/bin:/home/jsrn/code/scripts"))
@@ -80,12 +80,19 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;       PACKAGE MANAGER / MELPA
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(require 'package)
-(package-initialize)
-(setq package-archives '(("melpa" . "http://melpa.milkbox.net/packages/")
-                         ("gnu" . "http://elpa.gnu.org/packages/")
-                         ;; ("marmalade" . "http://marmalade-repo.org/packages/")
-                         ))
+(require 'package) ;; You might already have this line
+(let* ((no-ssl (and (memq system-type '(windows-nt ms-dos))
+                    (not (gnutls-available-p))))
+       (url (concat (if no-ssl "http" "https") "://melpa.org/packages/")))
+  (add-to-list 'package-archives (cons "melpa" url) t))
+(when (< emacs-major-version 24)
+  ;; For important compatibility libraries like cl-lib
+  (add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/")))
+(package-initialize) ;; You might already have this line
+(add-to-list 'package-archives
+             '("melpa-stable" . "https://stable.melpa.org/packages/") t)
+(add-to-list 'package-archives
+             '("gnu" . "http://elpa.gnu.org/packages/") t)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -151,9 +158,6 @@ element of ls if obj is not in ls or is the last."
              (define-key key-translation-map (kbd "M-i") (kbd "M-x"))
              ))
 
-(global-set-key [(f1)] '(lambda ()
-                          (interactive)
-                          (woman (current-word))))
 (defun jsrn-recompile ()
   (interactive)
   (progn
@@ -326,7 +330,7 @@ and trailing. Assumes one is in visual mode\n"
   (interactive)
   (pos-tip-show (concat " It is now:\n " (current-time-string)) )
   )
-(global-set-key [f1] 'show-clock)
+(global-set-key [S-f1] 'show-clock)
 
 (defun insert-file-name (filename &optional args)
   "Insert name of file FILENAME into buffer after point.
@@ -432,7 +436,6 @@ it appears in the minibuffer prompt."
 (setq uniquify-buffer-name-style 'reverse)
 
 (require 'help+)
-(require 'help-fns+)
 (require 'help-mode+)
 
 ;; sudo support and others
