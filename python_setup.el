@@ -72,7 +72,7 @@
         )
     )
   (fill-keymap python-mode-map
-               (kbd "C-<backspace>")     'backward-kill-word
+               (kbd "C-<backspace>")     nil    ; disable stupid override
                )
   ;; (require 'pretty-lambdada) ;typeset word "lambda" as the symbol
   ;; (pretty-lambda-mode 1)
