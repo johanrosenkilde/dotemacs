@@ -551,7 +551,9 @@ using tramp/sudo, if the file is not writable by user."
 (setq evil-find-skip-newlines t
       evil-move-cursor-back nil
       evil-ex-search-highlight-all nil
-      evil-want-fine-undo t)
+      evil-want-fine-undo t
+      evil-want-abbrev-expand-on-insert-exit nil)
+
 (setq evil-normal-state-tag (propertize "N" 'face '((:background "green" :foreground "black")))
       evil-emacs-state-tag (propertize "E" 'face '((:background "orange" :foreground "black")))
       evil-insert-state-tag (propertize "I" 'face '((:background "red")))
@@ -579,7 +581,7 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
                    minibuffer-local-isearch-map)
               [escape] 'minibuffer-keyboard-quit)
 (fill-keymap isearch-mode-map [escape] 'isearch-cancel)
-(global-set-key [escape] 'evil-exit-emacs-state)
+;; (global-set-key [escape] 'evil-exit-emacs-state)
 (fill-keymap evil-emacs-state-map
              [escape] 'keyboard-quit)
 
