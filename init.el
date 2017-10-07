@@ -373,6 +373,18 @@ it appears in the minibuffer prompt."
   (with-output-to-temp-buffer (concat "Output of " fun)
       (princ (format "%s" (funcall (intern fun))))))
 
+(defun name-of-keymap (keymap)
+  "Return the symbol (i.e. name) to which KEYMAP is bound, or nil if no such symbol exists.
+Use for e.g. (keymap-symbol (current-local-map))."
+  ;; By StackOverflow user4815162342
+  ;; From https://stackoverflow.com/questions/14489848/emacs-name-of-current-local-keymap.
+  (catch 'gotit
+    (mapatoms (lambda (sym)
+                (and (boundp sym)
+                     (eq (symbol-value sym) keymap)
+                     (not (eq sym 'keymap))
+                     (throw 'gotit sym))))))
+
 (defun describe-key-all (key)
   "Print all functions and their key-maps in order of search which defines the
   key binding."
@@ -394,7 +406,7 @@ it appears in the minibuffer prompt."
     (with-output-to-temp-buffer "*Describe all bindings to key*"
       (princ (format "ALL loaded key maps which define the key binding\n\t%s\n\n\n" (key-description key)))
       (when local-key
-        (princ (format "Local key map:\t\t`%s'\t\t*DEFINED*\n\n" local-key))
+        (princ (format "Local key map (%s):\t\t`%s'\t\t*DEFINED*\n\n" (name-of-keymap (current-local-map)) local-key))
         )
       (when minors
         (progn
