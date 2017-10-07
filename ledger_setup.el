@@ -23,7 +23,7 @@
     (delete-dups
      (progn
        (while (re-search-forward seed-regex nil t)
-         (unless (between origin (match-beginning 0) (match-end 0))
+         (unless (ledger-between origin (match-beginning 0) (match-end 0))
            (setq accounts (cons (match-string-no-properties 2) accounts))))
        accounts)))))
   
@@ -78,9 +78,9 @@
          (date-regex "\\([-/.0-9]+\\)")
          (name-regex "\\(.*?\\)") ;; non-greedy all-match
          (value-regex
-            (let ((number "+?\\(-?[0-9.,]+[,.][0-9]+\\)"))
+            (let ((number "+?\\(-?[0-9]+\\([,.][0-9]+\\)?\\)"))
               (concat "\\(" number "\\|\\(\"" number "\"\\)\\)")))
-         (currency-regex " ?\\(EUR\\|kr\\)?")
+         (currency-regex " ?\\(EUR\\|kr\\)?")   
          (end-regex "[; \t]*")
          (sep-regex "[ ,;\t]+")
          (line-regex (concat "^" end-regex date-regex sep-regex name-regex sep-regex value-regex currency-regex end-regex "$")))
@@ -94,16 +94,16 @@
         (let* ((accounts (save-excursion (set-buffer target-buf) (jsrn-ledger-find-accounts-in-buffer)))
                (ido-common-match-string "")
                (credit (ido-completing-read "Credit account: " (copy-list  accounts)))
-               (commodity (ido-completing-read "Commodity: " jsrn-ledger-commodities)))
+               (commodity "kr"))
           (while (not (eq (point) (point-max)))
             (if (looking-at line-regex)
                 (let* ((raw-date (match-string 1)) ;; extract all matches before further regexp
                        (text (match-string 2))
-                       (raw-val (if (match-string 4) (match-string 4) (match-string 6)))
-                       (date (ledger-convert-date raw-date))
+                       (raw-val (if (match-string 7) (match-string 7) (match-string 4)))
                        (val  (concat raw-val " " commodity))
+                       (date (ledger-convert-date raw-date))
                        (debit (ido-completing-read
-                               (format "Transaction: %s,   amount %s\t(Press C-j for ignore transaction)\nDebit account: " text val)
+                               (format "Transaction: (%s) %s,   amount %s\t(Press C-j for ignore transaction)\nDebit account: " date text val)
                                (copy-list accounts)  nil nil nil nil last-debit))
                        (nspace (- 90 (+ 4 (length credit) (length raw-val)))))
                   (unless (string-equal "" debit)
