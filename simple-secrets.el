@@ -29,8 +29,8 @@
 ;;;   (secret-load-keys)
 ;;;
 ;;; Now you have the following functions: `secret-lookup',
-;;; `secret-lookup-clipboard', `secret-new', `secret-update-password'
-;;; for interacting with your secrets.
+;;; `secret-lookup-clipboard', `secret-new', `secret-update-password',
+;;; `secret-remove' for interacting with your secrets.
 ;;;
 ;;; Auto-generating passwords is done using a shell command which can
 ;;; be specified with `secret-generate-password-command'. By default
