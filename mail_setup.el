@@ -52,12 +52,12 @@
     (progn
       (setq
        smtpmail-smtp-server "asmtp.unoeuro.com"
-       smtpmail-smtp-user "atuin@atuin.dk"
+       smtpmail-smtp-user "jsrn@jsrn.dk"
        smtpmail-smtp-service 587
-       smtpmail-local-domain "atuin.dk"
+       smtpmail-local-domain "jsrn.dk"
        smtpmail-stream-type 'starttls
        )
-      (message "Using UnoEuro (Atuin) SMTP")))
+      (message "Using UnoEuro (jsrn) SMTP")))
      ))
 (jsrn-smtpmail-setup "jsrn")
 
@@ -180,29 +180,29 @@ those present in the database."
       (match-string 1 maildir)
       )))
 (setq mu4e-maildir "~/mail"
-      jsrn-mu4e-sent-folder "/atuin/INBOX.Sent"
+      jsrn-mu4e-sent-folder "/jsrn/INBOX.Sent"
       mu4e-sent-folder (lambda (msg)
                          (if (eq msg nil)
                              (progn
                                (message "Sent mail copied to default sent folder: %s" jsrn-mu4e-sent-folder)
                              jsrn-mu4e-sent-folder)
                            (let ((mailbox (jsrn-mu4e-mailbox msg)))
-                             (cond ((string-equal mailbox "atuin") "/atuin/INBOX.Sent")
-                                   ((string-equal mailbox "jsrn") "/atuin/INBOX.Sent")
+                             (cond ((string-equal mailbox "jsrn") "/jsrn/INBOX.Sent")
+                                   ((string-equal mailbox "atuin") "/jsrn/INBOX.Sent")
                                    ((string-equal mailbox "johansjulehjerter") "/johansjulehjerter/Sent")
-                                   ((string-equal mailbox "maillist") "/maillist/INBOX.Sent")
+                                   ((string-equal mailbox "mailinglist") "/mailinglist/INBOX.Sent")
                                    ((string-equal mailbox "dtu") "/dtu/Sent")
                                    ((string-equal mailbox "inria")   "/inria/Sent")
                                    ((string-equal mailbox "gmail") "/gmail/[Gmail].Sent Mail")
                                    (t jsrn-mu4e-sent-folder)))))
-      mu4e-drafts-folder "/atuin/INBOX.Drafts"
+      mu4e-drafts-folder "/jsrn/INBOX.Drafts"
       mu4e-trash-folder "/trash"
       mu4e-refile-folder (lambda (msg)
                            (let ((mailbox (jsrn-mu4e-mailbox msg)))
-                             (cond ((string-equal mailbox "atuin") "/atuin/INBOX.Archives.2017")
-                                   ((string-equal mailbox "jsrn") "/atuin/INBOX.Archives.2017")
+                             (cond ((string-equal mailbox "jsrn") "/jsrn/INBOX.Archives.2017")
+                                   ((string-equal mailbox "atuin") "/jsrn/INBOX.Archives.2017")
                                    ((string-equal mailbox "johansjulehjerter") "/johansjulehjerter/Archives")
-                                   ((string-equal mailbox "maillist") "/maillist/INBOX.Archive")
+                                   ((string-equal mailbox "mailinglist") "/mailinglist/INBOX.Archive")
                                    ((string-equal mailbox "gmail") "/gmail/[Gmail].All Mail")
                                    ((string-equal mailbox "dtu")   "/dtu/Archives.2017"))))
       )
@@ -210,26 +210,26 @@ those present in the database."
 
 ;; Set up some shortcuts access them with 'j' ('jump')
 (setq   mu4e-maildir-shortcuts
-        '(("/atuin/INBOX"       . ?i)
-          ("/atuin/INBOX.Sent"  . ?s)
-          ("/atuin/INBOX.To Use". ?u)
-          ("/atuin/INBOX.Archives.2017". ?a)
+        '(("/jsrn/INBOX"       . ?i)
+          ("/jsrn/INBOX.Sent"  . ?s)
+          ("/jsrn/INBOX.To Use". ?u)
+          ("/jsrn/INBOX.Archives.2017". ?a)
           ("/dtu/INBOX"         . ?I)
           ("/dtu/Sent"          . ?S)
           ("/dtu/Archives.2017" . ?A)
-          ("/atuin/INBOX.To Use". ?u)
-          ("/atuin/INBOX.Drafts". ?d)
+          ("/jsrn/INBOX.To Use". ?u)
+          ("/jsrn/INBOX.Drafts". ?d)
           ("/trash"             . ?w)
           ))
 
 ;; Setup bookmarks
 ;; View the contents of all inboxes or sent with 'bi' or 'bs'
 (add-to-list 'mu4e-bookmarks
-   '("maildir:/atuin/INBOX or maildir:/johansjulehjerter/INBOX or maildir:/dtu/INBOX or maildir:/gmail/INBOX"  "Inboxes"  ?i))
+   '("maildir:/jsrn/INBOX or maildir:/johansjulehjerter/INBOX or maildir:/dtu/INBOX or maildir:/gmail/INBOX"  "Inboxes"  ?i))
 (add-to-list 'mu4e-bookmarks
-   '("maildir:/atuin/INBOX.Sent or maildir:/johansjulehjerter/Sent or maildir:/dtu/Sent or maildir:/maillist/Sent or maildir:/gmail/[Gmail].Sent Mail" "Sent" ?s))
+   '("maildir:/jsrn/INBOX.Sent or maildir:/johansjulehjerter/Sent or maildir:/dtu/Sent or maildir:/mailinglist/Sent or maildir:/gmail/[Gmail].Sent Mail" "Sent" ?s))
 ;; (add-to-list 'mu4e-bookmarks
-;;    '("maildir:/maillist/INBOX and date:1M.."  "Maillist"  ?n))
+;;    '("maildir:/mailinglist/INBOX and date:1M.."  "Mailinglist"  ?n))
 
 ;; Set up the Header fields (only thread-subject differs from standard)
 (setq mu4e-headers-fields
@@ -249,11 +249,11 @@ those present in the database."
 (setq mu4e-user-mail-address-list '("jsrn@jsrn.dk"
                                     "jsrn@dtu.dk"
                                     "johan@johansjulehjerter.dk"
-                                    "maillist@atuin.dk"
-                                    "bank@atuin.dk"
+                                    "mailinglist@jsrn.dk"
+                                    "bank@jsrn.dk"
                                     "santaphile@gmail.com"
                                     "atuin@atuin.dk"
-                                    "spammy@atuin.dk"
+                                    "spammy@jsrn.dk"
                                     ))
 
 ;; Switch my from address to the next possible from address
@@ -282,7 +282,7 @@ those present in the database."
                 (if (eq toaddr nil)
                     jsrn-user-mail-address
                   (if (string-match ".*@googlegroups.com" toaddr)
-                      "maillist@atuin.dk"
+                      "mailinglist@jsrn.dk"
                     (if (member (downcase toaddr) mu4e-user-mail-address-list)
                         (downcase toaddr)
                       jsrn-user-mail-address))))
