@@ -10,6 +10,7 @@
 ;; Various agenda setup
 (setq org-todo-keywords '((sequence "TODO" "DONE")))
 (setq org-agenda-repeating-timestamp-show-all (list "MEET")) ; only show repetitions for MEET in agenda
+(setq org-agenda-include-diary nil) ; don't include diary and special date stuff in agenda
 
 
 

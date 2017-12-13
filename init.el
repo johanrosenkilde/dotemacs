@@ -33,6 +33,8 @@
 
 ;; Environment
 (setenv "PATH" (concat (getenv "PATH") ":/home/jsrn/local/bin:/home/jsrn/code/scripts"))
+;; Use qutebrowser for hyperlinks
+(setq browse-url-browser-function (lambda (url monkey) (call-process "/home/jsrn/local/bin/qutebrowser" nil 0 nil "--target" "auto" url)))
 
 ;; Some font settings
 (custom-set-faces
@@ -608,7 +610,6 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
              ;; Search using Emacs' isearch but using Vim keybindings
              "/" 'isearch-forward
              "?" 'isearch-backward
-             "N" 'isearch-repeat-backward
              (kbd "C-#") 'jsrn-goto-first-symbol-use
              (kbd "M-p") (lambda () (interactive) (evil-paste-pop -1))
              ;; Tab in normal mode works as tab in Emacs
@@ -1095,10 +1096,13 @@ the optional values set"
 )
 (add-hook 'emacs-lisp-mode-hook 'jsrn-emacs-lisp-mode-hook)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;       FLYSPELL
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(autoload 'flyspell-mode "flyspell_setup.el" "Flyspell" t)
+;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; ;;       FLYSPELL
+;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; (autoload 'flyspell-mode "flyspell_setup.el" "Flyspell" t)
+;; TODO: Some package that is autoloaded at startup apparently loads flyspell.
+;; This shouldn't happen
+(load "flyspell_setup.el")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;       DESKTOP (session management)
