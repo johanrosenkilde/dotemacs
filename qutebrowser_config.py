@@ -33,7 +33,7 @@ config.bind('K', 'search-prev')
 config.bind('<Ctrl-i>', 'open-editor')
 config.bind('<Ctrl-i>', 'open-editor', mode="insert")
 
-config.bind('y', 'yank pretty-url')
+config.bind('j', 'yank pretty-url')
 
 config.bind('<Ctrl-0>', 'zoom 100')
 
