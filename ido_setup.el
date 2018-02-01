@@ -1,26 +1,47 @@
-(require 'ido)
-(require 'smex)
-(setq ido-everywhere t)
-(setq ido-enable-flex-matching t) ;match substr on what is written
-(setq ido-use-filename-at-point nil)
-(setq ido-file-extensions-order '(".tex" ".sage" ".py" ".bib" ".txt"))
-(setq ido-auto-merge-work-directories-length -1) ; don't suggest stuff in other dirs
-(global-set-key "\M-x" 'smex) ;; awesome function chooser
-(add-to-list 'ido-ignore-buffers "*terminal")
-(ido-mode t)
+(require 'ivy)
+(require 'swiper)
+(require 'counsel)
 
-;; Use smex for C-h f
-(defun  smex-describe-function (fun &optional commandp)
-  "As `describe-function' but use smex completion."
-  (interactive
-   (list (let* ((fn (or (and (fboundp 'symbol-nearest-point)
-                             (symbol-nearest-point))
-                        (function-called-at-point)))
-                (smex-prompt-string "Describe function: "))
-           (smex-completing-read (if fn (cons (symbol-name fn) list-of-all-functions) list-of-all-functions) nil))))
-  (describe-function (intern fun))
-  )
-(global-set-key (kbd "C-h f") 'smex-describe-function)
+(ivy-mode)
+
+(defun swiper-search-word ()
+  "Search the current word in Swiper"
+  (interactive)
+  (swiper (current-word)))
+
+(fill-keymap evil-normal-state-map
+             (kbd "C-s")     'swiper
+             (kbd "C-*")     'swiper-search-word
+             (kbd "C-c C-r") 'ivy-resume
+             )
+
+(setq magit-completing-read-function 'ivy-completing-read)
+
+(define-key ivy-mode-map [escape] 'minibuffer-keyboard-quit)
+
+;; (require 'ido)
+;; (require 'smex)
+;; (setq ido-everywhere t)
+;; (setq ido-enable-flex-matching t) ;match substr on what is written
+;; (setq ido-use-filename-at-point nil)
+;; (setq ido-file-extensions-order '(".tex" ".sage" ".py" ".bib" ".txt"))
+;; (setq ido-auto-merge-work-directories-length -1) ; don't suggest stuff in other dirs
+;; (global-set-key "\M-x" 'smex) ;; awesome function chooser
+;; (add-to-list 'ido-ignore-buffers "*terminal")
+;; (ido-mode t)
+
+;; ;; Use smex for C-h f
+;; (defun  smex-describe-function (fun &optional commandp)
+;;   "As `describe-function' but use smex completion."
+;;   (interactive
+;;    (list (let* ((fn (or (and (fboundp 'symbol-nearest-point)
+;;                              (symbol-nearest-point))
+;;                         (function-called-at-point)))
+;;                 (smex-prompt-string "Describe function: "))
+;;            (smex-completing-read (if fn (cons (symbol-name fn) list-of-all-functions) list-of-all-functions) nil))))
+;;   (describe-function (intern fun))
+;;   )
+;; (global-set-key (kbd "C-h f") 'smex-describe-function)
 
 ;; Grabbed from EmacsWiki 03/02/2014
 ;; http://www.emacswiki.org/emacs/ImenuMode#toc8
