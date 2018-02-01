@@ -206,7 +206,7 @@ those present in the database."
                                    ((string-equal mailbox "gmail") "/gmail/[Gmail].All Mail")
                                    ((string-equal mailbox "dtu")   "/dtu/Archives.2017"))))
       )
-(setq mu4e-attachment-dir "~/downloads")
+(setq mu4e-attachment-dir "~/downloads/tmp")
 
 ;; Set up some shortcuts access them with 'j' ('jump')
 (setq   mu4e-maildir-shortcuts
