@@ -545,7 +545,7 @@ using tramp/sudo, if the file is not writable by user."
 (require 'jsrn_jumps)
 
 (setq-default evil-symbol-word-search t)
-(setq evil-find-skip-newlines t
+(setq evil-find-skip-newline t
       evil-move-cursor-back nil
       evil-ex-search-highlight-all nil
       evil-want-fine-undo t
