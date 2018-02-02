@@ -101,37 +101,71 @@
   (setq mu4e-html2text-command old-command)
 )
 
-;; while mu4e doesn't have this feature, from
-;; https://groups.google.com/group/mu-discuss/browse_thread/thread/551b7a6487a0aeb3
-(defun ido-select-recipient ()
-  "Inserts a contact from the mu cache.  Uses ido to select the contact from all
-those present in the database."
-  (interactive)
-  (insert
-   (ido-completing-read
-    "Recipient: "
-    (mapcar
-     (lambda (contact-string)
-       (let* ((data (split-string contact-string ","))
-              (name (when (> (length (car data)) 0)
-                      (car data)))
-              (address (cadr data)))
-         (if name
-             (format "%s <%s>" name address)
-           address)))
-     (remove-if (lambda (string) (= 0 (length string)))
-                ;; cfind with --personal: Only addresses from mail sent to me directly should go in auto-completions
-                (split-string (shell-command-to-string "mu cfind --format=csv")
-                ;(split-string (shell-command-to-string "mu cfind --personal --format=csv")
-                                            "\n"))))))
-
-
 ;; Setup smtp mail information
 (require 'auth-source)
 (setq auth-sources '((:source "~/.authinfo.gpg")))
 
 (add-to-list 'load-path"/usr/local/share/emacs/site-lisp/mu4e")
 (require 'mu4e)
+
+;; ivy contacts
+;; based on http://pragmaticemacs.com/emacs/even-better-email-contact-completion-in-mu4e/
+;; code from https://github.com/abo-abo/swiper/issues/596
+(defun bjm/counsel-email-action (contact)
+  (with-ivy-window
+    (insert contact)))
+;; bind comma to launch new search
+(defvar bjm/counsel-email-map
+  (let ((map (make-sparse-keymap)))
+    (define-key map "," 'bjm/counsel-email-more)
+    map))
+(defun bjm/counsel-email-more ()
+  "Insert email address and prompt for another."
+  (interactive)
+  (ivy-call)
+  (with-ivy-window
+    (insert ", "))
+  (delete-minibuffer-contents)
+  (setq ivy-text ""))
+;; which is based on http://kitchingroup.cheme.cmu.edu/blog/2015/03/14/A-helm-mu4e-contact-selector/
+(defun jsrn/ivy-select-and-insert-contact (&optional start)
+  (interactive)
+  ;; make sure mu4e contacts list is updated - I was having
+  ;; intermittent problems that this was empty but couldn't see why
+  (mu4e~request-contacts)
+  (let ((eoh ;; end-of-headers
+         (save-excursion
+           (goto-char (point-min))
+           (search-forward-regexp mail-header-separator nil t)))
+        ;; append full sorted contacts list to favourites and delete duplicates
+        (contacts-list (mu4e~sort-contacts-for-completion (hash-table-keys mu4e~contacts))))
+
+    ;; only run if we are in the headers section
+    (when (and eoh (> eoh (point)) (mail-abbrev-in-expansion-header-p))
+      (let* ((end (point))
+           (start
+            (or start
+                (save-excursion
+                  (re-search-backward "\\(\\`\\|[\n:,]\\)[ \t]*")
+                  (goto-char (match-end 0))
+                  (point))))
+           (initial-input (buffer-substring-no-properties start end)))
+
+      (delete-region start end)
+
+      (ivy-read "Contact: "
+                contacts-list
+                :re-builder #'ivy--regex
+                :sort nil
+                :initial-input initial-input
+                :action 'bjm/counsel-email-action
+                :keymap bjm/counsel-email-map)
+      ))))
+;; tell Ivy not to resort the matches
+(push '(jsrn/ivy-select-and-insert-contact) ivy-sort-matches-functions-alist)
+(push '(jsrn/ivy-select-and-insert-contact) ivy-sort-functions-alist)
+
+(fill-keymap mu4e-compose-mode-map (kbd "<backtab>") 'jsrn/ivy-select-and-insert-contact)
 
 (setq mu4e-compose-signature nil)
 ;; Handling html messages
@@ -267,9 +301,8 @@ those present in the database."
       (replace-match email nil nil nil 1))
   )
 )
-(fill-keymap mu4e-compose-mode-map
-             (kbd "<backtab>") 'ido-select-recipient
-             [(f2)] 'next-from-address)
+
+(fill-keymap mu4e-compose-mode-map [(f2)] 'next-from-address)
 
 (defun jsrn-set-from-address ()
   "Set the From address, and Sent Folder based on the To address of the original"
