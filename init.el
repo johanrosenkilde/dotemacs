@@ -1069,8 +1069,8 @@ the optional values set"
   (auto-fill-mode t)
   (show-paren-mode t)
   (highlight-parentheses-mode t)
-  (require 'paredit)
-  (paredit-mode)
+  ;; (require 'paredit)
+  ;; (paredit-mode)
   (fill-keymap evil-normal-state-local-map
     "D" 'paredit-kill
     "s" 'forward-sexp
