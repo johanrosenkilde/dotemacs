@@ -14,19 +14,6 @@
         (list "valutatab" (jsrn-ledger-report "--daily reg ^Expenses:ValutaTab"))
         ))
 
-(defun jsrn-ledger-find-accounts-in-buffer ()
-  (let ((origin (point))
-        accounts
-        (seed-regex (ledger-account-any-status-with-seed-regex "")))
-  (save-excursion
-    (goto-char (point-min))
-    (delete-dups
-     (progn
-       (while (re-search-forward seed-regex nil t)
-         (unless (ledger-between origin (match-beginning 0) (match-end 0))
-           (setq accounts (cons (match-string-no-properties 2) accounts))))
-       accounts)))))
-  
 (defun ledger-convert-date (date)
   (if (string-match
   "\\([0-9][0-9]\\).\\([0-9][0-9]\\).\\([0-9][0-9][0-9][0-9]\\)"
@@ -91,9 +78,9 @@
         (unless (looking-at line-regex)
           (error "First line of file does not match regex"))
         (setq last-debit nil)
-        (let* ((accounts (save-excursion (set-buffer target-buf) (jsrn-ledger-find-accounts-in-buffer)))
+        (let* ((accounts (cons "<SKIP>" (save-excursion (set-buffer target-buf) (ledger-accounts-list))))
                (ido-common-match-string "")
-               (credit (ido-completing-read "Credit account: " (copy-list  accounts)))
+               (credit (completing-read "Credit account: " (copy-list  accounts)))
                (commodity "kr"))
           (while (not (eq (point) (point-max)))
             (if (looking-at line-regex)
@@ -102,11 +89,11 @@
                        (raw-val (if (match-string 7) (match-string 7) (match-string 4)))
                        (val  (concat raw-val " " commodity))
                        (date (ledger-convert-date raw-date))
-                       (debit (ido-completing-read
-                               (format "Transaction: (%s) %s,   amount %s\t(Press C-j for ignore transaction)\nDebit account: " date text val)
-                               (copy-list accounts)  nil nil nil nil last-debit))
+                       (debit (ivy-read
+                               (format "Transaction: (%s) %s,   amount %s. Debit account:" date text val)
+                               (copy-list accounts) :preselect last-debit))
                        (nspace (- 90 (+ 4 (length credit) (length raw-val)))))
-                  (unless (string-equal "" debit)
+                  (unless (string-equal "<SKIP>" debit)
                     (set-buffer target-buf)
                     (insert date " " text "\n" "    " credit (make-string nspace ? ) val "\n    " debit "\n\n")
                     (set-buffer source-buf)
