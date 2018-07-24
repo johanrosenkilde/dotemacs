@@ -112,13 +112,13 @@ the passwords in any Emacs variables; only the keys."
         (while (not (eq (char-after) ?\t))
           (forward-char))
         (add-to-list 'secret-password-keys
-                     (buffer-substring start (point)))
+                      (s-trim (buffer-substring start (point))))
         (forward-line)))
   ))
 (defun secret-lookup (key)
   "Return the password for the given key."
   (interactive
-   (list (ido-completing-read "Key or site: " secret-password-keys)))
+   (list (completing-read "Key or site: " secret-password-keys)))
   (with-temp-buffer
     (insert-file-contents secret-password-file)
     (condition-case nil
@@ -131,7 +131,7 @@ the passwords in any Emacs variables; only the keys."
 (defun secret-lookup-clipboard (key)
   "Put the password for the given key into the clipboard and kill ring"
   (interactive
-   (list (ido-completing-read "Key or site: " secret-password-keys)))
+   (list (completing-read "Key or site: " secret-password-keys)))
   (kill-new (secret-lookup key)))
 
 (defun secret-new (key pass)
@@ -160,7 +160,7 @@ after adding it to the secret file."
 string then autogenerate a password, and put it in the kill ring
 after adding it to the secret file."
   (interactive
-   (list (ido-completing-read "Key or site: " secret-password-keys)
+   (list (completing-read "Key or site: " secret-password-keys)
          (read-input "New password (empty for auto): ")))
   (unless (member key secret-password-keys)
     (error "This key does not have a password to update"))
@@ -182,7 +182,7 @@ after adding it to the secret file."
 (defun secret-remove (key)
   "Remove the binding for this key"
   (interactive
-   (list (ido-completing-read "Key or site: " secret-password-keys)))
+   (list (completing-read "Key or site: " secret-password-keys)))
   (unless (member key secret-password-keys)
     (error "This key does not exist"))
   (with-temp-buffer
