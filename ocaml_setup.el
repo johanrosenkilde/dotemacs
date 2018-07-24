@@ -1,8 +1,11 @@
 (require 'tuareg)
 
 ;; Activate OPAM, the Ocaml package manager
-(setq opam-share (ignore-errors (car (process-lines "opam" "config" "var" "share"))))
-(add-to-list `load-path  (expand-file-name "emacs/site-lisp" opam-share))
+(setq opam-share (substring (shell-command-to-string "opam config var share 2> /dev/null") 0 -1))
+(add-to-list 'load-path (concat opam-share "/emacs/site-lisp"))
+
+;; (setq opam-share (ignore-errors (car (process-lines "opam" "config" "var" "share"))))
+;; (add-to-list `load-path  (expand-file-name "emacs/site-lisp" opam-share))
 
 ;; Activate Merlin for command completion and type lookup etc.
 (autoload 'merlin-mode "merlin" nil t nil)
