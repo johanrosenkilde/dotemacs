@@ -233,12 +233,12 @@
       mu4e-trash-folder "/trash"
       mu4e-refile-folder (lambda (msg)
                            (let ((mailbox (jsrn-mu4e-mailbox msg)))
-                             (cond ((string-equal mailbox "jsrn") "/jsrn/INBOX.Archives.2017")
-                                   ((string-equal mailbox "atuin") "/jsrn/INBOX.Archives.2017")
+                             (cond ((string-equal mailbox "jsrn") "/jsrn/INBOX.Archives.2018")
+                                   ((string-equal mailbox "atuin") "/jsrn/INBOX.Archives.2018")
                                    ((string-equal mailbox "johansjulehjerter") "/johansjulehjerter/Archives")
                                    ((string-equal mailbox "mailinglist") "/mailinglist/INBOX.Archive")
                                    ((string-equal mailbox "gmail") "/gmail/[Gmail].All Mail")
-                                   ((string-equal mailbox "dtu")   "/dtu/Archives.2017"))))
+                                   ((string-equal mailbox "dtu")   "/dtu/Archives.2018"))))
       )
 (setq mu4e-attachment-dir "~/downloads/tmp")
 
@@ -247,21 +247,27 @@
         '(("/jsrn/INBOX"       . ?i)
           ("/jsrn/INBOX.Sent"  . ?s)
           ("/jsrn/INBOX.To Use". ?u)
-          ("/jsrn/INBOX.Archives.2017". ?a)
+          ("/jsrn/INBOX.Archives.2018". ?a)
           ("/dtu/INBOX"         . ?I)
           ("/dtu/Sent"          . ?S)
-          ("/dtu/Archives.2017" . ?A)
+          ("/dtu/Archives.2018" . ?A)
           ("/jsrn/INBOX.To Use". ?u)
           ("/jsrn/INBOX.Drafts". ?d)
           ("/trash"             . ?w)
           ))
 
 ;; Setup bookmarks
-;; View the contents of all inboxes or sent with 'bi' or 'bs'
 (add-to-list 'mu4e-bookmarks
-   '("maildir:/jsrn/INBOX or maildir:/johansjulehjerter/INBOX or maildir:/dtu/INBOX or maildir:/gmail/INBOX"  "Inboxes"  ?i))
+   '("maildir:/jsrn/INBOX.Archives.2018 or
+maildir:/johansjulehjerter/Archives or maildir:/dtu/Archives.2018 or maildir:/dtu/Archives.2018" "Archives" ?a))
+;; View the contents of private inboxes or sent with 'bi' or 'bs'
 (add-to-list 'mu4e-bookmarks
-   '("maildir:/jsrn/INBOX.Sent or maildir:/johansjulehjerter/Sent or maildir:/dtu/Sent or maildir:/mailinglist/Sent or maildir:/gmail/[Gmail].Sent Mail" "Sent" ?s))
+   '("maildir:/jsrn/INBOX or maildir:/johansjulehjerter/INBOX or maildir:/gmail/INBOX"  "Inboxes"  ?i))
+(add-to-list 'mu4e-bookmarks
+   '("maildir:/jsrn/INBOX.Sent or maildir:/johansjulehjerter/Sent or maildir:/mailinglist/Sent or maildir:/gmail/[Gmail].Sent Mail" "Sent" ?s))
+(add-to-list 'mu4e-bookmarks
+   '("maildir:/jsrn/INBOX.Archives.2018 or
+maildir:/johansjulehjerter/Archives or maildir:/dtu/Archives.2018 or maildir:/dtu/Archives.2018" "Archives" ?a))
 ;; (add-to-list 'mu4e-bookmarks
 ;;    '("maildir:/mailinglist/INBOX and date:1M.."  "Mailinglist"  ?n))
 
