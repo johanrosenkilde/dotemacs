@@ -111,9 +111,11 @@ This is a modified version of reftex-goto-label from 24.3.1"
       )
 ;; Activate the more reliable but simpler error system (for C-c `)
 (setq LaTeX-command-style '(("" "%(PDF)%(latex) -file-line-error %S%(PDFout)")))
-(TeX-source-correlate-mode)        ; activate forward/reverse search
+;; (TeX-source-correlate-mode)        ; activate forward/reverse search
+;; (TeX-source-correlate-mode)        ; activate forward/reverse search
 (TeX-PDF-mode)
-(setq TeX-view-program-selection (quote ((output-pdf "Zathura") (output-dvi "xdvi"))))
+(add-to-list 'TeX-view-program-selection '(output-pdf "Zathura"))
+(add-to-list 'TeX-view-program-selection '(output-dvi "xdvi"))
 
 ;; Don't prompt for ref style, just insert cref always
 (setq reftex-ref-macro-prompt nil)
@@ -122,10 +124,6 @@ This is a modified version of reftex-goto-label from 24.3.1"
 ;;(setq reftex-label-alist (list '("equation" 101 "eqn:" "~\\ref{%s}" t)))
 ;; Insert eqref for equations
 (setq reftex-label-alist (list '("equation" 101 "eqn:" "~\\eqref{%s}" t)))
-
-(add-to-list 'reftex-ref-style-alist '("Default" t
-                                       (("\\cref" 13)
-                                        ("\\cpageref" 112))))
 
 ;; Teach AucTeX about align and IEEEeqnarray
 (LaTeX-add-environments
@@ -170,6 +168,23 @@ This is a modified version of reftex-goto-label from 24.3.1"
   (turn-on-reftex)                   ; always turn on reftex
   (define-key LaTeX-mode-map (kbd "$") 'self-insert-command) ; makes electric pairs work for $
   (setq show-trailing-whitespace t)
+  (setq reftex-ref-macro-prompt nil) ; don't ask for cite format, just cite
+  (setq reftex-cite-format (quote default))
+  (setq LaTeX-reftex-cite-format-auto-activate nil)
+
+  ; Insert cleveref references instead of plain references
+  (if (boundp 'reftex-ref-style-alist)
+      (add-to-list
+       'reftex-ref-style-alist
+       '("Cleveref" "cleveref"
+         (("\\cref" ?c) ("\\Cref" ?C) ("\\cpageref" ?d) ("\\Cpageref" ?D)))))
+  (reftex-ref-style-activate "Cleveref")
+  (TeX-add-symbols
+   '("cref" TeX-arg-ref)
+   '("Cref" TeX-arg-ref)
+   '("cpageref" TeX-arg-ref)
+   '("Cpageref" TeX-arg-ref))
+
 
   ;;When inserting a label, just use cref and don't ask
   (local-set-key (kbd "C-c 0")
