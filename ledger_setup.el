@@ -7,7 +7,7 @@
 (defun jsrn-ledger-report (spec)
   (concat ledger-run " " spec))
 (setq ledger-reports (list 
-        (list "bal"     (jsrn-ledger-report "bal ^Assets ^Liabil ^Henlæg ^Moms"))
+        (list "bal"     (jsrn-ledger-report "bal ^Assets ^Liabil ^Henlæg ^Aktiver ^Passiver ^Moms"))
         (list "reg"     (jsrn-ledger-report "reg"))
         (list "payee"   (jsrn-ledger-report "reg @%(payee)"))
         (list "account" (jsrn-ledger-report "reg %(account)"))
