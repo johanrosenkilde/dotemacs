@@ -172,6 +172,9 @@ This is a modified version of reftex-goto-label from 24.3.1"
   (setq reftex-cite-format (quote default))
   (setq LaTeX-reftex-cite-format-auto-activate nil)
 
+  AUCTeX wants ; ; to put "`...'" quotation marks in Danish, stop that.
+  (setq TeX-quote-language-alist '(("danish" "``" "''" nil)))   
+
   ; Insert cleveref references instead of plain references
   (if (boundp 'reftex-ref-style-alist)
       (add-to-list
