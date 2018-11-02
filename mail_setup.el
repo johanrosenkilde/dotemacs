@@ -340,6 +340,19 @@ maildir:/johansjulehjerter/Archives or maildir:/dtu/Archives.2018 or maildir:/dt
     (message-goto-body)
     (flyspell-region (point) (progn (end-of-buffer) (point)))))
 
+(defun jsrn-attach-multiple-files-dired (dir)
+   "Attach multiple files from same dir using dired.
+   Called from within compose"
+  (interactive "D")
+  (dired-other-window dir)
+  (turn-on-gnus-dired-mode)
+  (define-key gnus-dired-mode-map (kbd "<C-return>")
+    (lambda ()
+      (interactive)
+      (gnus-dired-attach (dired-get-marked-files))
+      ))
+  )
+
 ;; Setup email writing
 (defun jsrn-mu4e-compose-setup ()
   (flyspell-mode t)
@@ -361,6 +374,7 @@ maildir:/johansjulehjerter/Archives or maildir:/dtu/Archives.2018 or maildir:/dt
                   (lambda () (interactive) (jsrn-cycle-dictionary) (flyspell-body))
                 ;; Change attach file to my slightly quicker and nicer one
                 (kbd "C-c C-a")  'jsrn-attach-file
+                (kbd "C-c C-S-a") 'jsrn-attach-multiple-files-dired
                 )
   )
 (add-hook 'mu4e-compose-mode-hook 'jsrn-mu4e-compose-setup)
