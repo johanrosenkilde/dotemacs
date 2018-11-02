@@ -343,7 +343,7 @@ maildir:/johansjulehjerter/Archives or maildir:/dtu/Archives.2018 or maildir:/dt
 ;; Setup email writing
 (defun jsrn-mu4e-compose-setup ()
   (flyspell-mode t)
-  (setq ispell-local-dictionary "british")
+  (setq ispell-local-dictionary "dansk")
   ;; Add footnote and bibtex/footnote support
   (footnote-mode t)
   (setq reftex-default-bibliography '("~/mat/tex/bibtex.bib"))
