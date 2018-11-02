@@ -13,6 +13,7 @@
              (kbd "C-s")     'swiper
              (kbd "C-*")     'swiper-search-word
              (kbd "C-c C-r") 'ivy-resume
+             (kbd "C-M-p")   'counsel-yank-pop
              )
 
 (setq magit-completing-read-function 'ivy-completing-read)
