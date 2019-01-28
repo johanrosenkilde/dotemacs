@@ -6,9 +6,17 @@
 (require 'sage-shell-mode)
 (require 'sage-shell-blocks)
 
+;; WORKAROUND for https://github.com/sagemath/sage-shell-mode/issues/34
+(defun sage-shell-around-advice (fun &rest args)
+  (let ((major-mode 'python-mode))
+    (apply fun args)))
+(advice-add 'py-forward-statement :around #'sage-shell-around-advice)
+(advice-add 'py-switch-imenu-index-function :around #'sage-shell-around-advice)
+;; END WORKAROUND
+
 ;; (setq sage-shell:use-prompt-toolkit nil)
-(setq sage-shell:sage-root  "/home/jsrn/local/sage/sage_devel")
 (setq sage-shell:sage-root  "/home/jsrn/local/sage/sage_stable")
+(setq sage-shell:sage-root  "/home/jsrn/local/sage/sage_devel")
 (setq sage-shell:use-prompt-toolkit t)
 
 
@@ -57,6 +65,7 @@
              (kbd "M-}")        'sage-shell-blocks:forward
              (kbd "C-<backspace>")     'backward-kill-word
              (kbd "C-c C-j")    'sage-shell:send-doctest
+             (kbd "C-c R") 'sage-shell-edit:send-region
                )
 
 
