@@ -1,6 +1,10 @@
 ;; Activate the current Emacs as an agenda Emacs. Weird stuff seem to happen
 ;; sometimes if more than one Emacs has this set
 
+;; Load julehjerter functions
+(load "julehjerte_webshop.el")
+
+
 ;; Open one of the org files
 (find-file "~/orgs/home.org")
 
