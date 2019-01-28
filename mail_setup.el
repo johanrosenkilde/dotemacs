@@ -121,10 +121,10 @@
         (next-in-list jsrn-html2text-commands
                       mu4e-html2text-command))
   ;; refresh
-  (with-current-buffer mu4e~view-headers-buffer
+  (with-current-buffer mu4e~headers-buffer-name
     (mu4e-headers-view-message)
+    (message "Switched html2text to: '%s'" mu4e-html2text-command)
     )
-  (message "Switched html2text to: '%s'" mu4e-html2text-command)
   )
 ;;(jsrn-switch-html2text)
 (define-key mu4e-view-mode-map [(f5)] 'jsrn-switch-html2text)
@@ -155,28 +155,36 @@
         (error "This maildir had invalid format: %s" maildir)
       (match-string 1 maildir)
       )))
+(defun jsrn-set-sent-folder (msg)
+  (if (boundp 'julehjerte~local-sent-maildir)
+      ; Temporary: for use in julehjerte business
+      julehjerte~local-sent-maildir
+    (if (eq msg nil)
+        (progn
+          (message "Sent mail copied to default sent folder: %s" jsrn-mu4e-sent-folder)
+          jsrn-mu4e-sent-folder)
+      (let ((mailbox (jsrn-mu4e-mailbox msg)))
+        (cond ((string-equal mailbox "jsrn") "/jsrn/INBOX.Sent")
+              ((string-equal mailbox "atuin") "/jsrn/INBOX.Sent")
+              ((string-equal mailbox "johansjulehjerter") "/johansjulehjerter/Sent")
+              ((string-equal mailbox "mailinglist") "/mailinglist/INBOX.Sent")
+              ((string-equal mailbox "dtu") "/dtu/Sent")
+              ((string-equal mailbox "inria")   "/inria/Sent")
+              ((string-equal mailbox "gmail") "/gmail/[Gmail].Sent Mail")
+              (t jsrn-mu4e-sent-folder)))))
+  )
 (setq mu4e-maildir "~/mail"
       jsrn-mu4e-sent-folder "/jsrn/INBOX.Sent"
-      mu4e-sent-folder (lambda (msg)
-                         (if (eq msg nil)
-                             (progn
-                               (message "Sent mail copied to default sent folder: %s" jsrn-mu4e-sent-folder)
-                             jsrn-mu4e-sent-folder)
-                           (let ((mailbox (jsrn-mu4e-mailbox msg)))
-                             (cond ((string-equal mailbox "jsrn") "/jsrn/INBOX.Sent")
-                                   ((string-equal mailbox "atuin") "/jsrn/INBOX.Sent")
-                                   ((string-equal mailbox "johansjulehjerter") "/johansjulehjerter/Sent")
-                                   ((string-equal mailbox "mailinglist") "/mailinglist/INBOX.Sent")
-                                   ((string-equal mailbox "dtu") "/dtu/Sent")
-                                   ((string-equal mailbox "inria")   "/inria/Sent")
-                                   ((string-equal mailbox "gmail") "/gmail/[Gmail].Sent Mail")
-                                   (t jsrn-mu4e-sent-folder)))))
+      mu4e-sent-folder 'jsrn-set-sent-folder
       mu4e-drafts-folder "/jsrn/INBOX.Drafts"
       mu4e-trash-folder "/trash"
       mu4e-refile-folder (lambda (msg)
-                           (let ((mailbox (jsrn-mu4e-mailbox msg)))
+                           (let ((mailbox (jsrn-mu4e-mailbox msg))
+                                 (maildir (mu4e-message-part-field msg :maildir)))
                              (cond ((string-equal mailbox "jsrn") "/jsrn/INBOX.Archives.2018")
                                    ((string-equal mailbox "atuin") "/jsrn/INBOX.Archives.2018")
+                                   ((string-equal maildir "/johansjulehjerter/Salg.Bekraeftet") "/johansjulehjerter/Salg.Betalt")
+                                   ((string-equal maildir "/johansjulehjerter/Salg.Betalt") "/johansjulehjerter/Salg.Sendt")
                                    ((string-equal mailbox "johansjulehjerter") "/johansjulehjerter/Archives")
                                    ((string-equal mailbox "mailinglist") "/mailinglist/INBOX.Archive")
                                    ((string-equal mailbox "gmail") "/gmail/[Gmail].All Mail")
@@ -196,6 +204,10 @@
           ("/jsrn/INBOX.To Use". ?u)
           ("/jsrn/INBOX.Drafts". ?d)
           ("/trash"             . ?w)
+          ("/johansjulehjerter/Salg.Nye" . ?p)
+          ("/johansjulehjerter/Salg.Bekraeftet" . ?P)
+          ("/johansjulehjerter/Salg.Betalt" . ?F)
+          ("/johansjulehjerter/Salg.Sendt" . ?U)
           ))
 
 ;; Setup bookmarks
@@ -264,9 +276,11 @@ maildir:/johansjulehjerter/Archives or maildir:/dtu/Archives.2018 or maildir:/dt
                     jsrn-user-mail-address
                   (if (string-match ".*@googlegroups.com" toaddr)
                       "mailinglist@jsrn.dk"
-                    (if (member (downcase toaddr) mu4e-user-mail-address-list)
-                        (downcase toaddr)
-                      jsrn-user-mail-address))))
+                    (if (string-match "webshop@johansjulehjerter.dk" toaddr)
+                        "webshop@johansjulehjerter.dk"
+                      (if (member (downcase toaddr) mu4e-user-mail-address-list)
+                          (downcase toaddr)
+                        jsrn-user-mail-address)))))
             jsrn-user-mail-address)))
   )
 (add-hook 'mu4e-compose-pre-hook 'jsrn-set-from-address)
