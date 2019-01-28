@@ -1,100 +1,112 @@
-(require 'ivy)
-(require 'swiper)
-(require 'counsel)
 
-(ivy-mode)
 
-(defun swiper-search-word ()
-  "Search the current word in Swiper"
-  (interactive)
-  (swiper (current-word)))
+;;;;;;;;;;;;
+;; IVY SETUP
+;;;;;;;;;;;;
+;; (require 'ivy)
+;; (require 'swiper)
+;; (require 'counsel)
+;; (ivy-mode)
 
-(fill-keymap evil-normal-state-map
-             (kbd "C-s")     'swiper
-             (kbd "C-*")     'swiper-search-word
-             (kbd "C-c C-r") 'ivy-resume
-             (kbd "C-M-p")   'counsel-yank-pop
-             )
+;; (defun swiper-search-word ()
+;;   "Search the current word in Swiper"
+;;   (interactive)
+;;   (swiper (current-word)))
 
-(setq magit-completing-read-function 'ivy-completing-read)
+;; (fill-keymap evil-normal-state-map
+;;              (kbd "C-s")     'swiper
+;;              (kbd "C-*")     'swiper-search-word
+;;              (kbd "C-c C-r") 'ivy-resume
+;;              (kbd "C-M-p")   'counsel-yank-pop
+;;              )
 
-(define-key ivy-mode-map [escape] 'minibuffer-keyboard-quit)
+;; (setq magit-completing-read-function 'ivy-completing-read)
 
-;; (require 'ido)
-;; (require 'smex)
-;; (setq ido-everywhere t)
-;; (setq ido-enable-flex-matching t) ;match substr on what is written
-;; (setq ido-use-filename-at-point nil)
-;; (setq ido-file-extensions-order '(".tex" ".sage" ".py" ".bib" ".txt"))
+;; (define-key ivy-mode-map [escape] 'minibuffer-keyboard-quit)
+
+
+;;;;;;;;;;;;
+;; IDO SETUP
+;;;;;;;;;;;;
+(require 'ido)
+(require 'smex)
+(require 'flx-ido)
+(ido-mode 1)
+(ido-everywhere 1)
+(flx-ido-mode 1)
+(setq ido-enable-flex-matching t)
+;; disable ido faces to see flx highlights.
+(setq ido-use-faces nil)
+(setq ido-use-filename-at-point nil)
+(setq ido-file-extensions-order '(".tex" ".sage" ".py" ".bib" ".txt"))
 ;; (setq ido-auto-merge-work-directories-length -1) ; don't suggest stuff in other dirs
-;; (global-set-key "\M-x" 'smex) ;; awesome function chooser
-;; (add-to-list 'ido-ignore-buffers "*terminal")
-;; (ido-mode t)
+(global-set-key "\M-x" 'smex) ;; awesome function chooser
+(add-to-list 'ido-ignore-buffers "*terminal")
 
-;; ;; Use smex for C-h f
-;; (defun  smex-describe-function (fun &optional commandp)
-;;   "As `describe-function' but use smex completion."
-;;   (interactive
-;;    (list (let* ((fn (or (and (fboundp 'symbol-nearest-point)
-;;                              (symbol-nearest-point))
-;;                         (function-called-at-point)))
-;;                 (smex-prompt-string "Describe function: "))
-;;            (smex-completing-read (if fn (cons (symbol-name fn) list-of-all-functions) list-of-all-functions) nil))))
-;;   (describe-function (intern fun))
-;;   )
-;; (global-set-key (kbd "C-h f") 'smex-describe-function)
+;; Use smex for C-h f
+(defun  smex-describe-function (fun &optional commandp)
+  "As `describe-function' but use smex completion."
+  (interactive
+   (list (let* ((fn (or (and (fboundp 'symbol-nearest-point)
+                             (symbol-nearest-point))
+                        (function-called-at-point)))
+                (smex-prompt-string "Describe function: "))
+           (smex-completing-read (if fn (cons (symbol-name fn) list-of-all-functions) list-of-all-functions) nil))))
+  (describe-function (intern fun))
+  )
+(global-set-key (kbd "C-h f") 'smex-describe-function)
 
 ;; Grabbed from EmacsWiki 03/02/2014
 ;; http://www.emacswiki.org/emacs/ImenuMode#toc8
 ;; 
 
-;; (defun ido-goto-symbol (&optional symbol-list)
-;;    "Refresh imenu and jump to a place in the buffer using Ido."
-;;    (interactive)
-;;    (unless (featurep 'imenu)
-;;      (require 'imenu nil t))
-;;    (cond
-;;     ((not symbol-list)
-;;      (let ((ido-mode ido-mode)
-;;            (ido-enable-flex-matching
-;;             (if (boundp 'ido-enable-flex-matching)
-;;                 ido-enable-flex-matching t))
-;;            name-and-pos symbol-names position)
-;;        (unless ido-mode
-;;          (ido-mode 1)
-;;          (setq ido-enable-flex-matching t))
-;;        (while (progn
-;;                 (imenu--cleanup)
-;;                 (setq imenu--index-alist nil)
-;;                 (ido-goto-symbol (imenu--make-index-alist))
-;;                 (setq selected-symbol
-;;                       (ido-completing-read "Symbol? " symbol-names))
-;;                 (string= (car imenu--rescan-item) selected-symbol)))
-;;        (unless (and (boundp 'mark-active) mark-active)
-;;          (push-mark nil t nil))
-;;        (setq position (cdr (assoc selected-symbol name-and-pos)))
-;;        (cond
-;;         ((overlayp position)
-;;          (goto-char (overlay-start position)))
-;;         (t
-;;          (goto-char position)))))
-;;     ((listp symbol-list)
-;;      (dolist (symbol symbol-list)
-;;        (let (name position)
-;;          (cond
-;;           ((and (listp symbol) (imenu--subalist-p symbol))
-;;            (ido-goto-symbol symbol))
-;;           ((listp symbol)
-;;            (setq name (car symbol))
-;;            (setq position (cdr symbol)))
-;;           ((stringp symbol)
-;;            (setq name symbol)
-;;            (setq position
-;;                  (get-text-property 1 'org-imenu-marker symbol))))
-;;          (unless (or (null position) (null name)
-;;                      (string= (car imenu--rescan-item) name))
-;;            (add-to-list 'symbol-names name)
-;;            (add-to-list 'name-and-pos (cons name position))))))))
+(defun ido-goto-symbol (&optional symbol-list)
+   "Refresh imenu and jump to a place in the buffer using Ido."
+   (interactive)
+   (unless (featurep 'imenu)
+     (require 'imenu nil t))
+   (cond
+    ((not symbol-list)
+     (let ((ido-mode ido-mode)
+           (ido-enable-flex-matching
+            (if (boundp 'ido-enable-flex-matching)
+                ido-enable-flex-matching t))
+           name-and-pos symbol-names position)
+       (unless ido-mode
+         (ido-mode 1)
+         (setq ido-enable-flex-matching t))
+       (while (progn
+                (imenu--cleanup)
+                (setq imenu--index-alist nil)
+                (ido-goto-symbol (imenu--make-index-alist))
+                (setq selected-symbol
+                      (ido-completing-read "Symbol? " symbol-names))
+                (string= (car imenu--rescan-item) selected-symbol)))
+       (unless (and (boundp 'mark-active) mark-active)
+         (push-mark nil t nil))
+       (setq position (cdr (assoc selected-symbol name-and-pos)))
+       (cond
+        ((overlayp position)
+         (goto-char (overlay-start position)))
+        (t
+         (goto-char position)))))
+    ((listp symbol-list)
+     (dolist (symbol symbol-list)
+       (let (name position)
+         (cond
+          ((and (listp symbol) (imenu--subalist-p symbol))
+           (ido-goto-symbol symbol))
+          ((listp symbol)
+           (setq name (car symbol))
+           (setq position (cdr symbol)))
+          ((stringp symbol)
+           (setq name symbol)
+           (setq position
+                 (get-text-property 1 'org-imenu-marker symbol))))
+         (unless (or (null position) (null name)
+                     (string= (car imenu--rescan-item) name))
+           (add-to-list 'symbol-names name)
+           (add-to-list 'name-and-pos (cons name position))))))))
 
 
 ;;; All done

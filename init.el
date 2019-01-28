@@ -625,8 +625,7 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
              ;; Tab in normal mode works as tab in Emacs
              (kbd "TAB") 'indent-for-tab-command
              (kbd "C-y") 'yank
-             ;; (kbd "M-n") 'ido-goto-symbol
-             (kbd "M-,") 'ido-imenu-anywhere
+             (kbd "M-,") 'ido-goto-symbol
              (kbd "z d") (lambda () (interactive) (kill-buffer (current-buffer))) ;; kill current buffer
              )
 ;; Key-bindings in insert mode
