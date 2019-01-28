@@ -30,5 +30,10 @@
 (setq ispell-silently-savep t)
 
 
+(defun jsrn-flyspell-mode-hook ()
+  (ispell-change-dictionary "dansk")
+  )
+(add-hook 'flyspell-mode-hook 'jsrn-flyspell-mode-hook)
+
 (message "Loaded flyspell_setup.el")
 (provide 'flyspell_setup)
