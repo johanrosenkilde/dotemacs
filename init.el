@@ -20,50 +20,42 @@
 (setq user-full-name "Johan S. H. Rosenkilde"
       jsrn-user-mail-address "jsrn@jsrn.dk") ;; Std email; I will overwrite user-mail-address
 
-;; Other global nice options
+;; Global look
 (setq inhibit-splash-screen t)
 (setq initial-scratch-message "")
-(setq initial-major-mode 'text-mode) ; set *scratch* buffer mode
-(setq-default major-mode 'text-mode) ; set new buffers' major mode
 (scroll-bar-mode -1) ;; Emacs gurus don't need no stinking scroll bars
 (menu-bar-mode 0)    ;; or menu bars
 (tool-bar-mode -1)
 (add-to-list 'default-frame-alist '(font . "Bitstream Vera Sans Mono-8"))
 (add-to-list 'default-frame-alist '(left-fringe . 0))
 (add-to-list 'default-frame-alist '(right-fringe . 0))
+(setq visible-bell t
+      default-font-height 80)
+(setq zenburn-use-variable-pitch t)
+(setq zenburn-scale-org-headlines t)
+(load-theme 'zenburn t)
+
+;; (set-face-attribute 'default nil :height default-font-height)
+
+;; Other global nice options
+(setq initial-major-mode 'text-mode) ; set *scratch* buffer mode
+(setq-default major-mode 'text-mode) ; set new buffers' major mode
 (setq-default indent-tabs-mode nil) ; never insert tabs, do spaces
 (setq compilation-scroll-output t
       grep-find-command "grep -r --exclude=.git "  ;; grep ignores Git
-      visible-bell t
       split-height-threshold 9999  ;; never automatically split horisontally
       sentence-end-double-space nil  ;; sentences end with a dot, not with two spaces
       auto-save-file-name-transforms '((".*" "~/.emacs.d/autosaves/\\1" t))  ;; autosaves put away
       backup-directory-alist (quote ((".*" . "~/.emacs.d/backups/")))
-      
       )
 (setq-default fill-column 80)
 (setq tab-width 4)
-
 (setq safe-local-variable-values nil)
 
 ;; Environment
 (setenv "PATH" (concat (getenv "PATH") ":/home/jsrn/local/bin:/home/jsrn/code/scripts"))
 ;; Use qutebrowser for hyperlinks
-(setq browse-url-browser-function (lambda (url monkey) (call-process "/home/jsrn/local/bin/qutebrowser" nil 0 nil "--target" "auto" url)))
-
-;; Some font settings
-(custom-set-faces
- '(default ((t (:inherit nil :stipple nil :background "white" :foreground
-                         "black" :inverse-video nil :box nil :strike-through nil
-                         :overline nil :underline nil :slant normal :weight
-                         normal :height 80 :width normal :foundry "unknown"
-                         :family "Monospace"))))
- '(flyspell-incorrect ((t (:foreground "OrangeRed" :underline t))))
- '(menu ((t (:height 1 :family "Monospace"))))
- '(table-cell ((t nil)))
-)
-(setq default-font-height 80)
-(set-face-attribute 'default nil :height default-font-height)
+(setq browse-url-browser-function (lambda (url monkey) (call-process "/usr/bin/qutebrowser" nil 0 nil "--target" "auto" url)))
 
 
 
