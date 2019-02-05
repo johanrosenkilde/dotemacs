@@ -11,6 +11,9 @@
 ;; Set files which contains agenda files to all .org files in specified dir
 (setq org-agenda-files (directory-files "~/orgs" t "^[^#]*org$" t))
 
+;; Load Danish calendar
+(load "da-calendar.el")
+
 ;; Various agenda setup
 (setq org-todo-keywords '((sequence "TODO" "DONE")))
 (setq org-agenda-repeating-timestamp-show-all (list "MEET")) ; only show repetitions for MEET in agenda
@@ -201,12 +204,10 @@
 (fill-keymap org-mode-map
              (kbd "C-c a") 'org-agenda
              )
-(global-set-key [(f10)] 'org-agenda-list)
-(global-set-key [(shift f10)] '(lambda ()
-  (interactive)
-  (org-agenda-list nil
-                   (concat (format-time-string "%Y-%m") "-01")
-                   'month)))
+(global-set-key [(f10)] (lambda () (interactive)
+                          (other-window 1)
+                          (cfw:open-org-calendar)))
+(global-set-key [(shift f10)] 'org-agenda-list)
 (global-set-key "\C-cc" 'org-capture)
 (global-set-key (kbd "C-,") 'cycle-agenda-files-or-goto-org)
 
