@@ -1,6 +1,7 @@
 print(c.bindings.commands)
 
 c.tabs.position = "left"
+c.tabs.show = "multiple"
 c.auto_save.session = True
 c.completion.use_best_match = True
 c.content.cookies.store = False
@@ -8,6 +9,7 @@ c.content.geolocation = False
 c.editor.command = [ "emacsclient", "-c", "-e", "(progn (find-file \"{file}\") (goto-line {line}) (beginning-of-line) (forward-char (- {column} 1)))" ]
 c.downloads.location.directory = "/home/jsrn/downloads/tmp/"
 c.downloads.location.prompt = False
+c.content.headers.user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36"
 
 config.bind('n', 'run-with-count 2 scroll down')
 config.bind('e', 'run-with-count 2 scroll up')
@@ -21,6 +23,7 @@ config.bind('s', 'tab-prev')
 config.bind('h', 'tab-next')
 # <Alt-Num> for jumping to tab Num
 config.bind('h', 'tab-next')
+config.bind('xt', 'scroll right')
 
 config.bind('<Ctrl-k>', 'tab-clone')
 config.bind('<Ctrl-O>', 'back')
