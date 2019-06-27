@@ -6,7 +6,9 @@
 	     )
 (setq git-commit-summary-max-length 100)
 (setq magit-restore-window-configuration nil) ;; don't attempt stupid restore of look before magit
-(setq magit-diff-refine-hunk t)
+(setq magit-diff-refine-hunk 'all)
+(setq magit-diff-highlight-hunk-body nil)
+;; TODO: add toggle-truncate-line to disable it?
 (defun jsrn-magit-mode-hook ()
   (interactive)
   (visual-line-mode)
