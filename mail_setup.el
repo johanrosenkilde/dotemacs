@@ -173,6 +173,7 @@
               ((string-equal mailbox "gmail") "/gmail/[Gmail].Sent Mail")
               (t jsrn-mu4e-sent-folder)))))
   )
+
 (setq mu4e-maildir "~/mail"
       jsrn-mu4e-sent-folder "/jsrn/INBOX.Sent"
       mu4e-sent-folder 'jsrn-set-sent-folder
@@ -180,37 +181,39 @@
       mu4e-trash-folder "/trash"
       mu4e-refile-folder (lambda (msg)
                            (let ((mailbox (jsrn-mu4e-mailbox msg))
-                                 (maildir (mu4e-message-part-field msg :maildir)))
-                             (cond ((string-equal mailbox "jsrn") "/jsrn/INBOX.Archives.2018")
-                                   ((string-equal mailbox "atuin") "/jsrn/INBOX.Archives.2018")
+                                 (maildir (mu4e-message-part-field msg :maildir))
+                                 (year (format-time-string "%Y")))
+                             (cond ((string-equal mailbox "jsrn") (concat "/jsrn/INBOX.Archives." year))
+                                   ((string-equal mailbox "atuin") (concat "/jsrn/INBOX.Archives." year))
                                    ((string-equal maildir "/johansjulehjerter/Salg.Bekraeftet") "/johansjulehjerter/Salg.Betalt")
                                    ((string-equal maildir "/johansjulehjerter/Salg.Betalt") "/johansjulehjerter/Salg.Sendt")
                                    ((string-equal mailbox "johansjulehjerter") "/johansjulehjerter/Archives")
                                    ((string-equal mailbox "mailinglist") "/mailinglist/INBOX.Archive")
                                    ((string-equal mailbox "gmail") "/gmail/[Gmail].All Mail")
-                                   ((string-equal mailbox "dtu")   "/dtu/Archives.2018"))))
+                                   ((string-equal mailbox "dtu")   (concat "/dtu/Archives." year)))))
       )
 (setq mu4e-attachment-dir "~/downloads/tmp")
 
-;; Set up some shortcuts access them with 'j' ('jump')
-(setq   mu4e-maildir-shortcuts
-        '(("/jsrn/INBOX"       . ?i)
-          ("/jsrn/INBOX.Sent"  . ?s)
-          ("/jsrn/INBOX.To Use". ?u)
-          ("/jsrn/INBOX.Archives.2018". ?a)
-          ("/dtu/INBOX"         . ?I)
-          ("/dtu/Sent"          . ?S)
-          ("/dtu/Archives.2018" . ?A)
-          ("/jsrn/INBOX.To Use". ?u)
-          ("/jsrn/INBOX.Drafts". ?d)
-          ("/trash"             . ?w)
-          ("/johansjulehjerter/Salg.Nye" . ?p)
-          ("/johansjulehjerter/Salg.Bekraeftet" . ?P)
-          ("/johansjulehjerter/Salg.Betalt" . ?F)
-          ("/johansjulehjerter/Salg.Sendt" . ?U)
-          ))
 
-;; Setup bookmarks
+;; Set up some shortcuts access them with 'j' ('jump')
+(let* ((year (format-time-string "%Y"))
+      (shortcuts `(("/jsrn/INBOX"       . ?i)
+                    ("/jsrn/INBOX.Sent"  . ?s)
+                    ("/jsrn/INBOX.To Use". ?u)
+                    ("/dtu/INBOX"         . ?I)
+                    ("/dtu/Sent"          . ?S)
+                    ("/jsrn/INBOX.To Use". ?u)
+                    ("/jsrn/INBOX.Drafts". ?d)
+                    ("/trash"             . ?w)
+                    ("/johansjulehjerter/Salg.Nye" . ?p)
+                    ("/johansjulehjerter/Salg.Bekraeftet" . ?P)
+                    ("/johansjulehjerter/Salg.Betalt" . ?F)
+                    ("/johansjulehjerter/Salg.Sendt" . ?U)))
+      (jsrn_arch (concat "/jsrn/INBOX.Archives." year))
+      (dtu_arch  (concat "/dtu/Archives." year)))
+  (add-to-list 'shortcuts (cons dtu_arch ?A))
+  (add-to-list 'shortcuts (cons jsrn_arch ?a))
+  (setq mu4e-maildir-shortcuts shortcuts))
 (add-to-list 'mu4e-bookmarks
    '("maildir:/jsrn/INBOX.Archives.2018 or
 maildir:/johansjulehjerter/Archives or maildir:/dtu/Archives.2018 or maildir:/dtu/Archives.2018" "Archives" ?a))
@@ -218,7 +221,7 @@ maildir:/johansjulehjerter/Archives or maildir:/dtu/Archives.2018 or maildir:/dt
 (add-to-list 'mu4e-bookmarks
    '("maildir:/jsrn/INBOX or maildir:/johansjulehjerter/INBOX or maildir:/gmail/INBOX"  "Inboxes"  ?i))
 (add-to-list 'mu4e-bookmarks
-   '("maildir:/jsrn/INBOX.Sent or maildir:/johansjulehjerter/Sent or maildir:/mailinglist/Sent or maildir:/gmail/[Gmail].Sent Mail" "Sent" ?s))
+   '("maildir:/jsrn/INBOX.Sent or maildir/dtu/Sent or maildir:/Sent.Old or maildir:/johansjulehjerter/Sent or maildir:/mailinglist/Sent or maildir:/gmail/[Gmail].Sent Mail" "Sent" ?s))
 (add-to-list 'mu4e-bookmarks
    '("maildir:/jsrn/INBOX.Archives.2018 or
 maildir:/johansjulehjerter/Archives or maildir:/dtu/Archives.2018 or maildir:/dtu/Archives.2018" "Archives" ?a))
@@ -434,7 +437,6 @@ link))
    link))))
 (org-add-link-type "mu4e" 'org-mu4e-open)
 (add-hook 'org-store-link-functions 'org-mu4e-store-link)
-
 
 
 

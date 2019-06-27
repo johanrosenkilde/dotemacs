@@ -1192,6 +1192,7 @@ the optional values set"
 (defun setup-mail ()
   (require 'mail_setup "mail_setup.el"))
 (add-hook 'administrative-mode-hook 'setup-mail)
+)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
