@@ -115,17 +115,24 @@ the passwords in any Emacs variables; only the keys."
                       (s-trim (buffer-substring start (point))))
         (forward-line)))
   ))
+
 (defun secret-lookup (key)
   "Return the password for the given key."
   (interactive
    (list (ido-completing-read "Key or site: " secret-password-keys)))
-  (with-temp-buffer
-    (insert-file-contents secret-password-file)
-    (condition-case nil
-        (progn
-          (re-search-forward (concat "^" key "\t\\(.*\\)$"))
-          (match-string 1))
-      (error (error "The key was not found.")))
+  (let ((secret 
+        (with-temp-buffer
+          (insert-file-contents secret-password-file)
+          (condition-case nil
+              (progn
+                (re-search-forward (concat "^" key "\t\\(.*\\)$"))
+                (match-string 1))
+            (error (error "The key was not found.")))
+          )))
+    (progn
+      (if (called-interactively-p `interactive)
+          (message secret))
+      secret)
   ))
 
 (defun secret-lookup-clipboard (key)
