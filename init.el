@@ -514,6 +514,8 @@ using tramp/sudo, if the file is not writable by user."
   (secret-load-keys)
   (evil-global-set-key 'normal (kbd "C-1") 'secret-lookup-clipboard)
   (evil-global-set-key 'emacs (kbd "C-1") 'secret-lookup-clipboard)
+  (evil-global-set-key 'normal (kbd "C-!") 'secret-lookup)
+  (evil-global-set-key 'emacs (kbd "C-!") 'secret-lookup)
   (evil-global-set-key 'normal (kbd "C-2") 'secret-new)
   (evil-global-set-key 'emacs (kbd "C-2") 'secret-new)
   )
@@ -1196,7 +1198,9 @@ the optional values set"
 ;;       OTHER MODES
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Text-mode
-(add-hook 'text-mode-hook (lambda () (visual-line-mode)))
+(add-hook 'text-mode-hook (lambda ()
+                            (visual-line-mode)
+                            (auto-fill-mode)))
 
 ;; Undo-tree mode
 (define-key undo-tree-visualizer-mode-map (kbd "n") 'undo-tree-visualize-redo)

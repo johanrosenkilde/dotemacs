@@ -188,8 +188,8 @@
 ;; 	(holiday-fixed 6 5 "Fars dag")
 ;; 	(holiday-fixed 6 15 "Valdemarsdag (Dannebrog)")
 ;; 	(holiday-fixed 6 24 "Skt. Hans dag")))
-
-(setq calendar-holidays
-      (append general-holidays other-holidays))
+;; (setq calendar-holidays
+;;       (append general-holidays other-holidays))
+(setq calendar-holidays general-holidays)
 
 ;;; da-kalender.el ends here

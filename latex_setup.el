@@ -112,7 +112,6 @@ This is a modified version of reftex-goto-label from 24.3.1"
 ;; Activate the more reliable but simpler error system (for C-c `)
 (setq LaTeX-command-style '(("" "%(PDF)%(latex) -file-line-error %S%(PDFout)")))
 ;; (TeX-source-correlate-mode)        ; activate forward/reverse search
-;; (TeX-source-correlate-mode)        ; activate forward/reverse search
 (TeX-PDF-mode)
 (add-to-list 'TeX-view-program-selection '(output-pdf "Zathura"))
 (add-to-list 'TeX-view-program-selection '(output-dvi "xdvi"))

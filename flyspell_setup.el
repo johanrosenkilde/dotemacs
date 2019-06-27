@@ -31,7 +31,7 @@
 
 
 (defun jsrn-flyspell-mode-hook ()
-  (ispell-change-dictionary "dansk")
+  (ispell-change-dictionary "british")
   )
 (add-hook 'flyspell-mode-hook 'jsrn-flyspell-mode-hook)
 
