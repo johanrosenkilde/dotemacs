@@ -33,7 +33,7 @@
   (ledger-post-align-postings (region-beginning) (region-end))
 )
 
-(defun ledger-import-csv (file-name)
+(defun ledger-import-csv (file-name &optional add-vat)
   "Import a CSV file into the current (ledger) buffer.
 
   Go through the CSV file, line-by-line, assuming the following format
@@ -68,15 +68,25 @@
                 (let* ((raw-date (match-string 1)) ;; extract all matches before further regexp
                        (text (match-string 2))
                        (raw-val (if (match-string 7) (match-string 7) (match-string 4)))
-                       (val  (concat raw-val " " commodity))
+                       (val-comm (concat raw-val " " commodity))
                        (date (ledger-convert-date raw-date))
                        (debit (ivy-read
-                               (format "Transaction: (%s) %s,   amount %s. Debit account:" date text val)
+                               (format "Transaction: (%s) %s,   amount %s. Debit account:" date text val-comm)
                                (copy-list accounts) :preselect last-debit))
-                       (nspace (- 90 (+ 4 (length credit) (length raw-val)))))
+                       (nspace (- 90 (+ 4 (length credit) (length val-comm))))
+                       (vat-str (if add-vat
+                                    (let* ((val (string-to-number (subst-char-in-string "," "." raw-val)))
+                                           (vat-account (if (< val 0)
+                                                            "Moms:Udgående"
+                                                          "Moms:Indgående"))
+                                           (vat-amount (* 0.2 val))
+                                           (vat-val-str    (concat (number-to-string vat-amount) " " commodity))
+                                           (vat-nspace (- 90 (+ 4 (length vat-account) (length vat-val-str)))))
+                                      (concat "    " vat-account (make-string vat-nspace ? ) vat-val-str "\n"))
+                                  "")))
                   (unless (string-equal "<SKIP>" debit)
                     (set-buffer target-buf)
-                    (insert date " " text "\n" "    " credit (make-string nspace ? ) val "\n    " debit "\n\n")
+                    (insert date " " text "\n" "    " credit (make-string nspace ? ) val-comm "\n    " debit "\n" vat-str "\n")
                     (set-buffer source-buf)
                     (setq last-debit debit))
                   (forward-line))
@@ -84,6 +94,10 @@
               )
             )
           )))))
+
+(defun ledger-import-csv-add-vat (file-name)
+  (interactive "fCSV file: ")
+  (ledger-import-csv file-name t))
 
 (defun ledger-convert-buffer (credit)
   "Convert current buffer filled with tab-separated list of expenses to Ledger transactions"
