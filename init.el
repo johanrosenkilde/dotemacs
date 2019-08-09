@@ -20,15 +20,14 @@
 (setq user-full-name "Johan S. H. Rosenkilde"
       jsrn-user-mail-address "jsrn@jsrn.dk") ;; Std email; I will overwrite user-mail-address
 
-;; Global look
 (setq inhibit-splash-screen t)
 (setq initial-scratch-message "")
 (scroll-bar-mode -1) ;; Emacs gurus don't need no stinking scroll bars
 (menu-bar-mode 0)    ;; or menu bars
 (tool-bar-mode -1)
 (add-to-list 'default-frame-alist '(font . "Bitstream Vera Sans Mono-8"))
-(add-to-list 'default-frame-alist '(left-fringe . 0))
-(add-to-list 'default-frame-alist '(right-fringe . 0))
+;; (add-to-list 'default-frame-alist '(left-fringe . 0))
+;; (add-to-list 'default-frame-alist '(right-fringe . 0))
 (setq visible-bell t
       default-font-height 80)
 (setq zenburn-use-variable-pitch t)
@@ -89,19 +88,17 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;       PACKAGE MANAGER / MELPA
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(require 'package) ;; You might already have this line
+(require 'package)
 (let* ((no-ssl (and (memq system-type '(windows-nt ms-dos))
                     (not (gnutls-available-p))))
        (url (concat (if no-ssl "http" "https") "://melpa.org/packages/")))
   (add-to-list 'package-archives (cons "melpa" url) t))
-(when (< emacs-major-version 24)
-  ;; For important compatibility libraries like cl-lib
-  (add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/")))
-(package-initialize) ;; You might already have this line
+(package-initialize)
 (add-to-list 'package-archives
              '("melpa-stable" . "https://stable.melpa.org/packages/") t)
 (add-to-list 'package-archives
              '("gnu" . "http://elpa.gnu.org/packages/") t)
+
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
