@@ -164,8 +164,8 @@
           (message "Sent mail copied to default sent folder: %s" jsrn-mu4e-sent-folder)
           jsrn-mu4e-sent-folder)
       (let ((mailbox (jsrn-mu4e-mailbox msg)))
-        (cond ((string-equal mailbox "jsrn") "/jsrn/INBOX.Sent")
-              ((string-equal mailbox "atuin") "/jsrn/INBOX.Sent")
+        (cond ((string-equal mailbox "jsrn") "/jsrn/Sent")
+              ((string-equal mailbox "atuin") "/jsrn/Sent")
               ((string-equal mailbox "johansjulehjerter") "/johansjulehjerter/Sent")
               ((string-equal mailbox "mailinglist") "/mailinglist/INBOX.Sent")
               ((string-equal mailbox "dtu") "/dtu/Sent")
@@ -175,7 +175,7 @@
   )
 
 (setq mu4e-maildir "~/mail"
-      jsrn-mu4e-sent-folder "/jsrn/INBOX.Sent"
+      jsrn-mu4e-sent-folder "/jsrn/Sent"
       mu4e-sent-folder 'jsrn-set-sent-folder
       mu4e-drafts-folder "/jsrn/INBOX.Drafts"
       mu4e-trash-folder "/trash"
@@ -183,8 +183,8 @@
                            (let ((mailbox (jsrn-mu4e-mailbox msg))
                                  (maildir (mu4e-message-part-field msg :maildir))
                                  (year (format-time-string "%Y")))
-                             (cond ((string-equal mailbox "jsrn") (concat "/jsrn/INBOX.Archives." year))
-                                   ((string-equal mailbox "atuin") (concat "/jsrn/INBOX.Archives." year))
+                             (cond ((string-equal mailbox "jsrn") (concat "/jsrn/Archives." year))
+                                   ((string-equal mailbox "atuin") (concat "/jsrn/Archives." year))
                                    ((string-equal maildir "/johansjulehjerter/Salg.Bekraeftet") "/johansjulehjerter/Salg.Betalt")
                                    ((string-equal maildir "/johansjulehjerter/Salg.Betalt") "/johansjulehjerter/Salg.Sendt")
                                    ((string-equal mailbox "johansjulehjerter") "/johansjulehjerter/Archives")
@@ -198,7 +198,7 @@
 ;; Set up some shortcuts access them with 'j' ('jump')
 (let* ((year (format-time-string "%Y"))
       (shortcuts `(("/jsrn/INBOX"       . ?i)
-                    ("/jsrn/INBOX.Sent"  . ?s)
+                    ("/jsrn/Sent"  . ?s)
                     ("/jsrn/INBOX.To Use". ?u)
                     ("/dtu/INBOX"         . ?I)
                     ("/dtu/Sent"          . ?S)
@@ -209,22 +209,19 @@
                     ("/johansjulehjerter/Salg.Bekraeftet" . ?P)
                     ("/johansjulehjerter/Salg.Betalt" . ?F)
                     ("/johansjulehjerter/Salg.Sendt" . ?U)))
-      (jsrn_arch (concat "/jsrn/INBOX.Archives." year))
+      (jsrn_arch (concat "/jsrn/Archives." year))
       (dtu_arch  (concat "/dtu/Archives." year)))
   (add-to-list 'shortcuts (cons dtu_arch ?A))
   (add-to-list 'shortcuts (cons jsrn_arch ?a))
   (setq mu4e-maildir-shortcuts shortcuts))
 (add-to-list 'mu4e-bookmarks
-   '("maildir:/jsrn/INBOX.Archives.2018 or
+   '("maildir:/jsrn/Archives.2019 or maildir:/jsrn/Archives.2018 or
 maildir:/johansjulehjerter/Archives or maildir:/dtu/Archives.2018 or maildir:/dtu/Archives.2018" "Archives" ?a))
 ;; View the contents of private inboxes or sent with 'bi' or 'bs'
 (add-to-list 'mu4e-bookmarks
    '("maildir:/jsrn/INBOX or maildir:/johansjulehjerter/INBOX or maildir:/gmail/INBOX"  "Inboxes"  ?i))
 (add-to-list 'mu4e-bookmarks
-   '("maildir:/jsrn/INBOX.Sent or maildir/dtu/Sent or maildir:/Sent.Old or maildir:/johansjulehjerter/Sent or maildir:/mailinglist/Sent or maildir:/gmail/[Gmail].Sent Mail" "Sent" ?s))
-(add-to-list 'mu4e-bookmarks
-   '("maildir:/jsrn/INBOX.Archives.2018 or
-maildir:/johansjulehjerter/Archives or maildir:/dtu/Archives.2018 or maildir:/dtu/Archives.2018" "Archives" ?a))
+   '("maildir:/jsrn/Sent or maildir/dtu/Sent or maildir:/Sent.Old or maildir:/johansjulehjerter/Sent or maildir:/mailinglist/Sent or maildir:/gmail/[Gmail].Sent Mail" "Sent" ?s))
 ;; (add-to-list 'mu4e-bookmarks
 ;;    '("maildir:/mailinglist/INBOX and date:1M.."  "Mailinglist"  ?n))
 
