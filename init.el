@@ -490,6 +490,24 @@ using tramp/sudo, if the file is not writable by user."
 (define-key company-mode-map (kbd "M-/") 'company-complete)
 
 
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;       QUICK-EDIT INTEGRATION (e.g. Qutebrowser)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defun quickedit (file line column)
+  (find-file file)
+  (goto-line line)
+  (beginning-of-line)
+  (forward-char (- column 1))
+  (message "Quick-edit: Press C-c C-c when you're done")
+  (local-set-key (kbd "C-c C-c")
+                 (lambda ()
+                   (interactive)
+                   (save-buffer)
+                   (kill-buffer)
+                   (delete-frame))))
+
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;       ADMINISTRATIVE MODE
 ;; My own created meta mode for loading various stuff for the emacs

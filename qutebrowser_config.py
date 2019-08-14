@@ -1,4 +1,4 @@
-print(c.bindings.commands)
+#print(c.bindings.commands)
 
 c.tabs.position = "left"
 c.tabs.show = "multiple"
@@ -6,7 +6,7 @@ c.auto_save.session = True
 c.completion.use_best_match = True
 c.content.cookies.store = False
 c.content.geolocation = False
-c.editor.command = [ "emacsclient", "-c", "-e", "(progn (find-file \"{file}\") (goto-line {line}) (beginning-of-line) (forward-char (- {column} 1)))" ]
+c.editor.command = [ "emacsclient", "-c", "-e", "(quickedit \"{file}\" {line} {column})" ]
 c.downloads.location.directory = "/home/jsrn/downloads/tmp/"
 c.downloads.location.prompt = False
 c.content.headers.user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36"
@@ -33,13 +33,14 @@ config.bind('<Ctrl-I>', 'forward')
 config.bind('k', 'search-next')
 config.bind('K', 'search-prev')
 
-config.bind('<Ctrl-i>', 'open-editor')
+# config.bind('<Ctrl-i>', 'open-editor')
 config.bind('<Ctrl-i>', 'open-editor', mode="insert")
 
 config.bind('j', 'yank pretty-url')
 
 config.bind('<Ctrl-0>', 'zoom 100')
 
+config.bind('<Ctrl-H>', 'history')
 
 config.bind(',m', "spawn mpv {url}")
 config.bind(',M', "hint links spawn mpv {hint-url}")
