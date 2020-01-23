@@ -110,8 +110,11 @@ This is a modified version of reftex-goto-label from 24.3.1"
                                    ; better with adaptive-wrap-prefix-mode)
       )
 ;; Activate the more reliable but simpler error system (for C-c `)
+;; (add-to-list 'TeX-view-program-list
+;;              '("Zathura" ("zathura" "--synctex-forward %n:1:%b") " %o"))
 (setq LaTeX-command-style '(("" "%(PDF)%(latex) -file-line-error %S%(PDFout)")))
-;; (TeX-source-correlate-mode)        ; activate forward/reverse search
+(setq TeX-source-correlate-method `synctex)        ; activate forward/reverse search
+(TeX-source-correlate-mode)        ; activate forward/reverse search
 (TeX-PDF-mode)
 (add-to-list 'TeX-view-program-selection '(output-pdf "Zathura"))
 (add-to-list 'TeX-view-program-selection '(output-dvi "xdvi"))
