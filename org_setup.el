@@ -1,6 +1,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Setup Emacs-wide loads, vars etc.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(require 'imenu-anywhere)
 
 (setq org-deadline-warning-days 7
       )
@@ -18,6 +19,7 @@
              (kbd (concat "M-" evil-right-key-uc)) 'org-shiftmetaright
              (kbd (concat "C-M-" evil-up-key))    'org-backward-element
              (kbd (concat "C-M-" evil-down-key)) 'org-forward-element
+             (kbd "C-M-i") 'ido-imenu-anywhere
              (kbd "C-c l") 'org-store-link ;; insert it with C-c C-l (org-insert-link)
              )
 
