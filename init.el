@@ -12,7 +12,6 @@
   (setq file-name-handler-alist default-file-name-handler-alist))
 (add-hook 'after-init-hook 'reset-file-name-handler-alist)
 
-
 ;; Keyboard layout to expect
 (setq workman t)
 
@@ -40,6 +39,7 @@
 (setq initial-major-mode 'text-mode) ; set *scratch* buffer mode
 (setq-default major-mode 'text-mode) ; set new buffers' major mode
 (setq-default indent-tabs-mode nil) ; never insert tabs, do spaces
+
 (setq compilation-scroll-output t
       grep-find-command "grep -r --exclude=.git "  ;; grep ignores Git
       split-height-threshold 9999  ;; never automatically split horisontally
@@ -90,16 +90,9 @@
 ;;       PACKAGE MANAGER / MELPA
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'package)
-(let* ((no-ssl (and (memq system-type '(windows-nt ms-dos))
-                    (not (gnutls-available-p))))
-       (url (concat (if no-ssl "http" "https") "://melpa.org/packages/")))
-  (add-to-list 'package-archives (cons "melpa" url) t))
+(setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
+                         ("melpa" . "https://melpa.org/packages/")))
 (package-initialize)
-(add-to-list 'package-archives
-             '("melpa-stable" . "https://stable.melpa.org/packages/") t)
-(add-to-list 'package-archives
-             '("gnu" . "http://elpa.gnu.org/packages/") t)
-
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -150,6 +143,9 @@ element of ls if obj is not in ls or is the last."
     (if (and inlist (cdr inlist))
          (car (cdr inlist))
        (car ls))))
+
+(defun replace-in-string (what with in)
+  (replace-regexp-in-string (regexp-quote what) with in nil 'literal))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;       GLOBALLY DEFINED CUSTOM FUNCTIONS AND KEYS
@@ -1096,7 +1092,6 @@ the optional values set"
   ;; (require 'paredit)
   ;; (paredit-mode)
   (fill-keymap evil-normal-state-local-map
-    "D" 'paredit-kill
     "s" 'forward-sexp
     "S" 'backward-sexp
     "Q" (lambda () (interactive) (up-list -1))
