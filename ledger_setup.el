@@ -59,7 +59,7 @@
           (error "First line of file does not match regex"))
         (setq last-debit nil)
         (let* ((accounts (cons "<SKIP>" (save-excursion (set-buffer target-buf)
-                                                        (reverse (ledger-accounts-list)))))
+                                                        (ledger-accounts-list))))
                (ido-common-match-string "")
                (credit (completing-read "Credit account: " (copy-list  accounts)))
                (commodity "kr"))
@@ -77,10 +77,13 @@
                        (vat-str (if add-vat
                                     (let* ((val (string-to-number (subst-char-in-string "," "." raw-val)))
                                            (vat-account (if (< val 0)
-                                                            "Moms:Udgående"
-                                                          "Moms:Indgående"))
-                                           (vat-amount (* 0.2 val))
-                                           (vat-val-str    (concat (number-to-string vat-amount) " " commodity))
+                                                            "Moms:Indgående"
+                                                          "Moms:Udgående"))
+                                           (vat-sign    -1)
+                                           (vat-amount (* vat-sign 0.2 val))
+                                           (vat-val-str (concat
+                                                           (replace-in-string "." "," (format "%.2f" vat-amount))
+                                                            " " commodity))
                                            (vat-nspace (- 90 (+ 4 (length vat-account) (length vat-val-str)))))
                                       (concat "    " vat-account (make-string vat-nspace ? ) vat-val-str "\n"))
                                   "")))
