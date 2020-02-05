@@ -71,6 +71,19 @@
   (mml-attach-file file type nil "attachment")
 )
 
+(defun jsrn-attach-multiple-files-dired (dir)
+   "Attach multiple files from same dir using dired.
+   Called from within compose"
+  (interactive "D")
+  (dired-other-window dir)
+  (turn-on-gnus-dired-mode)
+  (define-key gnus-dired-mode-map (kbd "<C-return>")
+    (lambda ()
+      (interactive)
+      (gnus-dired-attach (dired-get-marked-files))
+      ))
+  )
+
 ;; perl script delatt didn't work for some reason
 ;; (defun jsrn-delete-attachments ()
 ;;   "Delete all attachments of the current mail. If jsrn-delete-attacments-save is
@@ -291,19 +304,6 @@ maildir:/johansjulehjerter/Archives or maildir:/dtu/Archives.2018 or maildir:/dt
   (save-excursion
     (message-goto-body)
     (flyspell-region (point) (progn (end-of-buffer) (point)))))
-
-(defun jsrn-attach-multiple-files-dired (dir)
-   "Attach multiple files from same dir using dired.
-   Called from within compose"
-  (interactive "D")
-  (dired-other-window dir)
-  (turn-on-gnus-dired-mode)
-  (define-key gnus-dired-mode-map (kbd "<C-return>")
-    (lambda ()
-      (interactive)
-      (gnus-dired-attach (dired-get-marked-files))
-      ))
-  )
 
 ;; Setup email writing
 (defun jsrn-mu4e-compose-setup ()
