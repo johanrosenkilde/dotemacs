@@ -2,6 +2,7 @@
 ;; Setup Emacs-wide loads, vars etc.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'imenu-anywhere)
+(require 'org-bullets)
 
 (setq org-deadline-warning-days 7
       )
@@ -30,6 +31,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun jsrn-org-mode-hook ()
+  (org-bullets-mode 1)
   (visual-line-mode t)
   (org-indent-mode)
   (evil-declare-motion 'org-up-element)
