@@ -9,7 +9,7 @@ c.content.geolocation = False
 c.editor.command = [ "emacsclient", "-c", "-e", "(quickedit \"{file}\" {line} {column})" ]
 c.downloads.location.directory = "/home/jsrn/downloads/tmp/"
 c.downloads.location.prompt = False
-c.content.headers.user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36"
+# c.content.headers.user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36"
 
 config.bind('n', 'run-with-count 2 scroll down')
 config.bind('e', 'run-with-count 2 scroll up')
