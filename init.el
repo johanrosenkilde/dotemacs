@@ -29,9 +29,23 @@
 ;; (add-to-list 'default-frame-alist '(right-fringe . 0))
 (setq visible-bell t
       default-font-height 80)
+
+;; Themes
 (setq zenburn-use-variable-pitch t)
 (setq zenburn-scale-org-headlines t)
-(load-theme 'zenburn t)
+(setq dark-theme 'zenburn)
+(setq light-theme 'solarized-light)
+(defun set-theme-light ()
+  (interactive)
+  (disable-theme dark-theme)
+  (load-theme light-theme t)
+)
+(defun set-theme-dark ()
+  (interactive)
+  (disable-theme light-theme)
+  (load-theme dark-theme t)
+)
+(set-theme-dark)
 
 ;; (set-face-attribute 'default nil :height default-font-height)
 
