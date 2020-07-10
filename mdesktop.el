@@ -77,6 +77,14 @@
         (desktop-read desktop-dirname))
     (error "The desktop %s does not exist" desktop)))
 
+(defun mdesktop-switch-noninteractive (desktop)
+  (if (file-exists-p (concat mdesktop-base-dir desktop))
+      (progn
+        (setq mdesktop-current desktop)
+        (setq desktop-dirname (concat mdesktop-base-dir mdesktop-current))
+        (desktop-read desktop-dirname))
+    (error "The desktop %s does not exist" desktop)))
+
 (defun mdesktop-save-on-kill-emacs ()
   "Save the current desktop, if set, when emacs dies. Never query the user."
   (interactive)

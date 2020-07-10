@@ -1151,6 +1151,9 @@ the optional values set"
                              (if mdesktop-current
                                  (mdesktop-save-current) ; save desktop ever so often
                                  )))
+; the following alias is to avoid escaping hyphens in i3's config file
+(defun jsrn-switch-to-mat ()
+  (mdesktop-switch-noninteractive "mat"))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
