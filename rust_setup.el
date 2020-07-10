@@ -1,13 +1,19 @@
+(require 'lsp_setup)
+
 (setenv "PATH" (concat (getenv "PATH") ":/home/jsrn/.cargo/bin"))
-(require 'lsp-mode)
-;; (require 'lsp-clients)
+
 (require 'rust-mode)
 (require 'cargo)
 
-(setq lsp-enable-snippet nil)
+(setq lsp-rust-server 'rust-analyzer)
 
-(use-package rust-mode
-  :hook (rust-mode . lsp))
+(add-hook 'rust-mode-hook #'lsp)
+
+(setq lsp-rust-show-warnings nil)
+
+(fill-keymap rust-mode-map
+             [(f2)] 'compile
+             )
 
 ;; ;; Add keybindings for interacting with Cargo
 ;; (use-package cargo
