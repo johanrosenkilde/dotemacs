@@ -5,7 +5,8 @@
 (require 'rust-mode)
 (require 'cargo)
 
-(setq lsp-rust-server 'rust-analyzer)
+(setq lsp-rust-server 'rls)
+;; (setq lsp-rust-server 'rust-server)
 
 (add-hook 'rust-mode-hook #'lsp)
 
