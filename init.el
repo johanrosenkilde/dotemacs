@@ -812,15 +812,13 @@ one above if there are no windows below"
 (evil-define-motion jsrn-scroll-down ()
   "Scroll down half a page and recenter"
   :type inclusive
-  (jsrn-evil-set-jump)
-  (move-to-window-line (- (evil-num-visible-lines) 2))
+  (evil-scroll-down 0)
   (recenter)
   )
 (evil-define-motion jsrn-scroll-up ()
   "Scroll up half a page and recenter"
   :type inclusive
-  (jsrn-evil-set-jump)
-  (move-to-window-line 2)
+  (evil-scroll-up 0)
   (recenter)
   )
 (fill-keymaps (list evil-motion-state-map evil-normal-state-map)
