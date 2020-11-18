@@ -15,8 +15,7 @@
 ;; END WORKAROUND
 
 ;; (setq sage-shell:use-prompt-toolkit nil)
-(setq sage-shell:sage-root  "/home/jsrn/local/sage/sage_stable")
-(setq sage-shell:sage-root  "/home/jsrn/local/sage/sage_devel")
+(setq sage-shell:sage-root  "/home/jsrn/local/sage/sage")
 (setq sage-shell:use-prompt-toolkit t)
 
 
