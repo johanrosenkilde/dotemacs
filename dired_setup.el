@@ -3,7 +3,10 @@
 (require 'dired)
 (setq ls-lisp-use-insert-directory-program nil)
 ;; Dired does not open a million buffers
-(toggle-diredp-find-file-reuse-dir 1)
+(define-key dired-mode-map (kbd "RET") 'dired-find-alternate-file) ; was dired-advertised-find-file
+(define-key dired-mode-map (kbd "^") (lambda () (interactive) (find-alternate-file "..")))  ; was dired-up-directory
+
+
 (put 'dired-find-alternate-file 'disabled nil)
 ;; When Dired does something to a file, requiring a target, it suggests other open dired buffer
 (setq dired-dwim-target 1)
