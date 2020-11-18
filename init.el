@@ -106,7 +106,10 @@
 (require 'package)
 (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
                          ("melpa" . "https://melpa.org/packages/")))
-(package-initialize)
+(when (< emacs-major-version 27)
+  (package-initialize))
+
+(require 'use-package)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -160,6 +163,7 @@ element of ls if obj is not in ls or is the last."
 
 (defun replace-in-string (what with in)
   (replace-regexp-in-string (regexp-quote what) with in nil 'literal))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;       GLOBALLY DEFINED CUSTOM FUNCTIONS AND KEYS
@@ -489,6 +493,14 @@ using tramp/sudo, if the file is not writable by user."
 (require 'diminish)
 
 
+;; Multiple cursors
+;; (require 'multiple-cursors)
+;; (global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
+;; (global-set-key (kbd "C->") 'mc/mark-next-like-this)
+;; (global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
+;; (global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
+
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;       AUTO-COMPLETE
@@ -574,17 +586,15 @@ using tramp/sudo, if the file is not writable by user."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;       EVIL
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(require 'evil)
-
-;; Jump like in the good ol' Evil days
-(require 'jsrn_jumps)
 
 (setq-default evil-symbol-word-search t)
 (setq evil-find-skip-newline t
       evil-move-cursor-back nil
-      evil-ex-search-highlight-all nil
+      evil-ex-search-highlight-all t
+      lazy-highlight-cleanup nil
       evil-want-fine-undo t
-      evil-want-abbrev-expand-on-insert-exit nil)
+      evil-want-abbrev-expand-on-insert-exit nil
+      )
 
 (setq evil-normal-state-tag (propertize "N" 'face '((:background "green" :foreground "black")))
       evil-emacs-state-tag (propertize "E" 'face '((:background "orange" :foreground "black")))
@@ -592,6 +602,12 @@ using tramp/sudo, if the file is not writable by user."
       evil-motion-state-tag (propertize "M" 'face '((:background "blue")))
       evil-visual-state-tag (propertize "V" 'face '((:background "grey80" :foreground "black")))
       evil-operator-state-tag (propertize "O" 'face '((:background "purple"))))
+
+(require 'evil)
+
+;; Jump like in the good ol' Evil days
+(require 'jsrn_jumps)
+
 ;; Escape quits anything
 (fill-keymaps (list evil-normal-state-map
                     evil-visual-state-map)
@@ -1233,6 +1249,8 @@ the optional values set"
                             (auto-fill-mode)))
 
 ;; Undo-tree mode
+(require 'undo-tree)
+(global-undo-tree-mode)
 (define-key undo-tree-visualizer-mode-map (kbd "n") 'undo-tree-visualize-redo)
 (define-key undo-tree-visualizer-mode-map (kbd "e") 'undo-tree-visualize-undo)
 (define-key undo-tree-visualizer-mode-map (kbd "y") 'undo-tree-visualize-switch-branch-left)
@@ -1348,5 +1366,10 @@ the optional values set"
 (cl-loop for minor-mode in '(undo-tree-mode
                           auto-fill-function
                           visual-line-mode
-                          highlight-parentheses-mode)
+                          highlight-parentheses-mode
+                          ivy-minor-mode
+                          company-minor-mode
+                          eldoc-mode
+                          auto-revert-mode
+                          flycheck-mode)
       do (diminish minor-mode))
