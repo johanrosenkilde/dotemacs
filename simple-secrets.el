@@ -36,7 +36,8 @@
 ;;; be specified with `secret-generate-password-command'. By default
 ;;; it uses pwgen.
 
-
+(add-to-list 'load-path "s.el")
+(load "s.el")
 
 ;; TEMPORARY: To fix an upstream bug introduced in Emacs 25
 ;; https://bbs.archlinux.org/viewtopic.php?id=190497
@@ -80,8 +81,6 @@
 	  (aset (car keys) field (match-string 1 string))
 	  (setq field (1+ field))))
       (nreverse keys))))
-
-
 
 (defgroup simple-secrets nil
   "Group for the `simple-secrets' package"
