@@ -144,69 +144,43 @@
 ;;       PREPARATION OF OPTIONALLY LOADED MODES
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; org
+(add-hook 'text-mode-hook (lambda () (visual-line-mode) (auto-fill-mode)))
+
+(defun setup-cpp ()
+  (require 'cpp_setup "cpp_setup.el"))
+(add-hook 'c++-mode-hook 'setup-cpp)
+
 (defun setup-org ()
   (require 'org_setup "org_setup.el"))
 (add-hook 'org-mode-hook 'setup-org)
 
-;; Latex
 (defun setup-latex ()
   (require 'latex_setup "latex_setup.el"))
 (add-hook 'LaTeX-mode-hook 'setup-latex)
 
-;; compilation-mode
 (defun jsrn-compilation-mode-hook ()
   (local-unset-key "g") ;; disable "recompile" command to reinstate Evil's g
   )
 (add-hook 'compilation-mode-hook 'jsrn-compilation-mode-hook)
 
-;; lisp
 (defun setup-lisp ()
   (require 'lisp_setup "lisp_setup.el"))
 (add-hook 'emacs-lisp-mode-hook 'setup-lisp)
 
-;; python
 (defun setup-python ()
   (require 'python_setup "python_setup.el"))
 (add-hook 'python-mode-hook 'setup-python)
 
-;; Sage
 (autoload 'sage-shell:sage-mode "sage_setup.el" "Major mode for Sage" t)
-
-;; IPython
 (autoload 'ipython-notebook "ipython_setup.el" "Browse and open an IPython notebook" t)
-
-;; Ocaml
 (autoload 'tuareg-mode "ocaml_setup.el" "Major mode for Ocaml" t)
-
-;; Rust
 (autoload 'rust-mode "rust_setup.el" "Major mode for Rust" t)
-
-;; Haskell
 (autoload 'haskell-mode "haskell_setup.el" "Major mode for Haskell" t)
-
-;; Fsharp
 (autoload 'fsharp-mode "fsharp_setup.el" "Major mode for F-sharp" t)
-
-;; C/C++
-(defun setup-cpp ()
-  (require 'cpp_setup "cpp_setup.el")
-  )
-(add-hook 'c++-mode-hook 'setup-cpp)
-
-;; Text-mode
-(add-hook 'text-mode-hook (lambda ()
-                            (visual-line-mode)
-                            (auto-fill-mode)))
-
 (autoload 'diff-mode "diff_setup.el" "Major mode for diff" t)
-
 (autoload 'web-mode "web_setup.el" "Major mode for web (html, php, etc.)" t)
-
 (autoload 'magit-status "magit_setup.el" "Git repository status using Magit" t )
-
 (autoload 'monky-status "monky_setup.el" "Mercurial repository status using Monky" t )
-
 (autoload 'ledger-mode "ledger_setup.el" "Load ledger setup")
 
 
