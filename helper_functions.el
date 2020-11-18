@@ -247,3 +247,76 @@ Use for e.g. (keymap-symbol (current-local-map))."
   "Modify the font size by amount modifier"
   (let ((old-face-attribute (face-attribute 'default :height)))
     (set-face-attribute 'default nil :height (+ old-face-attribute modifier))))
+
+(defun find-file-as-root ()
+  "Like `ido-find-file, but automatically edit the file with root-privileges
+using tramp/sudo, if the file is not writable by user.
+   From djcb "
+  (interactive)
+  (let ((file (ido-read-file-name "Edit as root: ")))
+    (unless (file-writable-p file)
+      (setq file (concat "/sudo:root@localhost:" file)))
+    (find-file file)))
+
+(defun minibuffer-keyboard-quit ()
+  "Abort recursive edit.
+In Delete Selection mode, if the mark is active, just deactivate it;
+then it takes a second \\[keyboard-quit] to abort the minibuffer."
+  (interactive)
+  (if (and delete-selection-mode transient-mark-mode mark-active)
+      (setq deactivate-mark t)
+    (when (get-buffer "*Completions*") (delete-windows-on "*Completions*"))
+    (abort-recursive-edit)))
+
+(defun jsrn-goto-first-symbol-use ()
+  (interactive)
+  (let ((sym (evil-find-symbol nil)))
+    (evil-goto-first-line)
+    (search-forward-regexp (format "\\_<%s\\_>" (regexp-quote sym)))
+    (evil-backward-word-begin)
+    ))
+
+(defun cofi/evil-cursor ()
+  "Change cursor color according to evil-state."
+  (let ((color-default "OliveDrab4")
+        (colors '((insert . "dark orange")
+                  (emacs . "sienna")
+                  (visual . "white")))
+        (cursor-default 'bar)
+        (cursors '((visual . hollow)
+                   (normal . box))))
+    (setq cursor-type (lookup evil-state cursors cursor-default))
+    (set-cursor-color (lookup evil-state cursors color-default))))
+
+(defun expand-window-vertically ()
+  "Expand current window vertically by deleting the window just below, or the
+one above if there are no windows below"
+  (interactive)
+  (setq is-lowest-window nil)
+  (condition-case err
+      (progn
+        (evil-window-down 1)
+        (when (string-match "Minibuf" (buffer-name))
+          (progn
+            (setq is-lowest-window t)
+            (evil-window-up 1))))
+    (error (setq is-lowest-window t)))
+  (when is-lowest-window
+      (evil-window-up 1))
+  (delete-window)
+  )
+
+
+;; quick-edit integration (e.g. qutebrowser)
+(defun quickedit (file line column)
+  (find-file file)
+  (goto-line line)
+  (beginning-of-line)
+  (forward-char (- column 1))
+  (message "Quick-edit: Press C-c C-c when you're done")
+  (local-set-key (kbd "C-c C-c")
+                 (lambda ()
+                   (interactive)
+                   (save-buffer)
+                   (kill-buffer)
+                   (delete-frame))))

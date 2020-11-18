@@ -2,7 +2,7 @@
 ;; sometimes if more than one Emacs has this set
 
 ;; Load julehjerter functions
-(load "julehjerte_webshop.el")
+;; (load "julehjerte_webshop.el")
 
 
 ;; Open one of the org files
@@ -98,7 +98,25 @@
              )
 
 
-;; Org helper functions
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;       SECRETS: Password management
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(require 'simple-secrets)
+(secret-load-keys)
+(evil-global-set-key 'normal (kbd "C-1") 'secret-lookup-clipboard)
+(evil-global-set-key 'emacs (kbd "C-1") 'secret-lookup-clipboard)
+(evil-global-set-key 'normal (kbd "C-!") 'secret-lookup)
+(evil-global-set-key 'emacs (kbd "C-!") 'secret-lookup)
+(evil-global-set-key 'normal (kbd "C-2") 'secret-new)
+(evil-global-set-key 'emacs (kbd "C-2") 'secret-new)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;       ORG HELPERS
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (defun is-org (buf)
   "Return whether the given buffer has an open org file or not"
   (let ((filename (buffer-file-name buf)))

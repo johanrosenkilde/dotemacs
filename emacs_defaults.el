@@ -39,6 +39,8 @@
 (add-to-list 'auto-mode-alist '("\\.sage\\'" . sage-shell:sage-mode))
 (add-to-list 'auto-mode-alist '("\\.html\\'" . web-mode))
 (add-to-list 'auto-mode-alist '("\\.php\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.h\\'" . c++-mode))
+(add-to-list 'auto-mode-alist '("\\.ledger$" . ledger-mode))
 
 ;; Build and keep list of recent files
 (recentf-mode t)
@@ -64,3 +66,4 @@
 (global-unset-key (kbd "C-x n d")) ;; narrow to defun
 (global-unset-key (kbd "C-x n p")) ;; narrow to page
 (global-unset-key (kbd "C-x n n")) ;; narrow to region
+(global-unset-key (kbd "C-x m")) ;; compose mail

@@ -173,6 +173,5 @@ using C-u s."
   '(fix-evil-workman))
 
 
-
 (message "Loaded dired_setup.el")
 (provide 'dired_setup)
