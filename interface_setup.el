@@ -1,5 +1,6 @@
 ;; SETUP FOR THE EMACS INTERFACE
 
+(setq workman t) ;; Keyboard layout to expect
 (setq inhibit-splash-screen t)
 (setq initial-scratch-message "")
 (scroll-bar-mode -1) ;; Emacs gurus don't need no stinking scroll bars

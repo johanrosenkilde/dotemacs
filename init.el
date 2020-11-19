@@ -1,9 +1,6 @@
 ;;; Speed up init
 (load "speedup_init.el")
 
-;; Keyboard layout to expect
-(setq workman t)
-
 ;; About me
 (setq user-full-name "Johan S. H. Rosenkilde"
       jsrn-user-mail-address "jsrn@jsrn.dk") ;; Std email; I will overwrite user-mail-address
