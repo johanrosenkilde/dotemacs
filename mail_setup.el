@@ -311,6 +311,8 @@ maildir:/johansjulehjerter/Archives or maildir:/dtu/Archives.2018 or maildir:/dt
   (setq ispell-local-dictionary "dansk")
   ;; Add footnote and bibtex/footnote support
   (footnote-mode t)
+  ;; Wrap at 80, not at 72
+  (set-fill-column 80)
   (setq reftex-default-bibliography '("~/mat/tex/bibtex.bib"))
   (defun jsrn-insert-citation ()
     (interactive)

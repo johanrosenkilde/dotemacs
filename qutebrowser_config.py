@@ -6,6 +6,8 @@ c.auto_save.session = True
 c.completion.use_best_match = True
 c.content.cookies.store = False
 c.content.geolocation = False
+c.content.ssl_strict = True # Block all invalid HTTPS certificate requests (often google ads)
+
 c.editor.command = [ "emacsclient", "-c", "-e", "(quickedit \"{file}\" {line} {column})" ]
 c.downloads.location.directory = "/home/jsrn/downloads/tmp/"
 c.downloads.location.prompt = False
