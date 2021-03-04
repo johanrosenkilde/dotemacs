@@ -121,3 +121,6 @@ the optional values set"
 (define-key evil-motion-state-map (kbd "P") 'beginning-of-delim)
 ; reinstate paste in visual mode
 (define-key evil-visual-state-map (kbd "p") 'evil-paste-after) 
+
+(message "Loaded surround_setup.el")
+(provide 'surround_setup)

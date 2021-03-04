@@ -92,7 +92,7 @@
 (require 'ido_setup "ido_setup.el")
 
 ;; Surround mode
-;; (require 'surround_setup "surround_setup.el")
+(require 'surround_setup "surround_setup.el")
 
 ;; Dired
 (require 'dired_setup)
