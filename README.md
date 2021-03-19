@@ -1,0 +1,1 @@
+# johanrosenkilde's Emacs configuration
