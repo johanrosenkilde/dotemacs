@@ -9,8 +9,14 @@
 (add-to-list 'default-frame-alist '(font . "Bitstream Vera Sans Mono-8"))
 ;; (add-to-list 'default-frame-alist '(left-fringe . 0))
 ;; (add-to-list 'default-frame-alist '(right-fringe . 0))
-(setq visible-bell t
-      default-font-height 80)
+
+; Fix idiotic visual-bell on OS X
+(setq visible-bell nil)
+(setq ring-bell-function
+      (lambda ()
+        (invert-face 'mode-line)
+        (run-with-timer 0.1 nil 'invert-face 'mode-line)))
+(setq default-font-height 80)
 
 ;; Themes
 (setq zenburn-use-variable-pitch t)

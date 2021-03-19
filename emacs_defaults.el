@@ -14,13 +14,13 @@
       column-number-mode t ;; activate column-number-mode globally
 
       ;; Use qutebrowser for hyperlinks
-      browse-url-browser-function (lambda (url monkey) (call-process "/usr/bin/qutebrowser" nil 0 nil "--target" "auto" url))
+      browse-url-browser-function (lambda (url monkey) (call-process "/usr/local/bin/qutebrowser" nil 0 nil "--target" "auto" url))
       )
 (setq-default fill-column 80
               indent-tabs-mode nil) ; never insert tabs, do spaces
 
 ;; Environment
-(setenv "PATH" (concat (getenv "PATH") ":/home/jsrn/local/bin:/home/jsrn/code/scripts"))
+(setenv "PATH" (concat (getenv "PATH") ":/usr/local/bin:/Users/johanrosenkilde/local/bin:/Users/johanrosenkilde/code/scripts"))
 
 (defadvice isearch-exit (after jsrn-goto-match-beginning activate)
   "After a search ends by RET, go to beginning of match."
