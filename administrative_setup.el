@@ -1,15 +1,30 @@
 ;; Activate the current Emacs as an agenda Emacs. Weird stuff seem to happen
 ;; sometimes if more than one Emacs has this set
 
-;; Load julehjerter functions
-;; (load "julehjerte_webshop.el")
+;; Password management
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(custom-set-variables '(epg-gpg-program  "/usr/local/bin/gpg"))
+;; (require 'epa-file)
+;; (epa-file-enable)
+(require 'simple-secrets)
+(setq epa-pinentry-mode 'loopback)
+(secret-load-keys)
+(evil-global-set-key 'normal (kbd "C-1") 'secret-lookup-clipboard)
+(evil-global-set-key 'emacs (kbd "C-1") 'secret-lookup-clipboard)
+(evil-global-set-key 'normal (kbd "C-!") 'secret-lookup)
+(evil-global-set-key 'emacs (kbd "C-!") 'secret-lookup)
+(evil-global-set-key 'normal (kbd "C-2") 'secret-new)
+(evil-global-set-key 'emacs (kbd "C-2") 'secret-new)
 
 
 ;; Open one of the org files
-(find-file "~/orgs/home.org")
+;; (find-file "~/orgs/home.org")
 
 ;; Set files which contains agenda files to all .org files in specified dir
-(setq org-agenda-files (directory-files "~/orgs" t "^[^#]*org$" t))
+(setq org-agenda-files (directory-files "~/github/repos/personal/" t "^[^#]*org$" t))
+;; (setq org-agenda-files (cons "~/orgs/home.org" (directory-files "~/github/repos/personal/" t "^[^#]*org$" t)))
+;; (setq org-agenda-files (directory-files "~/orgs" t "^[^#]*org$" t))
 
 ;; Load Danish calendar
 (load "da-calendar.el")
@@ -77,13 +92,13 @@
   )
 
 ;; Rebuild the notficiation-database everytime the agenda is displayed
-(add-hook 'org-finalize-agenda-hook 'jsrn-org-agenda-to-appt 'append)
+;; (add-hook 'org-finalize-agenda-hook 'jsrn-org-agenda-to-appt 'append)
 
 ;; Rebuild notification-database now
-(jsrn-org-agenda-to-appt)
+;; (jsrn-org-agenda-to-appt)
 
 ;; Activate appointments so we get notifications
-(appt-activate t)
+;; (appt-activate t)
 
 ;; Setup how notifications look
 (setq appt-display-format 'window)
@@ -96,21 +111,6 @@
              evil-up-key     'org-agenda-previous-line
              evil-down-key   'org-agenda-next-line
              )
-
-
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;       SECRETS: Password management
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(require 'simple-secrets)
-(secret-load-keys)
-(evil-global-set-key 'normal (kbd "C-1") 'secret-lookup-clipboard)
-(evil-global-set-key 'emacs (kbd "C-1") 'secret-lookup-clipboard)
-(evil-global-set-key 'normal (kbd "C-!") 'secret-lookup)
-(evil-global-set-key 'emacs (kbd "C-!") 'secret-lookup)
-(evil-global-set-key 'normal (kbd "C-2") 'secret-new)
-(evil-global-set-key 'emacs (kbd "C-2") 'secret-new)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

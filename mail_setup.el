@@ -211,10 +211,6 @@
 (let* ((year (format-time-string "%Y"))
       (shortcuts `(("/jsrn/INBOX"       . ?i)
                     ("/jsrn/Sent"  . ?s)
-                    ("/jsrn/INBOX.To Use". ?u)
-                    ("/dtu/INBOX"         . ?I)
-                    ("/dtu/Sent"          . ?S)
-                    ("/jsrn/INBOX.To Use". ?u)
                     ("/jsrn/INBOX.Drafts". ?d)
                     ("/trash"             . ?w)
                     ("/johansjulehjerter/Salg.Sendt" . ?U)))
@@ -228,7 +224,7 @@
 maildir:/johansjulehjerter/Archives or maildir:/dtu/Archives.2018 or maildir:/dtu/Archives.2018" "Archives" ?a))
 ;; View the contents of private inboxes or sent with 'bi' or 'bs'
 (add-to-list 'mu4e-bookmarks
-   '("maildir:/jsrn/INBOX or maildir:/johansjulehjerter/INBOX or maildir:/gmail/INBOX"  "Inboxes"  ?i))
+   '("maildir:/jsrn/INBOX or maildir:/johansjulehjerter/INBOX or maildir:/gmail/INBOX or maildir:/dtu/INBOX"  "Inboxes"  ?i))
 (add-to-list 'mu4e-bookmarks
    '("maildir:/jsrn/Sent or maildir/dtu/Sent or maildir:/Sent.Old or maildir:/johansjulehjerter/Sent or maildir:/mailinglist/Sent or maildir:/gmail/[Gmail].Sent Mail" "Sent" ?s))
 ;; (add-to-list 'mu4e-bookmarks
