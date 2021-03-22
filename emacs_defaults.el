@@ -67,3 +67,9 @@
 (global-unset-key (kbd "C-x n p")) ;; narrow to page
 (global-unset-key (kbd "C-x n n")) ;; narrow to region
 (global-unset-key (kbd "C-x m")) ;; compose mail
+ 
+;; Set Option = Meta and Cmd = Alt/Hyper
+(setq mac-option-key-is-meta t
+      mac-command-key-is-meta nil
+      mac-command-modifier nil
+      mac-option-modifier 'meta)
