@@ -3,7 +3,8 @@
 
 ;; About me
 (setq user-full-name "Johan S. H. Rosenkilde"
-      jsrn-user-mail-address "jsrn@jsrn.dk") ;; Std email; I will overwrite user-mail-address
+      jsrn-user-mail-address "jsrn@jsrn.dk")
+(setq user-mail-address jsrn-user-mail-address) ;; Std email; I will overwrite user-mail-address
 
 ;; Setup the interface
 (load "interface_setup.el")

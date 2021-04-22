@@ -67,6 +67,11 @@
 (global-unset-key (kbd "C-x n p")) ;; narrow to page
 (global-unset-key (kbd "C-x n n")) ;; narrow to region
 (global-unset-key (kbd "C-x m")) ;; compose mail
+
+;; Poor substitute for dead-key on right-side meta
+(global-set-key (kbd "M-s") (lambda () (interactive) (insert "æ")))
+(global-set-key (kbd "M-h") (lambda () (interactive) (insert "ø")))
+(global-set-key (kbd "M-t") (lambda () (interactive) (insert "å")))
  
 ;; Set Option = Meta and Cmd = Alt/Hyper
 (setq mac-option-key-is-meta t

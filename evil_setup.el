@@ -61,8 +61,7 @@
 (fill-keymaps (list evil-normal-state-map
                     evil-visual-state-map
                     evil-insert-state-map)
-              ;; TAB is overtaken by Emacs (which is ok), so map jump-forward to C-Esc
-              (kbd "C-<escape>") 'jsrn-evil-jump-forward
+              (kbd "C-k") 'jsrn-evil-jump-forward
               (kbd "C-o")        'jsrn-evil-jump-backward ;; override new Evil jumper
               (kbd "C-e")        'end-of-visual-line
               (kbd "C-a")        'beginning-of-visual-line-smart)

@@ -204,7 +204,7 @@
                                    ((string-equal mailbox "gmail") "/gmail/[Gmail].All Mail")
                                    ((string-equal mailbox "dtu")   (concat "/dtu/Archives." year)))))
       )
-(setq mu4e-attachment-dir "~/downloads/tmp")
+(setq mu4e-attachment-dir "~/Downloads/")
 
 
 ;; Set up some shortcuts access them with 'j' ('jump')
@@ -237,7 +237,7 @@ maildir:/johansjulehjerter/Archives or maildir:/dtu/Archives.2018 or maildir:/dt
       )
 
 ;; Check mail using offlineimap every 5 min
-(setq mu4e-get-mail-command "getmail"
+(setq mu4e-get-mail-command "true"
       mu4e-update-interval 300
       mu4e-headers-auto-update nil
       mail-user-agent 'mu4e-user-agent

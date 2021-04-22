@@ -18,10 +18,12 @@
 (evil-global-set-key 'emacs (kbd "C-2") 'secret-new)
 
 
+(require 'org)
+(require 'org-agenda)
 ;; Open one of the org files
-;; (find-file "~/orgs/home.org")
 
 ;; Set files which contains agenda files to all .org files in specified dir
+(find-file "~/orgs/home.org")
 (setq org-agenda-files (directory-files "~/github/repos/personal/" t "^[^#]*org$" t))
 ;; (setq org-agenda-files (cons "~/orgs/home.org" (directory-files "~/github/repos/personal/" t "^[^#]*org$" t)))
 ;; (setq org-agenda-files (directory-files "~/orgs" t "^[^#]*org$" t))
@@ -111,7 +113,6 @@
              evil-up-key     'org-agenda-previous-line
              evil-down-key   'org-agenda-next-line
              )
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;       ORG HELPERS
