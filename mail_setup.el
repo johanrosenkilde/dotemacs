@@ -2,10 +2,6 @@
 ;;           OFFLINEIMAP
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; To delete trash email, use the following one-liner
-;; $ find ~/mail/trash/cur -mtime +30 -type f -delete
-
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;           MU4E
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -220,8 +216,7 @@
   (add-to-list 'shortcuts (cons jsrn_arch ?a))
   (setq mu4e-maildir-shortcuts shortcuts))
 (add-to-list 'mu4e-bookmarks
-   '("maildir:/jsrn/Archives.2019 or maildir:/jsrn/Archives.2018 or
-maildir:/johansjulehjerter/Archives or maildir:/dtu/Archives.2018 or maildir:/dtu/Archives.2018" "Archives" ?a))
+   '("maildir:/jsrn/Archives.2021 or maildir:/jsrn/Archives.2020 or maildir:/johansjulehjerter/Archives or maildir:/dtu/Archives.2021 or maildir:/dtu/Archives.2020" "Archives" ?a))
 ;; View the contents of private inboxes or sent with 'bi' or 'bs'
 (add-to-list 'mu4e-bookmarks
    '("maildir:/jsrn/INBOX or maildir:/johansjulehjerter/INBOX or maildir:/gmail/INBOX or maildir:/dtu/INBOX"  "Inboxes"  ?i))
