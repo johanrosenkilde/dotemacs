@@ -8,6 +8,7 @@
 (setq magit-restore-window-configuration nil) ;; don't attempt stupid restore of look before magit
 (setq magit-diff-refine-hunk 'all)
 (setq magit-diff-highlight-hunk-body nil)
+(setq magit-push-current-set-remote-if-missing nil)
 ;; TODO: add toggle-truncate-line to disable it?
 (defun jsrn-magit-mode-hook ()
   (interactive)

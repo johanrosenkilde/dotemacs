@@ -41,7 +41,7 @@
 (global-set-key (kbd "C-x C--") '(lambda () (interactive) (modify-font-height -10)))
 (global-set-key (kbd "C-x C-0") '(lambda () (interactive) (set-face-attribute 'default nil :height default-font-height)))
 (global-set-key (kbd "C-x C-S-f") 'find-file-as-root)
-(global-set-key [(f12)] 'magit-status)
+(global-set-key (kbd "C-x m") 'magit-status)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
